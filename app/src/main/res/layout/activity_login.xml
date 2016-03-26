@@ -26,11 +26,9 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
 
             <ImageView
                 android:layout_width="330px"
@@ -47,8 +45,7 @@
                     android:id="@+id/account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_account"
-                    android:inputType="textEmailAddress"
+                    android:hint="@string/account"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="@color/colorWhite"/>
@@ -63,7 +60,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
