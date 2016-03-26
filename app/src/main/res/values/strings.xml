@@ -4,7 +4,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="share_wechatmoments">分享到微信朋友圈</string>
+    <string name="share_wechat">分享到微信好友</string>
+    <string name="share_qzone">分享到QQ空间</string>
+    <string name="share_qq">分享到QQ好友</string>
+    <string name="share_weibo">分享到新浪微博</string>
 
     <string name="account">用户名／邮箱</string>
     <string name="password">密码</string>
@@ -25,4 +29,6 @@
     <string name="no_username">用户名不存在</string>
     <string name="error_password">密码错误</string>
     <string name="reset_password">重置密码</string>
+    <string name="userinfo_overdue">用户信息过期，请重新登录</string>
+    <string name="logout">退出当前帐号</string>
 </resources>

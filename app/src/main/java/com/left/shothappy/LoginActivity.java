@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.left.shothappy.bean.User;
+
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -55,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
 
         //利用本地缓存用户登录
-        BmobUser bmobUser = BmobUser.getCurrentUser(this);
-        if (bmobUser != null) {
+        User user = BmobUser.getCurrentUser(this, User.class);
+        if (user != null) {
             //直接进入主页
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
@@ -126,9 +128,9 @@ public class LoginActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
 
 
-            BmobUser.loginByAccount(getApplicationContext(), account, password, new LogInListener<BmobUser>() {
+            User.loginByAccount(getApplicationContext(), account, password, new LogInListener<User>() {
                 @Override
-                public void done(BmobUser user, BmobException e) {
+                public void done(User user, BmobException e) {
                     if (user != null) {
                         showProgress(false);
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));

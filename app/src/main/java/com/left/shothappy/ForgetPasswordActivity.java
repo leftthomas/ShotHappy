@@ -14,7 +14,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import cn.bmob.v3.BmobUser;
+import com.left.shothappy.bean.User;
+
 import cn.bmob.v3.listener.ResetPasswordByEmailListener;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
@@ -74,7 +75,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
 
             //通过邮箱重置密码
-            BmobUser.resetPasswordByEmail(getApplicationContext(), email, new ResetPasswordByEmailListener() {
+            User.resetPasswordByEmail(getApplicationContext(), email, new ResetPasswordByEmailListener() {
                 @Override
                 public void onSuccess() {
                     showProgress(false);

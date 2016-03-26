@@ -15,7 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import cn.bmob.v3.BmobUser;
+import com.left.shothappy.bean.User;
+
 import cn.bmob.v3.listener.SaveListener;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -111,11 +112,11 @@ public class RegisterActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mRePasswordView.getWindowToken(), 0);
 
-            BmobUser bu = new BmobUser();
-            bu.setUsername(username);
-            bu.setPassword(password);
-            bu.setEmail(email);
-            bu.signUp(getApplicationContext(), new SaveListener() {
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(password);
+            user.setEmail(email);
+            user.signUp(getApplicationContext(), new SaveListener() {
                 @Override
                 public void onSuccess() {
                     showProgress(false);

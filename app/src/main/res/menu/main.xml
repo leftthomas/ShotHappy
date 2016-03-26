@@ -2,8 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:id="@+id/share_wechatmoments"
+        android:icon="@drawable/wechatmoments"
+        android:title="@string/share_wechatmoments"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/share_wechat"
+        android:icon="@drawable/wechat"
+        android:title="@string/share_wechat"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/share_qzone"
+        android:icon="@drawable/qzone"
+        android:title="@string/share_qzone"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/share_qq"
+        android:icon="@drawable/qq"
+        android:title="@string/share_qq"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/share_weibo"
+        android:icon="@drawable/weibo"
+        android:title="@string/share_weibo"
         app:showAsAction="never" />
 </menu>
