@@ -17,6 +17,9 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import cn.bmob.v3.Bmob;
 
 
 /**
@@ -34,15 +37,23 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView tvregister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // 初始化 Bmob SDK
+        // 使用时请将第二个参数Application ID替换成你在Bmob服务器端创建的Application ID
+        Bmob.initialize(this, "e3b44f120f8fa89d1b40910fb1356a4d");
+
         // Set up the login form.
         mAccountView = (EditText) findViewById(R.id.account);
 
         mPasswordView = (EditText) findViewById(R.id.password);
+
+        tvregister = (TextView) findViewById(R.id.register);
 
         Button mAccountLoginButton = (Button) findViewById(R.id.login_button);
         mAccountLoginButton.setOnClickListener(new OnClickListener() {
@@ -54,6 +65,14 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        tvregister.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                finish();
+            }
+        });
     }
 
     /**
@@ -83,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             focusView = mAccountView;
             cancel = true;
         } else if (!isAccountValid(account)) {
-            mAccountView.setError(getString(R.string.error_invalid_account));
+            mAccountView.setError(getString(R.string.error_invalid_email));
             focusView = mAccountView;
             cancel = true;
         }
