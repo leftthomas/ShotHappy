@@ -2,7 +2,10 @@ package com.left.shothappy;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -11,20 +14,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.User;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.GetListener;
+import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
@@ -35,10 +48,13 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private RelativeLayout main_content_layout;
+    private View view_ar, view_thesaurus, view_rateoflearning, view_setting, view_feedback;
     private CircleImageView imageView;
     private TextView username;
     private TextView email;
     private User user;
+    private Bitmap head;//头像Bitmap
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +105,7 @@ public class MainActivity extends AppCompatActivity
                             .cacheOnDisk(true)
                             .bitmapConfig(Bitmap.Config.RGB_565)
                             .build();
-
+                    //载入图片
                     ImageLoader.getInstance().displayImage(o.getHead().getFileUrl(getApplicationContext()), imageView, options);
                 }
 
@@ -107,7 +123,39 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //从相册里面取照片
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, 1);
+            }
+        });
 
+        main_content_layout = (RelativeLayout) findViewById(R.id.main_content_layout);
+        view_ar = LayoutInflater.from(this).inflate(R.layout.view_ar, null);
+        view_thesaurus = LayoutInflater.from(this).inflate(R.layout.view_thesaurus, null);
+        view_rateoflearning = LayoutInflater.from(this).inflate(R.layout.view_rateoflearning, null);
+        view_setting = LayoutInflater.from(this).inflate(R.layout.view_setting, null);
+        view_feedback = LayoutInflater.from(this).inflate(R.layout.view_feedback, null);
+        main_content_layout.addView(view_ar);
+        main_content_layout.addView(view_thesaurus);
+        main_content_layout.addView(view_rateoflearning);
+        main_content_layout.addView(view_setting);
+        main_content_layout.addView(view_feedback);
+        //设置默认情况
+        main_content_layout.bringChildToFront(view_ar);
+        view_ar.setEnabled(true);
+        view_ar.setVisibility(View.VISIBLE);
+        view_thesaurus.setEnabled(false);
+        view_thesaurus.setVisibility(View.INVISIBLE);
+        view_rateoflearning.setEnabled(false);
+        view_rateoflearning.setVisibility(View.INVISIBLE);
+        view_setting.setEnabled(false);
+        view_setting.setVisibility(View.INVISIBLE);
+        view_feedback.setEnabled(false);
+        view_feedback.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -164,17 +212,75 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            main_content_layout.bringChildToFront(view_ar);
+            view_ar.setEnabled(true);
+            view_ar.setVisibility(View.VISIBLE);
+            view_thesaurus.setEnabled(false);
+            view_thesaurus.setVisibility(View.INVISIBLE);
+            view_rateoflearning.setEnabled(false);
+            view_rateoflearning.setVisibility(View.INVISIBLE);
+            view_setting.setEnabled(false);
+            view_setting.setVisibility(View.INVISIBLE);
+            view_feedback.setEnabled(false);
+            view_feedback.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_gallery) {
+            main_content_layout.bringChildToFront(view_thesaurus);
+            view_ar.setEnabled(false);
+            view_ar.setVisibility(View.INVISIBLE);
+            view_thesaurus.setEnabled(true);
+            view_thesaurus.setVisibility(View.VISIBLE);
+            view_rateoflearning.setEnabled(false);
+            view_rateoflearning.setVisibility(View.INVISIBLE);
+            view_setting.setEnabled(false);
+            view_setting.setVisibility(View.INVISIBLE);
+            view_feedback.setEnabled(false);
+            view_feedback.setVisibility(View.INVISIBLE);
 
         } else if (id == R.id.nav_slideshow) {
+            main_content_layout.bringChildToFront(view_rateoflearning);
+            view_ar.setEnabled(false);
+            view_ar.setVisibility(View.INVISIBLE);
+            view_thesaurus.setEnabled(false);
+            view_thesaurus.setVisibility(View.INVISIBLE);
+            view_rateoflearning.setEnabled(true);
+            view_rateoflearning.setVisibility(View.VISIBLE);
+            view_setting.setEnabled(false);
+            view_setting.setVisibility(View.INVISIBLE);
+            view_feedback.setEnabled(false);
+            view_feedback.setVisibility(View.INVISIBLE);
 
         } else if (id == R.id.nav_manage) {
+            main_content_layout.bringChildToFront(view_setting);
+            view_ar.setEnabled(false);
+            view_ar.setVisibility(View.INVISIBLE);
+            view_thesaurus.setEnabled(false);
+            view_thesaurus.setVisibility(View.INVISIBLE);
+            view_rateoflearning.setEnabled(false);
+            view_rateoflearning.setVisibility(View.INVISIBLE);
+            view_setting.setEnabled(true);
+            view_setting.setVisibility(View.VISIBLE);
+            view_feedback.setEnabled(false);
+            view_feedback.setVisibility(View.INVISIBLE);
 
         } else if (id == R.id.nav_share) {
-
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+            intent.putExtra(Intent.EXTRA_TEXT, getText(R.string.share_app_text));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
         } else if (id == R.id.nav_send) {
-
+            main_content_layout.bringChildToFront(view_feedback);
+            view_ar.setEnabled(false);
+            view_ar.setVisibility(View.INVISIBLE);
+            view_thesaurus.setEnabled(false);
+            view_thesaurus.setVisibility(View.INVISIBLE);
+            view_rateoflearning.setEnabled(false);
+            view_rateoflearning.setVisibility(View.INVISIBLE);
+            view_setting.setEnabled(false);
+            view_setting.setVisibility(View.INVISIBLE);
+            view_feedback.setEnabled(true);
+            view_feedback.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_logout) {
             User.logOut(getApplicationContext());   //清除缓存用户对象
             //跳转至登录页
@@ -184,5 +290,104 @@ public class MainActivity extends AppCompatActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    cropPhoto(data.getData());//裁剪图片
+                }
+                break;
+            case 3:
+                if (data != null) {
+                    Bundle extras = data.getExtras();
+                    head = extras.getParcelable("data");
+                    if (head != null) {
+                        /**
+                         * 上传服务器代码
+                         */
+                        final BmobFile bmobFile = new BmobFile(saveBitmap2file(head));
+                        bmobFile.uploadblock(getApplicationContext(), new UploadFileListener() {
+
+                            @Override
+                            public void onSuccess() {
+                                //记得更新对应user的头像
+                                User newUser = new User();
+                                newUser.setHead(bmobFile);
+                                newUser.update(getApplicationContext(), user.getObjectId(), new UpdateListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        //用ImageView显示出来
+                                        imageView.setImageBitmap(head);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int code, String msg) {
+                                        Snackbar.make(navigationView, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onProgress(Integer value) {
+
+                            }
+
+                            @Override
+                            public void onFailure(int code, String msg) {
+                                Snackbar.make(navigationView, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 调用系统的裁剪
+     *
+     * @param uri
+     */
+    public void cropPhoto(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 150);
+        intent.putExtra("outputY", 150);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, 3);
+    }
+
+
+    public File saveBitmap2file(Bitmap bmp) {
+        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
+        int quality = 100;
+        OutputStream stream = null;
+        File out = new File(Environment.getExternalStorageDirectory(), "/" + user.getUsername() + "_head.jpg");
+        if (!out.exists()) {
+            try {
+                out.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            stream = new FileOutputStream(out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        bmp.compress(format, quality, stream);
+        return out;
     }
 }
