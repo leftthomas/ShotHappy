@@ -31,4 +31,5 @@ dependencies {
     compile 'com.squareup.okio:okio:1.4.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'org.lucee:dom4j:1.6.1'
 }

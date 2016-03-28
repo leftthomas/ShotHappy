@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.IcibaTranslate;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -46,30 +47,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-            String source = "car";
-            String result;
-            try {
-                result = IcibaTranslate.translate(source);
-            } catch (Exception e) {
-                e.printStackTrace();
-                result = "翻译失败，请检查网络";
-            }
-            data.putString("value", result);
-            msg.setData(data);
-            handler.sendMessage(msg);
-        }
-    };
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerLayout drawer;
@@ -83,10 +60,15 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Bundle data = msg.getData();
-            String val = data.getString("value");
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // UI界面的更新等相关操作
 
-            // UI界面的更新等相关操作
-            Snackbar.make(navigationView, val, Snackbar.LENGTH_LONG).show();
+
+            } else {
+                Snackbar.make(navigationView, val, Snackbar.LENGTH_LONG).show();
+            }
+
         }
     };
     private RelativeLayout main_content_layout;
@@ -96,6 +78,30 @@ public class MainActivity extends AppCompatActivity
     private TextView email;
     private User user;
     private Bitmap head;//头像Bitmap
+    private Dict dict;
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            String source = "word";
+            try {
+                dict = IcibaTranslate.translate(source);
+                data.putString("status", "true");//表示请求成功
+            } catch (Exception e) {
+                e.printStackTrace();
+                data.putString("status", "翻译失败，请检查网络");
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
