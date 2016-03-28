@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.User;
+import com.left.shothappy.utils.IcibaTranslate;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -43,11 +46,49 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            String source = "car";
+            String result;
+            try {
+                result = IcibaTranslate.translate(source);
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = "翻译失败，请检查网络";
+            }
+            data.putString("value", result);
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
     private Toolbar toolbar;
     private FloatingActionButton fab;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("value");
+
+            // UI界面的更新等相关操作
+            Snackbar.make(navigationView, val, Snackbar.LENGTH_LONG).show();
+        }
+    };
     private RelativeLayout main_content_layout;
     private View view_ar, view_thesaurus, view_rateoflearning, view_setting, view_feedback;
     private CircleImageView imageView;
@@ -67,11 +108,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //这里是调用语音sdk与英文释义部分
-
-
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).show();
+                // 开启一个子线程，进行翻译与语音API请求，注意，不能直接在主线程操作
+                new Thread(networkTask).start();
             }
         });
 
@@ -367,7 +405,6 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra("return-data", true);
         startActivityForResult(intent, 3);
     }
-
 
     public File saveBitmap2file(Bitmap bmp) {
         Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
