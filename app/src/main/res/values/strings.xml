@@ -43,7 +43,4 @@
     <string name="submit">提交</string>
     <string name="error_head_replace">头像上传失败</string>
     <string name="share_app_text">推荐下载“拍拍乐”手机客户端，提供高质量的英语学习体验，以新颖独特的AR交互模式提升学习兴趣。http://www.wandoujia.com/apps/com.indoor.im</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
