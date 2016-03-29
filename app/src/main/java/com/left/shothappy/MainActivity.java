@@ -11,21 +11,25 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.IcibaTranslate;
+import com.left.shothappy.view.ARFragment;
+import com.left.shothappy.view.RateoflearningFragment;
+import com.left.shothappy.view.SettingFragment;
+import com.left.shothappy.view.ThesaurusFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -52,7 +56,6 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
-
     /**
      * 接收到网络请求回复的数据之后通知UI更新
      */
@@ -72,8 +75,10 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
-    private RelativeLayout main_content_layout;
-    private View view_ar, view_thesaurus, view_rateoflearning, view_setting;//view_feedback;
+    private ARFragment arFragment;
+    private RateoflearningFragment rateoflearningFragment;
+    private ThesaurusFragment thesaurusFragment;
+    private SettingFragment settingFragment;
     private CircleImageView imageView;
     private TextView username;
     private TextView email;
@@ -110,6 +115,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // 设置默认的Fragment
+        setDefaultFragment();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -159,8 +167,6 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
-
-
         } else {
             //缓存用户对象为空时， 打开登录界面
             Snackbar.make(navigationView, getString(R.string.userinfo_overdue), Snackbar.LENGTH_SHORT).show();
@@ -177,32 +183,6 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(intent, 1);
             }
         });
-
-        main_content_layout = (RelativeLayout) findViewById(R.id.main_content_layout);
-        view_ar = LayoutInflater.from(this).inflate(R.layout.view_ar, null);
-        view_thesaurus = LayoutInflater.from(this).inflate(R.layout.view_thesaurus, null);
-        view_rateoflearning = LayoutInflater.from(this).inflate(R.layout.view_rateoflearning, null);
-        view_setting = LayoutInflater.from(this).inflate(R.layout.view_setting, null);
-//        view_feedback = LayoutInflater.from(this).inflate(R.layout.view_feedback, null);
-        main_content_layout.addView(view_ar);
-        main_content_layout.addView(view_thesaurus);
-        main_content_layout.addView(view_rateoflearning);
-        main_content_layout.addView(view_setting);
-//        main_content_layout.addView(view_feedback);
-        //设置默认情况
-        main_content_layout.bringChildToFront(view_ar);
-        view_ar.setEnabled(true);
-        view_ar.setVisibility(View.VISIBLE);
-        view_thesaurus.setEnabled(false);
-        view_thesaurus.setVisibility(View.INVISIBLE);
-        view_rateoflearning.setEnabled(false);
-        view_rateoflearning.setVisibility(View.INVISIBLE);
-        view_setting.setEnabled(false);
-        view_setting.setVisibility(View.INVISIBLE);
-//        view_feedback.setEnabled(false);
-//        view_feedback.setVisibility(View.INVISIBLE);
-        //设置左上角标题
-        setTitle(R.string.title_ar);
     }
 
     @Override
@@ -255,64 +235,44 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+        FragmentManager fm = getSupportFragmentManager();
+        // 开启Fragment事务
+        FragmentTransaction transaction = fm.beginTransaction();
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            main_content_layout.bringChildToFront(view_ar);
-            view_ar.setEnabled(true);
-            view_ar.setVisibility(View.VISIBLE);
-            view_thesaurus.setEnabled(false);
-            view_thesaurus.setVisibility(View.INVISIBLE);
-            view_rateoflearning.setEnabled(false);
-            view_rateoflearning.setVisibility(View.INVISIBLE);
-            view_setting.setEnabled(false);
-            view_setting.setVisibility(View.INVISIBLE);
-//            view_feedback.setEnabled(false);
-//            view_feedback.setVisibility(View.INVISIBLE);
+            if (arFragment == null) {
+                arFragment = new ARFragment();
+            }
+            // 使用当前Fragment的布局替代content的控件
+            transaction.replace(R.id.content, arFragment);
             setTitle(R.string.title_ar);
-//            SurfaceView surfaceView= (SurfaceView) view_ar.findViewById(R.id.SurfaceView);
-
-
-
+            fab.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_gallery) {
-            main_content_layout.bringChildToFront(view_thesaurus);
-            view_ar.setEnabled(false);
-            view_ar.setVisibility(View.INVISIBLE);
-            view_thesaurus.setEnabled(true);
-            view_thesaurus.setVisibility(View.VISIBLE);
-            view_rateoflearning.setEnabled(false);
-            view_rateoflearning.setVisibility(View.INVISIBLE);
-            view_setting.setEnabled(false);
-            view_setting.setVisibility(View.INVISIBLE);
-//            view_feedback.setEnabled(false);
-//            view_feedback.setVisibility(View.INVISIBLE);
+            if (thesaurusFragment == null) {
+                thesaurusFragment = new ThesaurusFragment();
+            }
+            // 使用当前Fragment的布局替代content的控件
+            transaction.replace(R.id.content, thesaurusFragment);
             setTitle(R.string.title_thesaurus);
+            fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_slideshow) {
-            main_content_layout.bringChildToFront(view_rateoflearning);
-            view_ar.setEnabled(false);
-            view_ar.setVisibility(View.INVISIBLE);
-            view_thesaurus.setEnabled(false);
-            view_thesaurus.setVisibility(View.INVISIBLE);
-            view_rateoflearning.setEnabled(true);
-            view_rateoflearning.setVisibility(View.VISIBLE);
-            view_setting.setEnabled(false);
-            view_setting.setVisibility(View.INVISIBLE);
-//            view_feedback.setEnabled(false);
-//            view_feedback.setVisibility(View.INVISIBLE);
+            if (rateoflearningFragment == null) {
+                rateoflearningFragment = new RateoflearningFragment();
+            }
+            // 使用当前Fragment的布局替代content的控件
+            transaction.replace(R.id.content, rateoflearningFragment);
             setTitle(R.string.title_rateoflearning);
+            fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_manage) {
-            main_content_layout.bringChildToFront(view_setting);
-            view_ar.setEnabled(false);
-            view_ar.setVisibility(View.INVISIBLE);
-            view_thesaurus.setEnabled(false);
-            view_thesaurus.setVisibility(View.INVISIBLE);
-            view_rateoflearning.setEnabled(false);
-            view_rateoflearning.setVisibility(View.INVISIBLE);
-            view_setting.setEnabled(true);
-            view_setting.setVisibility(View.VISIBLE);
-//            view_feedback.setEnabled(false);
-//            view_feedback.setVisibility(View.INVISIBLE);
+            if (settingFragment == null) {
+                settingFragment = new SettingFragment();
+            }
+            // 使用当前Fragment的布局替代content的控件
+            transaction.replace(R.id.content, settingFragment);
             setTitle(R.string.title_setting);
+            fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_share) {
             //调用分享
             Intent intent = new Intent(Intent.ACTION_SEND);
@@ -334,7 +294,8 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         }
-
+        // 事务提交
+        transaction.commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -375,18 +336,14 @@ public class MainActivity extends AppCompatActivity
                                     }
                                 });
                             }
-
                             @Override
                             public void onProgress(Integer value) {
-
                             }
-
                             @Override
                             public void onFailure(int code, String msg) {
                                 Snackbar.make(navigationView, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
                             }
                         });
-
                     }
                 }
                 break;
@@ -394,6 +351,19 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 设置activity一启动显示的默认content
+     */
+    private void setDefaultFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        arFragment = new ARFragment();
+        transaction.replace(R.id.content, arFragment);
+        transaction.commit();
+        //设置左上角标题
+        setTitle(R.string.title_ar);
     }
 
     /**
@@ -433,7 +403,6 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
-
         try {
             stream = new FileOutputStream(out);
         } catch (FileNotFoundException e) {
@@ -442,6 +411,4 @@ public class MainActivity extends AppCompatActivity
         bmp.compress(format, quality, stream);
         return out;
     }
-
-
 }

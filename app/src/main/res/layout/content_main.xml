@@ -9,4 +9,8 @@
     tools:context="com.left.shothappy.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 </RelativeLayout>
