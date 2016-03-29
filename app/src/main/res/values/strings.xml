@@ -14,7 +14,7 @@
     <string name="title_thesaurus">词库</string>
     <string name="title_rateoflearning">学习进度</string>
     <string name="title_setting">设置</string>
-    <string name="title_feedback">意见反馈</string>
+    <string name="feedback">意见反馈</string>
     <string name="title_communication">交流与联系</string>
     <string name="title_share_app">分享应用</string>
     <string name="title_goto_rank">去评分</string>
@@ -47,4 +47,13 @@
     <string name="change_password">修改密码</string>
     <string name="error_network">网络错误</string>
     <string name="about">关于拍拍乐</string>
+    <string name="old_password">旧密码</string>
+    <string name="new_password">新密码</string>
+    <string name="in_oldpassword">请输入旧密码</string>
+    <string name="in_newpassword">请输入新密码</string>
+    <string name="success_changepassword">密码修改成功，可以用新密码进行登录啦</string>
+    <string name="fail_changepassword">密码修改失败，请仔细检查原密码是否填写正确</string>
+    <string name="feedback_content_hint">请详细描述你的问题</string>
+    <string name="in_feedback_content">请输入反馈内容</string>
+    <string name="success_feedback">你的反馈已提交，我们将尽快处理</string>
 </resources>

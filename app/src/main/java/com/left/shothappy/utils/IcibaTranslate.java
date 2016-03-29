@@ -1,5 +1,8 @@
 package com.left.shothappy.utils;
 
+import android.content.Context;
+import android.os.Environment;
+
 import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.Pos_acceptation;
 import com.left.shothappy.bean.Ps_pron;
@@ -7,10 +10,19 @@ import com.left.shothappy.bean.Sent;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -36,16 +48,6 @@ public class IcibaTranslate {
 
         URLConnection con = url.openConnection();
         con.connect();
-//        InputStreamReader reader = new InputStreamReader(con.getInputStream());
-//        BufferedReader bufread = new BufferedReader(reader);
-//        StringBuffer buff = new StringBuffer();
-//        String line;
-//        while ((line = bufread.readLine()) != null) {
-//            buff.append(line);
-//        }
-//        reader.close();
-//        bufread.close();
-
         Dict dict = parsexml(con.getInputStream());
 
         return dict;
@@ -97,4 +99,71 @@ public class IcibaTranslate {
         return dict;
     }
 
+    /**
+     * 生成词典，保存到目录下，用来做离线翻译词典
+     */
+    public static void generateDictionary(Context context, InputStream indexfile, String filename) throws IOException, DocumentException {
+        Document doc = DocumentHelper.createDocument();
+        //增加根节点
+        Element dicts = doc.addElement("dicts");
+        InputStreamReader inputStreamReader = new InputStreamReader(indexfile, "utf-8");
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        String line;
+        SAXReader saxReader = new SAXReader();
+        while ((line = reader.readLine()) != null) {
+            String request = address + "?w=" + line + "&key=" + appId;
+            URL url = new URL(request);
+            URLConnection con = url.openConnection();
+            con.connect();
+            InputStream returnword = con.getInputStream();
+            //增加子元素
+            Element dict = dicts.addElement("dict");
+
+            Document document = saxReader.read(returnword);
+            // 获取根元素
+            Element root = document.getRootElement();
+            //为元素添加内容
+            dict.setText(root.getStringValue());
+            System.out.println(root.getStringValue());
+        }
+        //实例化输出格式对象
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        //设置输出编码
+        format.setEncoding("UTF-8");
+        //创建需要写入的File对象
+//        FileOutputStream out = context.openFileOutput(filename, Context.MODE_PRIVATE);
+
+        // 获得用户公共的文档目录
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS), filename);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        XMLWriter writer = new XMLWriter(new FileOutputStream(file), format);
+
+
+        //生成XMLWriter对象，构造函数中的参数为需要输出的文件流和格式
+//        XMLWriter writer = new XMLWriter(out, format);
+        //开始写入，write方法中包含上面创建的Document对象
+        writer.write(doc);
+        writer.close();
+    }
+
+    /**
+     * 暂时做测试用
+     *
+     * @param context
+     * @param filename
+     * @throws IOException
+     */
+    public static void go(Context context, String filename) throws IOException {
+        FileInputStream in = context.openFileInput(filename); //获得输入流
+        int length = in.available();
+        byte[] buffer = new byte[length];
+        //读取数据
+        in.read(buffer);
+        System.out.println(buffer.toString());
+        //关闭
+        in.close();
+    }
 }
