@@ -10,6 +10,15 @@
     <string name="share_qq">分享到QQ好友</string>
     <string name="share_weibo">分享到新浪微博</string>
 
+    <string name="title_ar">AR认知</string>
+    <string name="title_thesaurus">词库</string>
+    <string name="title_rateoflearning">学习进度</string>
+    <string name="title_setting">设置</string>
+    <string name="title_feedback">意见反馈</string>
+    <string name="title_communication">交流与联系</string>
+    <string name="title_share_app">分享应用</string>
+    <string name="title_goto_rank">去评分</string>
+
     <string name="account">用户名／邮箱</string>
     <string name="password">密码</string>
     <string name="username">用户名</string>

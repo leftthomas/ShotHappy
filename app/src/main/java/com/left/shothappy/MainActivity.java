@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+
     /**
      * 接收到网络请求回复的数据之后通知UI更新
      */
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         }
     };
     private RelativeLayout main_content_layout;
-    private View view_ar, view_thesaurus, view_rateoflearning, view_setting, view_feedback;
+    private View view_ar, view_thesaurus, view_rateoflearning, view_setting;//view_feedback;
     private CircleImageView imageView;
     private TextView username;
     private TextView email;
@@ -182,12 +183,12 @@ public class MainActivity extends AppCompatActivity
         view_thesaurus = LayoutInflater.from(this).inflate(R.layout.view_thesaurus, null);
         view_rateoflearning = LayoutInflater.from(this).inflate(R.layout.view_rateoflearning, null);
         view_setting = LayoutInflater.from(this).inflate(R.layout.view_setting, null);
-        view_feedback = LayoutInflater.from(this).inflate(R.layout.view_feedback, null);
+//        view_feedback = LayoutInflater.from(this).inflate(R.layout.view_feedback, null);
         main_content_layout.addView(view_ar);
         main_content_layout.addView(view_thesaurus);
         main_content_layout.addView(view_rateoflearning);
         main_content_layout.addView(view_setting);
-        main_content_layout.addView(view_feedback);
+//        main_content_layout.addView(view_feedback);
         //设置默认情况
         main_content_layout.bringChildToFront(view_ar);
         view_ar.setEnabled(true);
@@ -198,8 +199,10 @@ public class MainActivity extends AppCompatActivity
         view_rateoflearning.setVisibility(View.INVISIBLE);
         view_setting.setEnabled(false);
         view_setting.setVisibility(View.INVISIBLE);
-        view_feedback.setEnabled(false);
-        view_feedback.setVisibility(View.INVISIBLE);
+//        view_feedback.setEnabled(false);
+//        view_feedback.setVisibility(View.INVISIBLE);
+        //设置左上角标题
+        setTitle(R.string.title_ar);
     }
 
     @Override
@@ -252,7 +255,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
@@ -265,8 +267,13 @@ public class MainActivity extends AppCompatActivity
             view_rateoflearning.setVisibility(View.INVISIBLE);
             view_setting.setEnabled(false);
             view_setting.setVisibility(View.INVISIBLE);
-            view_feedback.setEnabled(false);
-            view_feedback.setVisibility(View.INVISIBLE);
+//            view_feedback.setEnabled(false);
+//            view_feedback.setVisibility(View.INVISIBLE);
+            setTitle(R.string.title_ar);
+//            SurfaceView surfaceView= (SurfaceView) view_ar.findViewById(R.id.SurfaceView);
+
+
+
         } else if (id == R.id.nav_gallery) {
             main_content_layout.bringChildToFront(view_thesaurus);
             view_ar.setEnabled(false);
@@ -277,9 +284,9 @@ public class MainActivity extends AppCompatActivity
             view_rateoflearning.setVisibility(View.INVISIBLE);
             view_setting.setEnabled(false);
             view_setting.setVisibility(View.INVISIBLE);
-            view_feedback.setEnabled(false);
-            view_feedback.setVisibility(View.INVISIBLE);
-
+//            view_feedback.setEnabled(false);
+//            view_feedback.setVisibility(View.INVISIBLE);
+            setTitle(R.string.title_thesaurus);
         } else if (id == R.id.nav_slideshow) {
             main_content_layout.bringChildToFront(view_rateoflearning);
             view_ar.setEnabled(false);
@@ -290,9 +297,9 @@ public class MainActivity extends AppCompatActivity
             view_rateoflearning.setVisibility(View.VISIBLE);
             view_setting.setEnabled(false);
             view_setting.setVisibility(View.INVISIBLE);
-            view_feedback.setEnabled(false);
-            view_feedback.setVisibility(View.INVISIBLE);
-
+//            view_feedback.setEnabled(false);
+//            view_feedback.setVisibility(View.INVISIBLE);
+            setTitle(R.string.title_rateoflearning);
         } else if (id == R.id.nav_manage) {
             main_content_layout.bringChildToFront(view_setting);
             view_ar.setEnabled(false);
@@ -303,10 +310,11 @@ public class MainActivity extends AppCompatActivity
             view_rateoflearning.setVisibility(View.INVISIBLE);
             view_setting.setEnabled(true);
             view_setting.setVisibility(View.VISIBLE);
-            view_feedback.setEnabled(false);
-            view_feedback.setVisibility(View.INVISIBLE);
-
+//            view_feedback.setEnabled(false);
+//            view_feedback.setVisibility(View.INVISIBLE);
+            setTitle(R.string.title_setting);
         } else if (id == R.id.nav_share) {
+            //调用分享
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
@@ -314,18 +322,13 @@ public class MainActivity extends AppCompatActivity
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(Intent.createChooser(intent, getString(R.string.app_name)));
         } else if (id == R.id.nav_send) {
-            main_content_layout.bringChildToFront(view_feedback);
-            view_ar.setEnabled(false);
-            view_ar.setVisibility(View.INVISIBLE);
-            view_thesaurus.setEnabled(false);
-            view_thesaurus.setVisibility(View.INVISIBLE);
-            view_rateoflearning.setEnabled(false);
-            view_rateoflearning.setVisibility(View.INVISIBLE);
-            view_setting.setEnabled(false);
-            view_setting.setVisibility(View.INVISIBLE);
-            view_feedback.setEnabled(true);
-            view_feedback.setVisibility(View.VISIBLE);
+            //去评分，打开应用商场
+            Uri uri = Uri.parse("market://details?id=" + getPackageName());
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else if (id == R.id.nav_logout) {
+            //退出登录
             User.logOut(getApplicationContext());   //清除缓存用户对象
             //跳转至登录页
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -412,6 +415,12 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, 3);
     }
 
+    /**
+     * 保存Bitmap为file
+     *
+     * @param bmp
+     * @return
+     */
     public File saveBitmap2file(Bitmap bmp) {
         Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
         int quality = 100;
@@ -433,4 +442,6 @@ public class MainActivity extends AppCompatActivity
         bmp.compress(format, quality, stream);
         return out;
     }
+
+
 }
