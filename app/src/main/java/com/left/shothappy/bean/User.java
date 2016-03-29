@@ -10,6 +10,15 @@ public class User extends BmobUser {
 
     //头像
     private BmobFile head;
+    private boolean pronunciation;//默认美音
+
+    public boolean isPronunciation() {
+        return pronunciation;
+    }
+
+    public void setPronunciation(boolean pronunciation) {
+        this.pronunciation = pronunciation;
+    }
 
     public BmobFile getHead() {
         return head;

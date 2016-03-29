@@ -1,6 +1,5 @@
 package com.left.shothappy.utils;
 
-import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.Pos_acceptation;
 import com.left.shothappy.bean.Ps_pron;
 import com.left.shothappy.bean.Sent;

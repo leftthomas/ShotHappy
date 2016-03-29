@@ -116,6 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
             user.setUsername(username);
             user.setPassword(password);
             user.setEmail(email);
+            user.setPronunciation(true);//默认发音设为美音
             user.signUp(getApplicationContext(), new SaveListener() {
                 @Override
                 public void onSuccess() {

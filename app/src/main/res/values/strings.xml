@@ -42,5 +42,9 @@
     <string name="logout">退出当前帐号</string>
     <string name="submit">提交</string>
     <string name="error_head_replace">头像上传失败</string>
-    <string name="share_app_text">推荐下载“拍拍乐”手机客户端，提供高质量的英语学习体验，以新颖独特的AR交互模式提升学习兴趣。http://www.wandoujia.com/apps/com.indoor.im</string>
+    <string name="share_app_text">推荐下载“拍拍乐”手机客户端，提供高质量的英语学习体验，以新颖独特的AR交互模式提升学习兴趣。http://www.wanpeng.com/</string>
+    <string name="pronunciation">发音</string>
+    <string name="change_password">修改密码</string>
+    <string name="error_network">网络错误</string>
+    <string name="about">关于拍拍乐</string>
 </resources>

@@ -23,11 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.IcibaTranslate;
 import com.left.shothappy.view.ARFragment;
-import com.left.shothappy.view.RateoflearningFragment;
 import com.left.shothappy.view.SettingFragment;
 import com.left.shothappy.view.ThesaurusFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
