@@ -53,12 +53,14 @@ public class ThesaurusFragment extends Fragment {
         }
     };
     private Button download;
+    private Button test;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_thesaurus, container, false);
         download = (Button) view.findViewById(R.id.download);
+        test = (Button) view.findViewById(R.id.test);
         return view;
     }
 
@@ -69,11 +71,16 @@ public class ThesaurusFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 new Thread(networkTask).start();
-//                try {
-//                    IcibaTranslate.go(getActivity(),"animal.xml");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+            }
+        });
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    IcibaTranslate.go(getActivity(), "animal.xml");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

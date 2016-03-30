@@ -13,6 +13,13 @@
         android:id="@+id/download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="开始离线下载词库" />
+        android:text="开始下载离线词库" />
+
+    <Button
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试下载文件" />
+
 
 </LinearLayout>
