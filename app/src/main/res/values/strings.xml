@@ -56,4 +56,8 @@
     <string name="feedback_content_hint">请详细描述你的问题</string>
     <string name="in_feedback_content">请输入反馈内容</string>
     <string name="success_feedback">你的反馈已提交，我们将尽快处理</string>
+    <string name="download_dictionary">离线词库</string>
+    <string name="animal_dictionary">动物</string>
+    <string name="fruits_dictionary">水果</string>
+    <string name="vegetable_dictionary">蔬菜</string>
 </resources>

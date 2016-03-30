@@ -1,8 +1,10 @@
-package com.left.shothappy.view;
+package com.left.shothappy.views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +19,7 @@ import com.left.shothappy.LoginActivity;
 import com.left.shothappy.R;
 import com.left.shothappy.bean.Feedback;
 import com.left.shothappy.bean.User;
+import com.left.shothappy.utils.IcibaTranslate;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.SaveListener;
@@ -27,7 +30,41 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 public class SettingFragment extends Fragment {
 
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+        }
+    };
+    /**
+     * 网络操作相关的子线程
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            try {
+                IcibaTranslate.generateDictionary(getActivity(), getActivity().getAssets().open("animal.txt"), "animal.xml");
+                Snackbar.make(getView(), "success", Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Snackbar.make(getView(), getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+            }
+            data.putString("status", "离线失败，请检查网络");
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
     private TextView pronunciation;
+    private TextView download_dictionary;
     private TextView change_password;
     private TextView feedback;
     private TextView about;
@@ -37,6 +74,7 @@ public class SettingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         pronunciation = (TextView) view.findViewById(R.id.pronunciation);
+        download_dictionary = (TextView) view.findViewById(R.id.download_dictionary);
         change_password = (TextView) view.findViewById(R.id.change_password);
         feedback = (TextView) view.findViewById(R.id.feedback);
         about = (TextView) view.findViewById(R.id.about);
@@ -90,6 +128,42 @@ public class SettingFragment extends Fragment {
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                     getActivity().finish();
                 }
+            }
+        });
+        download_dictionary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+                builder.setTitle(download_dictionary.getText());
+                builder.setCancelable(false);
+                String[] items = {getString(R.string.animal_dictionary),
+                        getString(R.string.vegetable_dictionary), getString(R.string.fruits_dictionary)};
+                boolean[] offline_dictionary = {false, false, false};
+                builder.setMultiChoiceItems(items, offline_dictionary, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                    }
+                });
+                builder.setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        //进行进行离线下载操作
+
+                        new Thread(networkTask).start();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
         change_password.setOnClickListener(new View.OnClickListener() {

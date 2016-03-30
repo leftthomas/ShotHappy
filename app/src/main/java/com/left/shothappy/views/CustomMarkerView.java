@@ -1,4 +1,4 @@
-package com.left.shothappy.view;
+package com.left.shothappy.views;
 
 import android.content.Context;
 import android.widget.TextView;

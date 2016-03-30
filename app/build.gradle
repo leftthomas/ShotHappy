@@ -34,4 +34,5 @@ dependencies {
     compile 'org.lucee:dom4j:1.6.1'
     compile 'org.quanqi:mpandroidchart:1.7.5'
     compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.github.userswlwork:pull-to-refresh:1.0.0'
 }

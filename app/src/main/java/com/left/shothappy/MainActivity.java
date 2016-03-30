@@ -26,10 +26,10 @@ import android.widget.TextView;
 import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.IcibaTranslate;
-import com.left.shothappy.view.ARFragment;
-import com.left.shothappy.view.RateoflearningFragment;
-import com.left.shothappy.view.SettingFragment;
-import com.left.shothappy.view.ThesaurusFragment;
+import com.left.shothappy.views.ARFragment;
+import com.left.shothappy.views.RateoflearningFragment;
+import com.left.shothappy.views.SettingFragment;
+import com.left.shothappy.views.ThesaurusFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
