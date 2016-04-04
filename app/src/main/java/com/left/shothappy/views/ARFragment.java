@@ -1,9 +1,9 @@
 package com.left.shothappy.views;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,15 +14,13 @@ import com.left.shothappy.R;
  */
 public class ARFragment extends Fragment {
 
-    private SurfaceView surfaceView;
+    static String key = "d5356f4fba54d722115519ad830267a5zb8JO6yVcvKqdMGZREIYgvtkTjIlmPiUibOw0ge9OsN5DjcVfrOJKpUGM1MwEavrkvcZuEVvKB78wbeIsscymKohIytJAzPWYRhcMlDD3q9oKr5uBTiVtUHizWuMpcxxo0LLtKRdwJE0rbTEnliocezla7mnTJXmN1PzwniC";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ar, container, false);
-        surfaceView = (SurfaceView) view.findViewById(R.id.SurfaceView);
-
-
         return view;
     }
 
@@ -31,4 +29,11 @@ public class ARFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
     }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+    }
+
 }

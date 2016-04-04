@@ -1,26 +1,56 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.2"
 
-    defaultConfig {
-        applicationId "com.left.shothappy"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        defaultConfig.with {
+            applicationId = "com.left.shothappy"
+            minSdkVersion.apiLevel = 15
+            targetSdkVersion.apiLevel = 23
+            versionCode = 1
+            versionName = "1.0"
+        }
+
     }
-    buildTypes {
+    android.buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled = false
+            proguardFiles.add(file("proguard-rules.pro"))
+        }
+    }
+    android.ndk {
+        moduleName = "Render3d"
+        cppFlags.add("-I${file("../../package/include")}".toString())
+        cppFlags.add("-DANDROID")
+        cppFlags.add("-fexceptions")
+        cppFlags.add("-frtti")
+        stl = "gnustl_static"
+        ldLibs.add("log")
+        ldLibs.add("GLESv2")
+    }
+    android.productFlavors {
+        create("arm") {
+            ndk.with {
+                abiFilters.add("armeabi-v7a")
+            }
+        }
+    }
+    android.sources {
+        main {
+            jni {
+                dependencies {
+                    library file("../../package/Android/libs/armeabi-v7a/libEasyAR.so") abi "armeabi-v7a"
+                }
+            }
         }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: '../../package/Android/libs')
     testCompile 'junit:junit:4.12'
     //bmob-sdk ：Bmob的android sdk包
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
