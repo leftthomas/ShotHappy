@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
+    private FragmentManager fm;
     private ARFragment arFragment;
     private RateoflearningFragment rateoflearningFragment;
     private ThesaurusFragment thesaurusFragment;
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        fm = getSupportFragmentManager();
         // 设置默认的Fragment
         setDefaultFragment();
 
@@ -236,42 +239,31 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        FragmentManager fm = getSupportFragmentManager();
-        // 开启Fragment事务
-        FragmentTransaction transaction = fm.beginTransaction();
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
             if (arFragment == null) {
                 arFragment = new ARFragment();
             }
-            // 使用当前Fragment的布局替代content的控件
-            transaction.replace(R.id.content, arFragment);
-            setTitle(R.string.title_ar);
+            showFragment(arFragment, R.string.title_ar);
             fab.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_gallery) {
             if (thesaurusFragment == null) {
                 thesaurusFragment = new ThesaurusFragment();
             }
-            // 使用当前Fragment的布局替代content的控件
-            transaction.replace(R.id.content, thesaurusFragment);
-            setTitle(R.string.title_thesaurus);
+            showFragment(thesaurusFragment, R.string.title_thesaurus);
             fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_slideshow) {
             if (rateoflearningFragment == null) {
                 rateoflearningFragment = new RateoflearningFragment();
             }
-            // 使用当前Fragment的布局替代content的控件
-            transaction.replace(R.id.content, rateoflearningFragment);
-            setTitle(R.string.title_rateoflearning);
+            showFragment(rateoflearningFragment, R.string.title_rateoflearning);
             fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_manage) {
             if (settingFragment == null) {
                 settingFragment = new SettingFragment();
             }
-            // 使用当前Fragment的布局替代content的控件
-            transaction.replace(R.id.content, settingFragment);
-            setTitle(R.string.title_setting);
+            showFragment(settingFragment, R.string.title_setting);
             fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_share) {
             //调用分享
@@ -294,8 +286,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         }
-        // 事务提交
-        transaction.commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -357,13 +347,44 @@ public class MainActivity extends AppCompatActivity
      * 设置activity一启动显示的默认content
      */
     private void setDefaultFragment() {
-        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         arFragment = new ARFragment();
-        transaction.replace(R.id.content, arFragment);
+        transaction.add(R.id.content, arFragment);
         transaction.commit();
         //设置左上角标题
         setTitle(R.string.title_ar);
+    }
+
+    /**
+     * 起切换fragment的作用
+     *
+     * @param fragment
+     */
+    private void showFragment(Fragment fragment, int titleId) {
+        setTitle(titleId);
+
+        FragmentTransaction transaction = fm.beginTransaction();
+        //先判断当前的有没有，有的话直接做显示，没的话先添加
+        if (!fm.getFragments().contains(fragment)) {
+            transaction.add(R.id.content, fragment);
+        }
+        //先全部hide
+        if (fm.getFragments().contains(arFragment)) {
+            transaction.hide(arFragment);
+        }
+        if (fm.getFragments().contains(rateoflearningFragment)) {
+            transaction.hide(rateoflearningFragment);
+        }
+        if (fm.getFragments().contains(thesaurusFragment)) {
+            transaction.hide(thesaurusFragment);
+        }
+        if (fm.getFragments().contains(settingFragment)) {
+            transaction.hide(settingFragment);
+        }
+
+        //显示要显示的
+        transaction.show(fragment);
+        transaction.commit();
     }
 
     /**

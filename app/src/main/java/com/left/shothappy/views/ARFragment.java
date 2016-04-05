@@ -52,6 +52,7 @@ public class ARFragment extends Fragment {
 
         ((ViewGroup) view.findViewById(R.id.preview)).addView(glView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         nativeRotationChange(getActivity().getWindowManager().getDefaultDisplay().getRotation() == android.view.Surface.ROTATION_0);
+
         return view;
     }
 

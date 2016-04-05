@@ -23,19 +23,6 @@
         android:background="@color/colorDarkGray" />
 
     <TextView
-        android:id="@+id/download_dictionary"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:text="@string/download_dictionary"
-        android:textSize="19sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorDarkGray" />
-
-    <TextView
         android:id="@+id/change_password"
         android:layout_width="match_parent"
         android:layout_height="50dp"
