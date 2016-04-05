@@ -21,7 +21,7 @@ model {
         }
     }
     android.ndk {
-        moduleName = "Render3d"
+        moduleName = "ARNative"
         cppFlags.add("-I${file("../../package/include")}".toString())
         cppFlags.add("-DANDROID")
         cppFlags.add("-fexceptions")
