@@ -10,6 +10,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,6 +40,32 @@ public class IcibaTranslate {
         Dict dict = parseXml(con.getInputStream());
 
         return dict;
+    }
+
+    //只读取API翻译完后的音频文件，加快播放时的响应速度
+    public static List<Ps_pron> getProns(String w) throws IOException, DocumentException {
+
+        String request = address + "?w=" + w + "&key=" + appId;
+
+        URL url = new URL(request);
+
+        URLConnection con = url.openConnection();
+        con.connect();
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(con.getInputStream());
+        // 获取根元素
+        Element root = document.getRootElement();
+        // 获取特定名称的子元素
+        List<Element> pss = root.elements("ps");
+        List<Element> prons = root.elements("pron");
+        List<Ps_pron> ps_prons = new ArrayList<>();
+        for (int i = 0; i < pss.size(); i++) {
+            Ps_pron ps_pron = new Ps_pron();
+            ps_pron.setPs(pss.get(i).getText());
+            ps_pron.setPron(prons.get(i).getText());
+            ps_prons.add(ps_pron);
+        }
+        return ps_prons;
     }
 
     //解析xml生成对应的dict实例

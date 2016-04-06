@@ -50,7 +50,7 @@ model {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile fileTree(include: ['*.jar'], dir: '../../package/Android/libs')
+    compile fileTree(dir: '../../package/Android/libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     //bmob-sdk ：Bmob的android sdk包
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
@@ -65,4 +65,5 @@ dependencies {
     compile 'org.quanqi:mpandroidchart:1.7.5'
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.github.userswlwork:pull-to-refresh:1.0.0'
+    compile 'com.android.support:cardview-v7:24.0.0-alpha1'
 }

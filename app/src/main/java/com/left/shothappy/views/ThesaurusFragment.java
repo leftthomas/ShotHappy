@@ -27,9 +27,9 @@ public class ThesaurusFragment extends Fragment {
     private List<Fragment> list_fragment;                                //定义要装fragment的列表
     private List<String> list_title;                                     //tab名称列表
 
-    private AnimalDictionaryFragment animalFragment;             //动物fragment
-    private FruitDictionaryFragment fruitFragment;              //水果fragment
-    private VegetableDictionaryFragment vegetableFragment;       //蔬菜fragment
+    private DictionaryFragment animalFragment;             //动物fragment
+    private DictionaryFragment fruitFragment;              //水果fragment
+    private DictionaryFragment vegetableFragment;       //蔬菜fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,9 +55,12 @@ public class ThesaurusFragment extends Fragment {
         vp_FindFragment_pager = (ViewPager) view.findViewById(R.id.vp_fragment_pager);
 
         //初始化各fragment
-        animalFragment = new AnimalDictionaryFragment();
-        fruitFragment = new FruitDictionaryFragment();
-        vegetableFragment = new VegetableDictionaryFragment();
+        animalFragment = new DictionaryFragment();
+        animalFragment.setType(getString(R.string.animals));
+        fruitFragment = new DictionaryFragment();
+        fruitFragment.setType(getString(R.string.fruits));
+        vegetableFragment = new DictionaryFragment();
+        vegetableFragment.setType(getString(R.string.vegetables));
 
         //将fragment装进列表中
         list_fragment = new ArrayList<>();
@@ -67,9 +70,9 @@ public class ThesaurusFragment extends Fragment {
 
         //将名称加载tab名字列表，正常情况下，我们应该在values/arrays.xml中进行定义然后调用
         list_title = new ArrayList<>();
-        list_title.add(getString(R.string.animal_dictionary));
+        list_title.add(getString(R.string.animals_dictionary));
         list_title.add(getString(R.string.fruits_dictionary));
-        list_title.add(getString(R.string.vegetable_dictionary));
+        list_title.add(getString(R.string.vegetables_dictionary));
 
         //设置TabLayout的模式
         tab_FindFragment_title.setTabMode(TabLayout.MODE_FIXED);
@@ -82,6 +85,8 @@ public class ThesaurusFragment extends Fragment {
 
         //viewpager加载adapter
         vp_FindFragment_pager.setAdapter(fAdapter);
+        //设置缓存view 的个数（实际有3个，缓存2个+正在显示的1个）
+        vp_FindFragment_pager.setOffscreenPageLimit(2);
         //TabLayout加载viewpager
         tab_FindFragment_title.setupWithViewPager(vp_FindFragment_pager);
     }

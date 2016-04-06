@@ -91,7 +91,7 @@ public class RateoflearningFragment extends Fragment {
 
         chart.setData(data); // 设置数据
 
-        CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.custom_marker_view_layout);
+        CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.view_marker);
 
         // set the marker to the chart
         chart.setMarkerView(mv);

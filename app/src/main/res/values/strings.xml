@@ -57,7 +57,13 @@
     <string name="in_feedback_content">请输入反馈内容</string>
     <string name="success_feedback">你的反馈已提交，我们将尽快处理</string>
     <string name="download_dictionary">离线词库</string>
-    <string name="animal_dictionary">动物</string>
+    <string name="animals_dictionary">动物</string>
     <string name="fruits_dictionary">水果</string>
-    <string name="vegetable_dictionary">蔬菜</string>
+    <string name="vegetables_dictionary">蔬菜</string>
+    <string name="word">单词</string>
+    <string name="system_error">系统错误</string>
+    <string name="wordfinished">单词已经全部加载完了</string>
+    <string name="animals">animals</string>
+    <string name="fruits">fruits</string>
+    <string name="vegetables">vegetables</string>
 </resources>

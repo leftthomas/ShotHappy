@@ -45,4 +45,5 @@ public class Dict {
     public void setSents(List<Sent> sents) {
         this.sents = sents;
     }
+
 }
