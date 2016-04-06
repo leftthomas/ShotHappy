@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,18 +22,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.User;
+import com.left.shothappy.utils.PicUtils;
 import com.left.shothappy.views.ARFragment;
 import com.left.shothappy.views.RateoflearningFragment;
 import com.left.shothappy.views.SettingFragment;
 import com.left.shothappy.views.ThesaurusFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import cn.bmob.v3.BmobQuery;
@@ -165,6 +161,12 @@ public class MainActivity extends AppCompatActivity
         return super.onPrepareOptionsMenu(menu);
     }
 
+    /**
+     * 各社交平台分享功能
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -174,6 +176,22 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.share_wechatmoments) {
+            share(SHARE_MEDIA.WEIXIN_CIRCLE);
+            return true;
+        } else if (id == R.id.share_wechat) {
+            share(SHARE_MEDIA.WEIXIN);
+            return true;
+        }
+        if (id == R.id.share_qzone) {
+            share(SHARE_MEDIA.QZONE);
+            return true;
+        }
+        if (id == R.id.share_qq) {
+            share(SHARE_MEDIA.QQ);
+            return true;
+        }
+        if (id == R.id.share_weibo) {
+            share(SHARE_MEDIA.SINA);
             return true;
         }
 
@@ -239,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
-                    cropPhoto(data.getData());//裁剪图片
+                    PicUtils.cropPhoto(data.getData(), this);//裁剪图片
                 }
                 break;
             case 3:
@@ -250,7 +268,7 @@ public class MainActivity extends AppCompatActivity
                         /**
                          * 上传服务器代码
                          */
-                        final BmobFile bmobFile = new BmobFile(saveBitmap2file(head));
+                        final BmobFile bmobFile = new BmobFile(PicUtils.saveBitmap2file(head, user));
                         bmobFile.uploadblock(getApplicationContext(), new UploadFileListener() {
 
                             @Override
@@ -333,48 +351,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * 调用系统的裁剪
-     *
-     * @param uri
+     * 分享
      */
-    public void cropPhoto(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 150);
-        intent.putExtra("outputY", 150);
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, 3);
-    }
+    private void share(SHARE_MEDIA num) {
+        Bitmap shot = PicUtils.takeShot(this);
 
-    /**
-     * 保存Bitmap为file
-     *
-     * @param bmp
-     * @return
-     */
-    public File saveBitmap2file(Bitmap bmp) {
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
-        int quality = 100;
-        OutputStream stream = null;
-        File out = new File(Environment.getExternalStorageDirectory(), "/" + user.getUsername() + "_head.jpg");
-        if (!out.exists()) {
-            try {
-                out.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            stream = new FileOutputStream(out);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        bmp.compress(format, quality, stream);
-        return out;
+        PicUtils.share(num, this,shot);
     }
 }

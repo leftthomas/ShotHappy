@@ -4,11 +4,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="share_wechatmoments">分享到微信朋友圈</string>
-    <string name="share_wechat">分享到微信好友</string>
-    <string name="share_qzone">分享到QQ空间</string>
-    <string name="share_qq">分享到QQ好友</string>
-    <string name="share_weibo">分享到新浪微博</string>
+    <string name="share_wechatmoments">朋友圈</string>
+    <string name="share_wechat">微信好友</string>
+    <string name="share_qzone">QQ空间</string>
+    <string name="share_qq">QQ好友</string>
+    <string name="share_weibo">新浪微博</string>
 
     <string name="title_ar">AR认知</string>
     <string name="title_thesaurus">词库</string>
@@ -66,4 +66,6 @@
     <string name="animals">animals</string>
     <string name="fruits">fruits</string>
     <string name="vegetables">vegetables</string>
+    <string name="share_activity_text">我在用“拍拍乐”学习英语，有趣好玩的AR交互模式，你还在等什么，快来体验吧！</string>
+    <string name="URL">http://www.wanpeng.com/</string>
 </resources>
