@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -24,9 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
-import com.left.shothappy.utils.IcibaTranslate;
 import com.left.shothappy.views.ARFragment;
 import com.left.shothappy.views.RateoflearningFragment;
 import com.left.shothappy.views.SettingFragment;
@@ -57,25 +53,6 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // UI界面的更新等相关操作
-
-
-            } else {
-                Snackbar.make(navigationView, val, Snackbar.LENGTH_LONG).show();
-            }
-
-        }
-    };
     private FragmentManager fm;
     private ARFragment arFragment;
     private RateoflearningFragment rateoflearningFragment;
@@ -86,30 +63,6 @@ public class MainActivity extends AppCompatActivity
     private TextView email;
     private User user;
     private Bitmap head;//头像Bitmap
-    private Dict dict;
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-            String source = "word";
-            try {
-                dict = IcibaTranslate.translate(source);
-                data.putString("status", "true");//表示请求成功
-            } catch (Exception e) {
-                e.printStackTrace();
-                data.putString("status", "翻译失败，请检查网络");
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,14 +76,6 @@ public class MainActivity extends AppCompatActivity
         setDefaultFragment();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 开启一个子线程，进行翻译与语音API请求，注意，不能直接在主线程操作
-                new Thread(networkTask).start();
-            }
-        });
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
