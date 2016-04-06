@@ -1,5 +1,7 @@
 package com.left.shothappy.views;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -38,6 +42,12 @@ public class DictionaryFragment extends Fragment {
 
     private PullToRefreshListView mPullToRefreshListView;
     private CardView cardView;
+    private MediaPlayer player;
+    private List<Map<String, Object>> mItemList;
+    private DictionaryAdapter adapter;
+    private String type;//用来表明是哪一种词典，实例化fragment时记得一定要赋值
+    private int index;//用来控制每次加载单词个数
+    private Dict dict;
     /**
      * 接收到网络请求回复的数据之后通知UI更新
      */
@@ -49,20 +59,18 @@ public class DictionaryFragment extends Fragment {
             String val = data.getString("status");
             if (val.equals("true")) {
 
-                cardView.setVisibility(View.VISIBLE);
-                mPullToRefreshListView.setEnabled(false);
-
+                if (cardView.getVisibility() == View.VISIBLE) {
+                    cardView.setVisibility(View.INVISIBLE);
+                } else {
+                    setcard(dict);
+                    cardView.setVisibility(View.VISIBLE);
+                }
             } else {
                 Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();
             }
 
         }
     };
-    private List<Map<String, Object>> mItemList;
-    private DictionaryAdapter adapter;
-    private String type;//用来表明是哪一种词典，实例化fragment时记得一定要赋值
-    private int index;//用来控制每次加载单词个数
-    private Dict dict;
     private User user;
     private String source;
     /**
@@ -127,7 +135,6 @@ public class DictionaryFragment extends Fragment {
                 new Thread(networkTask).start();
             }
         });
-
 
         return view;
     }
@@ -198,5 +205,52 @@ public class DictionaryFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 对弹出的cardview中的各个控件值进行相应设置
+     *
+     * @param dict
+     */
+    private void setcard(final Dict dict) {
+        TextView key = (TextView) cardView.findViewById(R.id.key);
+        TextView ps1 = (TextView) cardView.findViewById(R.id.ps1);
+        TextView ps2 = (TextView) cardView.findViewById(R.id.ps2);
+        TextView pos = (TextView) cardView.findViewById(R.id.pos);
+        TextView acceptation = (TextView) cardView.findViewById(R.id.acceptation);
+        TextView orig = (TextView) cardView.findViewById(R.id.orig);
+        TextView trans = (TextView) cardView.findViewById(R.id.trans);
+
+        ImageView ps1sound = (ImageView) cardView.findViewById(R.id.ps1sound);
+        ImageView ps2sound = (ImageView) cardView.findViewById(R.id.ps2sound);
+
+        key.setText(dict.getKey());
+        ps1.setText("美 [" + dict.getPs_prons().get(0).getPs() + "]");
+        ps2.setText("英 [" + dict.getPs_prons().get(1).getPs() + "]");
+        pos.setText(dict.getPos_acceptations().get(0).getPos());
+        acceptation.setText(dict.getPos_acceptations().get(0).getAcceptation());
+        orig.setText(dict.getSents().get(0).getOrig());
+        trans.setText(dict.getSents().get(0).getTrans());
+
+        ps1sound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 播放美音
+                String path = dict.getPs_prons().get(0).getPron();
+                Uri uri = Uri.parse(path);
+                player = MediaPlayer.create(getContext(), uri);
+                player.start();
+            }
+        });
+        ps2sound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 播放英音
+                String path = dict.getPs_prons().get(1).getPron();
+                Uri uri = Uri.parse(path);
+                player = MediaPlayer.create(getContext(), uri);
+                player.start();
+            }
+        });
     }
 }
