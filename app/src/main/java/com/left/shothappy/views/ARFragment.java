@@ -40,33 +40,6 @@ public class ARFragment extends Fragment {
     private FloatingActionButton fab;
     private CardView cardView;
     private Dict dict;
-    private MediaPlayer player;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // UI界面的更新等相关操作
-                if (cardView.getVisibility() == View.VISIBLE) {
-                    cardView.setVisibility(View.INVISIBLE);
-                } else {
-                    setCard(dict);
-                    cardView.setVisibility(View.VISIBLE);
-                    //记得去更新Schedule
-                    ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
-                }
-
-            } else {
-                Snackbar.make(getView(), val, Snackbar.LENGTH_LONG).show();
-            }
-
-        }
-    };
     /**
      * 网络操作相关的子线程
      * 调用语音sdk与英文释义部分的网络请求
@@ -90,6 +63,35 @@ public class ARFragment extends Fragment {
             }
             msg.setData(data);
             handler.sendMessage(msg);
+        }
+    };
+    private MediaPlayer player;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // UI界面的更新等相关操作
+                if (cardView.getVisibility() == View.VISIBLE) {
+                    cardView.setVisibility(View.INVISIBLE);
+                } else {
+                    setCard(dict);
+                    cardView.setVisibility(View.VISIBLE);
+                    //记得去更新Schedule
+                    ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
+
+                    ScheduleUtils.getDailyData(getActivity());
+                }
+
+            } else {
+                Snackbar.make(getView(), val, Snackbar.LENGTH_LONG).show();
+            }
+
         }
     };
 

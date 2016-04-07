@@ -2,15 +2,19 @@ package com.left.shothappy.utils;
 
 import android.app.Activity;
 
+import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.bean.User;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -92,7 +96,7 @@ public class ScheduleUtils {
      *
      * @return
      */
-    public static Date getTodayZero() {
+    private static Date getTodayZero() {
         Calendar todayStart = Calendar.getInstance();
         todayStart.set(Calendar.HOUR_OF_DAY, 0);
         todayStart.set(Calendar.MINUTE, 0);
@@ -106,13 +110,47 @@ public class ScheduleUtils {
      *
      * @return
      */
-    public static Date getTodayEnd() {
+    private static Date getTodayEnd() {
         Calendar todayEnd = Calendar.getInstance();
         todayEnd.set(Calendar.HOUR_OF_DAY, 23);
         todayEnd.set(Calendar.MINUTE, 59);
         todayEnd.set(Calendar.SECOND, 59);
         todayEnd.set(Calendar.MILLISECOND, 999);
         return todayEnd.getTime();
+    }
+
+
+    /**
+     * 获得某日的零点
+     *
+     * @param date
+     * @return
+     */
+    private static Date getDayZero(Date date) {
+        Calendar dayStart = Calendar.getInstance();
+        dayStart.setTime(date);
+        dayStart.set(Calendar.HOUR_OF_DAY, 0);
+        dayStart.set(Calendar.MINUTE, 0);
+        dayStart.set(Calendar.SECOND, 0);
+        dayStart.set(Calendar.MILLISECOND, 0);
+        return dayStart.getTime();
+    }
+
+
+    /**
+     * 获得某日23:59:59的值
+     *
+     * @param date
+     * @return
+     */
+    private static Date getDayEnd(Date date) {
+        Calendar dayEnd = Calendar.getInstance();
+        dayEnd.setTime(date);
+        dayEnd.set(Calendar.HOUR_OF_DAY, 23);
+        dayEnd.set(Calendar.MINUTE, 59);
+        dayEnd.set(Calendar.SECOND, 59);
+        dayEnd.set(Calendar.MILLISECOND, 999);
+        return dayEnd.getTime();
     }
 
     /**
@@ -153,7 +191,7 @@ public class ScheduleUtils {
         query.and(and);
 
         query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
-        query.order("-updatedAt");
+        query.order("createdAt");
         query.findObjects(activity, new FindListener<Schedule>() {
             @Override
             public void onSuccess(List<Schedule> object) {
@@ -165,6 +203,182 @@ public class ScheduleUtils {
             @Override
             public void onError(int code, String msg) {
                 schedules = null;
+            }
+        });
+    }
+
+
+    /**
+     * 格式化最近七日数据量
+     * 因为查询得到的列表不一定刚好7条数据，有可能少几条，需要做填充
+     *
+     * @param orins
+     * @return
+     */
+    private static List<Schedule> formatNearSchedules(List<Schedule> orins, List<DayCoordinate> weeks, User user) throws ParseException {
+        List<Schedule> afters = new ArrayList<>();
+        if (orins == null) {
+            for (int i = 0; i < 7; i++) {
+                Schedule sc = new Schedule();
+                sc.setUser(user);
+                sc.setWords(null);
+                afters.add(sc);
+            }
+            return afters;
+        } else {
+            if (orins.size() >= 7) {
+                return orins;
+            } else {
+                if (orins.size() == 0) {
+                    for (int i = 0; i < 7; i++) {
+                        Schedule sc = new Schedule();
+                        sc.setUser(user);
+                        sc.setWords(null);
+                        afters.add(sc);
+                    }
+                    return afters;
+                } else {
+                    //0<size<7
+                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    //生成7条数据
+                    for (int i = 0; i < weeks.size(); i++) {
+                        boolean flag = true;
+                        int j = 0;
+                        while (flag) {
+                            Date date = sdf.parse(orins.get(j).getCreatedAt());
+                            //找到了同一日的数据
+                            if (getDayZero(date).equals(getDayZero(weeks.get(i).getDate()))) {
+                                flag = false;
+                                //跳出循环
+                                afters.add(orins.get(j));
+                            } else {
+                                //没找到
+                                j++;
+                                //当前遍历完
+                                if (j >= orins.size()) {
+                                    Schedule sc = new Schedule();
+                                    sc.setUser(user);
+                                    sc.setWords(null);
+                                    afters.add(sc);
+                                    flag = false;
+                                    //跳出循环
+                                }
+                                //没遍历完，继续往下找
+                            }
+                        }
+                    }
+                    return afters;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 获得距离今天前7天的日期英文表示形式
+     *
+     * @return
+     */
+    private static List<DayCoordinate> getNearWeekTime() {
+
+        List<DayCoordinate> weeks = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("MMM dd", Locale.ENGLISH);
+
+        DayCoordinate dayCoordinate = new DayCoordinate();
+        dayCoordinate.setDate(c.getTime());
+        dayCoordinate.setName(df.format(c.getTime()));
+        weeks.add(dayCoordinate);
+        for (int i = 0; i < 6; i++) {
+            c.add(Calendar.DATE, -1);
+            Date monday = c.getTime();
+            String preMonday = df.format(monday);
+
+            DayCoordinate day = new DayCoordinate();
+            day.setDate(monday);
+            day.setName(preMonday);
+            weeks.add(day);
+        }
+        //注意，要将日期排序翻转下，得出的数据日期才是正序排好的
+        Collections.reverse(weeks);
+        return weeks;
+    }
+
+
+    /**
+     * 通过给定日期获取此日之后的数据(包含当天)
+     * 获取每日学习量曲线绘制所需的最近七日数据量
+     *
+     * @param activity
+     * @return
+     */
+    public static void getDailyData(final Activity activity) {
+
+        final List<DayCoordinate> weeks = getNearWeekTime();
+        final User user = BmobUser.getCurrentUser(activity, User.class);
+        BmobQuery<Schedule> query = new BmobQuery<>();
+        //大于00：00：00
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date beforedate = null;
+        try {
+            beforedate = sdf.parse(sdf.format(getDayZero(weeks.get(0).getDate())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        query.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(beforedate));
+        query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
+        query.order("createdAt");
+        query.findObjects(activity, new FindListener<Schedule>() {
+            @Override
+            public void onSuccess(List<Schedule> object) {
+                //记得一定要做数据填充检查
+                try {
+                    List<Schedule> sc = formatNearSchedules(object, weeks, user);
+
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(int code, String msg) {
+            }
+        });
+
+    }
+
+    /**
+     * 通过给定日期获取此日之前的数据(不包含当天)
+     *
+     * @param date
+     * @param activity
+     * @return 获取进步曲线绘制所需的最近七日数据量
+     * list中的每组数据都是一个键值对（日期，累计学习单词量）
+     */
+    public static void getImprovementData(Date date, Activity activity) {
+
+        User user = BmobUser.getCurrentUser(activity, User.class);
+        BmobQuery<Schedule> query = new BmobQuery<>();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date afterdate = null;
+        try {
+            afterdate = sdf.parse(sdf.format(getDayZero(date)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        query.addWhereLessThan("createdAt", new BmobDate(afterdate));
+        query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
+        query.order("createdAt");
+        query.findObjects(activity, new FindListener<Schedule>() {
+            @Override
+            public void onSuccess(List<Schedule> object) {
+
+            }
+
+            @Override
+            public void onError(int code, String msg) {
             }
         });
     }
