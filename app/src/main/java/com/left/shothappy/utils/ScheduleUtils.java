@@ -2,9 +2,14 @@ package com.left.shothappy.utils;
 
 import android.app.Activity;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.LineData;
 import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.bean.User;
+import com.left.shothappy.views.RateoflearningFragment;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -312,7 +319,7 @@ public class ScheduleUtils {
      * @param activity
      * @return
      */
-    public static void getDailyData(final Activity activity) {
+    public static void getDailyData(final Activity activity, final BarChart chart, final int color) {
 
         final List<DayCoordinate> weeks = getNearWeekTime();
         final User user = BmobUser.getCurrentUser(activity, User.class);
@@ -331,11 +338,13 @@ public class ScheduleUtils {
         query.findObjects(activity, new FindListener<Schedule>() {
             @Override
             public void onSuccess(List<Schedule> object) {
-                //记得一定要做数据填充检查
                 try {
+                    //记得一定要做数据填充检查
                     List<Schedule> sc = formatNearSchedules(object, weeks, user);
-
-
+                    //设置bar数据
+                    BarData barData = RateoflearningFragment.getBarData(weeks, sc);
+                    //设置bar样式
+                    RateoflearningFragment.setupBarChart(chart, barData, color);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -348,38 +357,84 @@ public class ScheduleUtils {
 
     }
 
+
     /**
-     * 通过给定日期获取此日之前的数据(不包含当天)
+     * 通过给定日期获取此日之前的数据(包含当天)
      *
-     * @param date
      * @param activity
      * @return 获取进步曲线绘制所需的最近七日数据量
-     * list中的每组数据都是一个键值对（日期，累计学习单词量）
+     * （日期，累计学习单词量）
      */
-    public static void getImprovementData(Date date, Activity activity) {
+    public static void getImprovementData(Activity activity, final LineChart chart, final int color) {
 
+        final List<DayCoordinate> weeks = getNearWeekTime();
         User user = BmobUser.getCurrentUser(activity, User.class);
         BmobQuery<Schedule> query = new BmobQuery<>();
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Date afterdate = null;
         try {
-            afterdate = sdf.parse(sdf.format(getDayZero(date)));
+            afterdate = sdf.parse(sdf.format(getDayEnd(weeks.get(weeks.size() - 1).getDate())));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        query.addWhereLessThan("createdAt", new BmobDate(afterdate));
+        query.addWhereLessThanOrEqualTo("createdAt", new BmobDate(afterdate));
         query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
         query.order("createdAt");
         query.findObjects(activity, new FindListener<Schedule>() {
             @Override
             public void onSuccess(List<Schedule> object) {
-
+                List<Map<String, Integer>> maps = formatSchedules(object, weeks);
+                //设置line数据
+                LineData lineData = RateoflearningFragment.getLineData(weeks, maps);
+                //设置line样式
+                RateoflearningFragment.setupLineChart(chart, lineData, color);
             }
 
             @Override
             public void onError(int code, String msg) {
             }
         });
+    }
+
+    /**
+     * 格式化进步曲线数据
+     *
+     * @param orins
+     * @param weeks
+     * @return
+     */
+    private static List<Map<String, Integer>> formatSchedules(List<Schedule> orins, List<DayCoordinate> weeks) {
+        List<Map<String, Integer>> afters = new ArrayList<>();
+        //初始化
+        for (int i = 0; i < 7; i++) {
+            Map<String, Integer> sc = new HashMap<>();
+            sc.put(weeks.get(i).getName(), 0);
+            afters.add(sc);
+        }
+        if (orins == null) {
+            return afters;
+        } else {
+            if (orins.size() == 0) {
+                return afters;
+            } else {
+                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                for (int i = 0; i < orins.size(); i++) {
+                    try {
+                        Date date = sdf.parse(orins.get(i).getCreatedAt());
+
+                        for (int j = 0; j < weeks.size(); j++) {
+                            if (getDayZero(date).getTime() <= getDayZero(weeks.get(j).getDate()).getTime()) {
+                                afters.get(j).put(weeks.get(j).getName(), afters.get(j).get(weeks.get(j).getName()) + orins.size());
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                return afters;
+            }
+        }
     }
 }

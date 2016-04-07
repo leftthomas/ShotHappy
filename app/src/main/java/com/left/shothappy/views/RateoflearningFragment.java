@@ -20,14 +20,22 @@ import com.github.mikephil.charting.utils.Legend;
 import com.github.mikephil.charting.utils.XLabels;
 import com.github.mikephil.charting.utils.YLabels;
 import com.left.shothappy.R;
+import com.left.shothappy.bean.DayCoordinate;
+import com.left.shothappy.bean.Schedule;
+import com.left.shothappy.utils.ScheduleUtils;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 学习进度的页面
  */
 public class RateoflearningFragment extends Fragment {
 
+    // 自定义字体
+    private static Typeface mTf;
+    private static View view;
     //进步曲线（总进度，统计历史量）
     private LineChart mLineChart;
     //每日学习量（近七天单日学习量）
@@ -35,33 +43,9 @@ public class RateoflearningFragment extends Fragment {
     // 自定义颜色
     private int mLineColors = Color.rgb(137, 230, 81);
     private int mBarColors = Color.rgb(240, 240, 30);
-    // 自定义字体
-    private Typeface mTf;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rateoflearning, container, false);
-        mTf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Bold.ttf");
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mLineChart = (LineChart) view.findViewById(R.id.linechart);
-        mBarChart = (BarChart) view.findViewById(R.id.barchart);
-        // 生产数据
-        LineData lineData = getLineData(36, 100);
-        BarData barData = getBarData(7, 100);
-        setupLineChart(mLineChart, lineData, mLineColors);
-        setupBarChart(mBarChart, barData, mBarColors);
-
-    }
 
     // 设置显示的样式
-    private void setupLineChart(final LineChart chart, LineData data, int color) {
+    public static void setupLineChart(final LineChart chart, LineData data, int color) {
 
         // disable the drawing of values into the chart
         chart.setDrawYValues(false);
@@ -91,7 +75,7 @@ public class RateoflearningFragment extends Fragment {
 
         chart.setData(data); // 设置数据
 
-        CustomMarkerView mv = new CustomMarkerView(getActivity(), R.layout.view_marker);
+        CustomMarkerView mv = new CustomMarkerView(view.getContext(), R.layout.view_marker);
 
         // set the marker to the chart
         chart.setMarkerView(mv);
@@ -118,9 +102,8 @@ public class RateoflearningFragment extends Fragment {
         chart.animateX(3000); // 立即执行的动画,x轴
     }
 
-
     // 设置显示的样式
-    private void setupBarChart(final BarChart chart, BarData data, int color) {
+    public static void setupBarChart(final BarChart chart, BarData data, int color) {
 
         chart.setDrawBarShadow(false);
         chart.setDrawBorder(false);
@@ -171,17 +154,17 @@ public class RateoflearningFragment extends Fragment {
     }
 
     // 生成进步曲线数据
-    private LineData getLineData(int count, float range) {
+    public static LineData getLineData(List<DayCoordinate> dayCoordinates, List<Map<String, Integer>> maps) {
         ArrayList<String> xVals = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < dayCoordinates.size(); i++) {
             // x轴显示的数据，这里默认使用数字下标显示
-            xVals.add(i + "");
+            xVals.add(dayCoordinates.get(i).getName());
         }
 
         // y轴的数据
         ArrayList<Entry> yVals = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            float val = i;
+        for (int i = 0; i < maps.size(); i++) {
+            float val = maps.get(i).get(dayCoordinates.get(i).getName());
             yVals.add(new Entry(val, i));
         }
 
@@ -205,18 +188,25 @@ public class RateoflearningFragment extends Fragment {
     }
 
     // 生成每日学习量数据，
-    private BarData getBarData(int count, float range) {
+    public static BarData getBarData(List<DayCoordinate> dayCoordinates, List<Schedule> schedules) {
         //x轴的数据--日期（近七天）
         ArrayList<String> xVals = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            xVals.add(i + "");
+        for (int i = 0; i < dayCoordinates.size(); i++) {
+            xVals.add(dayCoordinates.get(i).getName());
         }
-
 
         //y轴的数据--学习单词数（对应日期）
         ArrayList<BarEntry> yVals = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            float val = (float) (Math.random() * range) + 3;
+        for (int i = 0; i < schedules.size(); i++) {
+            float val;
+            List<String> words = schedules.get(i).getWords();
+            if (words == null) {
+                val = 0;
+            } else if (words.size() == 0) {
+                val = 0;
+            } else {
+                val = (float) schedules.get(i).getWords().size();
+            }
             yVals.add(new BarEntry(val, i));
         }
 
@@ -233,5 +223,27 @@ public class RateoflearningFragment extends Fragment {
         BarData data = new BarData(xVals, dataSets);
 
         return data;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_rateoflearning, container, false);
+        mTf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Bold.ttf");
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mLineChart = (LineChart) view.findViewById(R.id.linechart);
+        mBarChart = (BarChart) view.findViewById(R.id.barchart);
+
+        //绘制BarChart
+        ScheduleUtils.getDailyData(getActivity(), mBarChart, mBarColors);
+        //绘制LineChart
+        ScheduleUtils.getImprovementData(getActivity(), mLineChart, mLineColors);
+
     }
 }
