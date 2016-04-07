@@ -92,15 +92,13 @@ public class ScheduleUtils {
      *
      * @return
      */
-    public static long getTodayZero() {
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTimeInMillis();
+    public static Date getTodayZero() {
+        Calendar todayStart = Calendar.getInstance();
+        todayStart.set(Calendar.HOUR_OF_DAY, 0);
+        todayStart.set(Calendar.MINUTE, 0);
+        todayStart.set(Calendar.SECOND, 0);
+        todayStart.set(Calendar.MILLISECOND, 0);
+        return todayStart.getTime();
     }
 
     /**
@@ -108,15 +106,13 @@ public class ScheduleUtils {
      *
      * @return
      */
-    public static long getTodayEnd() {
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.set(Calendar.HOUR, 23);
-        cal.set(Calendar.SECOND, 59);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.MILLISECOND, 59);
-        return cal.getTimeInMillis();
+    public static Date getTodayEnd() {
+        Calendar todayEnd = Calendar.getInstance();
+        todayEnd.set(Calendar.HOUR_OF_DAY, 23);
+        todayEnd.set(Calendar.MINUTE, 59);
+        todayEnd.set(Calendar.SECOND, 59);
+        todayEnd.set(Calendar.MILLISECOND, 999);
+        return todayEnd.getTime();
     }
 
     /**
@@ -136,7 +132,7 @@ public class ScheduleUtils {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         try {
-            date = sdf.parse(sdf.format(new Date(getTodayZero())));
+            date = sdf.parse(sdf.format(getTodayZero()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -144,10 +140,10 @@ public class ScheduleUtils {
         and.add(q1);
 
         //小于23：59：59
-        BmobQuery<Schedule> q2 = new BmobQuery<Schedule>();
+        BmobQuery<Schedule> q2 = new BmobQuery<>();
         Date date1 = null;
         try {
-            date1 = sdf.parse(sdf.format(new Date(getTodayEnd())));
+            date1 = sdf.parse(sdf.format(getTodayEnd()));
         } catch (ParseException e) {
             e.printStackTrace();
         }

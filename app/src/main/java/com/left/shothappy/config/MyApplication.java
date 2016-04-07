@@ -20,7 +20,7 @@ public class MyApplication extends Application {
         //Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(configuration);
 
-        PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+        PlatformConfig.setWeixin("wx80fa53e66bd0dd39", "7baeecf5dfed24a2e89df2f0df95eb66");
         //微信 appid appsecret
         PlatformConfig.setSinaWeibo("2761194626", "c710eb199bef6b2b3b694e9b6ded6d88");
         //新浪微博 appkey appsecret
