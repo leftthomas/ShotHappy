@@ -1,0 +1,12 @@
+{
+  "images": [
+    {
+      "image": "vegetables/cabbage.jpg",
+      "name": "cabbage"
+    },
+    {
+      "image": "vegetables/potato.jpg",
+      "name": "potato"
+    }
+  ]
+}

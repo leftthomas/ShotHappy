@@ -2,69 +2,53 @@ agaric
 asparagus
 artichoke
 agar
-abalone mushroom
-aloe
-aniseed
-bell pepper
+abalone mushroom
+bell pepper
 bean
 beet
-bean sprout
-broad bean
-brussels sprouts
-bitter gourd
-baby corn
-bamboo sprout
-brown mushroom
+bean sprout
+broad bean
+brussels sprouts
+bitter gourd
+baby corn
 broccoli
-button mushroom
-black mushroom
+button mushroom
+black mushroom
 cauliflower
 capsicum
-cucumber 
+cucumber 
 carrot
 cabbage
 chive
-cos lettuce
 celery
 caper
-cardoon
-chervil
 chick-pea
 chicory
 cress
 cumin
-celery
-cauliflower
 coriander
 corn
-cane shoots
 clove
 cinnamon
 cantaloupe
 champignon
 cilantro
 dandelion
-day-lily buds
-dwarf bean
-dried mushroom
+dried mushroom
 eggplant
-eddoes
 fennel
-french bean
-flat beans
-garlic sprout
+french bean
+garlic sprout
 garlic
 gherkin
-garlic
 ginger
-green pepper
+green pepper
 greens
-hot pepper
+hot pepper
 horseradish
 honeydew
-hair-like seaweed
-iceberg 
-jerusalem artichoke
+iceberg 
+jerusalem artichoke
 kale
 kohlrabi
 laurel
@@ -72,18 +56,16 @@ lentil
 leek
 lettuce
 lily
-lotus seed
+lotus seed
 laver
 licorice
-lotus root
+lotus root
 marrow
 melon
 mushroom
-mater convolvulus
 onion
 okra
-oyster mushroom
-pimiento
+oyster mushroom
 potato
 pumpkin
 parsley
@@ -91,43 +73,36 @@ parsnip
 pea
 radish
 rhubarb
-red cabbage
+red cabbage
 romaine
-red pepper
-russet potato
+red pepper
 soybean
-sweet pepper
-soybean sprout
-summer radish
-salsify
+sweet pepper
+soybean sprout
+summer radish
 sorrel
-sweet corn
-spring onions
-salted vegetable
-swede or turnip
-sweet potato
+sweet corn
+spring onions
+salted vegetable
+sweet potato
 spinach
-straw mushroom
-string bean
+straw mushroom
+string bean
 tomato
 tarragon
 thyme
 truffle
 turnip
 taro
-the serpent gourd
-the sponge gourd
-the teasel gourd
-wheat gluten
-winter bamboo shoots
-water caltrop
-white gourd
+the sponge gourd
+wheat gluten
+water caltrop
+white gourd
 watercress
-white cabbage
-watercress
-water chestnut
-water shield
-wax gourd
-yellow pepper
+white cabbage
+water chestnut
+water shield
+wax gourd
+yellow pepper
 yam
 zucchini

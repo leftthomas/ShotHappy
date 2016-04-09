@@ -26,7 +26,6 @@ ewe
 goat
 lamb
 zebra
-antilope
 gazelle
 deer
 reindeer
@@ -34,9 +33,7 @@ giraffe
 camel
 dromedary
 llama
-guanaco
 alpaca
-vicuna
 elephant
 rhinoceros
 hippopotamus
@@ -157,22 +154,17 @@ whitethroat
 hummingbird
 penguin
 owl
-scops owl
 snake
 adder
 boa
 cobra
-copperhead
-coral snake
 grass snake
-moccasin
 python
 rattlesnake
 lizard
 tuatara
 chameleon
 iguana
-wall lizard
 salamander
 triton
 newt
@@ -195,7 +187,6 @@ cicada
 mantis
 cricket
 crane
-penguin
 crab
 ant
 bee
@@ -203,17 +194,9 @@ ladybird
 fish
 butterfly
 mosquito
-bee
 wasp
 termite
-butterfly
-mosquito
-dragongfly
-cicada
-crecket
-mantis
 bug
-grassshopper
 locust
 cootie
 flea
@@ -223,11 +206,7 @@ spider
 weevil
 borer
 firefly
-chafer
-curculio
-firefly
 scorpion
-ladybird
 scarab
 caterpillar
 pupa
@@ -238,9 +217,7 @@ beetle
 grasshopper
 cockroach
 earthworm
-cuttloefish
 lobster
-datypus
 anteater
 gopher
 mole
@@ -261,13 +238,11 @@ mussel
 cockle
 plaice
 cuttlefish
-culter
 yellow croaker
 tuna
 crawfish
 clam
 jelly fish
-weever
 anchovy
 sardine
 carp
@@ -290,11 +265,9 @@ sturgeon
 sea horse
 sea bream
 ray
-surmullet
 foal
 rooster
 gosling
-shoat
 brood
 poult
 hinny

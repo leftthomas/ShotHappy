@@ -12,7 +12,6 @@
 #include "easyar/augmenter.hpp"
 #include "easyar/target.hpp"
 #include "easyar/frame.hpp"
-#include "easyar/player.hpp"
 #include "easyar/utility.hpp"
 #include <string>
 
@@ -52,44 +51,6 @@ namespace EasyAR {
             ImageTracker tracker_;
             Augmenter augmenter_;
             bool portrait_;
-        };
-
-        class ARVideo {
-        public:
-            ARVideo();
-
-            ~ARVideo();
-
-            void openVideoFile(const std::string &path, int texid);
-
-            void openTransparentVideoFile(const std::string &path, int texid);
-
-            void openStreamingVideo(const std::string &url, int texid);
-
-            void setVideoStatus(VideoPlayer::Status status);
-
-            void onFound();
-
-            void onLost();
-
-            void update();
-
-            class CallBack : public VideoPlayerCallBack {
-            public:
-                CallBack(ARVideo *video);
-
-                void operator()(VideoPlayer::Status status);
-
-            private:
-                ARVideo *video_;
-            };
-
-        private:
-            VideoPlayer player_;
-            bool prepared_;
-            bool found_;
-            CallBack *callback_;
-            std::string path_;
         };
 
     }

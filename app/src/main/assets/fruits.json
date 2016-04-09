@@ -1,0 +1,12 @@
+{
+  "images": [
+    {
+      "image": "fruits/apple.jpg",
+      "name": "apple"
+    },
+    {
+      "image": "fruits/pear.jpg",
+      "name": "pear"
+    }
+  ]
+}

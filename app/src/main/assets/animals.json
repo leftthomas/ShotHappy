@@ -1,0 +1,12 @@
+{
+  "images": [
+    {
+      "image": "animals/cat.jpg",
+      "name": "cat"
+    },
+    {
+      "image": "animals/dog.jpg",
+      "name": "dog"
+    }
+  ]
+}
