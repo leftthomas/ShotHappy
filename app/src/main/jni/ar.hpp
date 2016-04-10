@@ -13,6 +13,7 @@
 #include "easyar/target.hpp"
 #include "easyar/frame.hpp"
 #include "easyar/utility.hpp"
+#include "easyar/player.hpp"
 #include <string>
 
 namespace EasyAR {
@@ -46,13 +47,48 @@ namespace EasyAR {
 
             void setPortrait(bool portrait);
 
+            //视频相关的
+            void openVideoFile(const std::string &path, int texid);
+
+            void openTransparentVideoFile(const std::string &path, int texid);
+
+            void openStreamingVideo(const std::string &url, int texid);
+
+            void setVideoStatus(VideoPlayer::Status status);
+
+            void onFound();
+
+            void onLost();
+
+            void update();
+
+            //视频回调类
+            class CallBack : public VideoPlayerCallBack {
+            public:
+                CallBack(AR *video);
+
+                void operator()(VideoPlayer::Status status);
+
+            private:
+                AR *video_;
+            };
+
+
         protected:
             CameraDevice camera_;
             ImageTracker tracker_;
             Augmenter augmenter_;
             bool portrait_;
-        };
 
+        private:
+            //这些变量都是video使用的
+            VideoPlayer player_;
+            bool prepared_;
+            bool found_;
+            CallBack *callback_;
+            std::string path_;
+
+        };
     }
 }
 #endif

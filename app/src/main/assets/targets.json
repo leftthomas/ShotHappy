@@ -1,0 +1,16 @@
+{
+  "images": [
+    {
+      "image": "videos/friend.png",
+      "name": "friend"
+    },
+    {
+      "image": "videos/mouse.png",
+      "name": "mouse"
+    },
+    {
+      "image": "videos/dumb.png",
+      "name": "dumb"
+    }
+  ]
+}

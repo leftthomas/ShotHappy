@@ -27,6 +27,9 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRender(JNIEnv * env, jobject
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv * env, jobject
                                                   obj, jboolean
                                                   portrait));
+JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobject
+                                                      obj));
+
 };
 
 namespace EasyAR {
@@ -36,29 +39,81 @@ namespace EasyAR {
         public:
             HelloAR();
 
+            //视频相关
+            ~HelloAR();
+
+            virtual bool clear();
+
             virtual void initGL();
 
             virtual void resizeGL(int width, int height);
 
-            //参数用来选择模型
             virtual void render();
+
+            //公有，外部可访问
+            const char *word;
 
         private:
             Vec2I view_size;
             Renderer renderer;
+
+            //视频相关
+            VideoRenderer *pVideoRenderer[3];
+            int tracked_target;
+            int active_target;
+            int texid[3];
+            AR *video;
+            VideoRenderer *video_renderer;
         };
 
         HelloAR::HelloAR() {
             view_size[0] = -1;
+            //初始为空
+            word = "";
+
+            //视频相关
+            tracked_target = 0;
+            active_target = 0;
+            for (int i = 0; i < 3; ++i) {
+                texid[i] = 0;
+                pVideoRenderer[i] = new VideoRenderer;
+            }
+            video = NULL;
+            video_renderer = NULL;
+        }
+
+        //视频相关
+        HelloAR::~HelloAR() {
+            for (int i = 0; i < 3; ++i) {
+                delete pVideoRenderer[i];
+            }
         }
 
         void HelloAR::initGL() {
             renderer.init();
             augmenter_ = Augmenter();
+
+            //视频相关
+            for (int i = 0; i < 3; ++i) {
+                pVideoRenderer[i]->init();
+                texid[i] = pVideoRenderer[i]->texId();
+            }
         }
 
         void HelloAR::resizeGL(int width, int height) {
             view_size = Vec2I(width, height);
+        }
+
+        //视频相关
+        bool HelloAR::clear() {
+            AR::clear();
+            if (video) {
+                delete video;
+                video = NULL;
+                tracked_target = 0;
+                active_target = 0;
+            }
+            return true;
         }
 
         void HelloAR::render() {
@@ -75,19 +130,73 @@ namespace EasyAR {
 
             AugmentedTarget::Status status = frame.targets()[0].status();
             if (status == AugmentedTarget::kTargetStatusTracked) {
+                //显示视频的判断
+                int id = frame.targets()[0].target().id();
+                if (active_target && active_target != id) {
+                    video->onLost();
+                    delete video;
+                    video = NULL;
+                    tracked_target = 0;
+                    active_target = 0;
+                }
+                if (!tracked_target) {
+                    if (video == NULL) {
+                        if (frame.targets()[0].target().name() == std::string("friend") &&
+                            texid[0]) {
+                            video = new AR;
+                            video->openVideoFile("friend.avi", texid[0]);
+                            video_renderer = pVideoRenderer[0];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("mouse") &&
+                                 texid[1]) {
+                            video = new AR;
+                            video->openVideoFile("mouse.mp4", texid[1]);
+                            video_renderer = pVideoRenderer[1];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("dumb") &&
+                                 texid[2]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://file.bmob.cn/M03/22/46/oYYBAFcJ1h2AAWuHAL71_sMJ6DI259.mp4",
+                                    texid[2]);
+                            video_renderer = pVideoRenderer[2];
+                        }
+                    }
+                    if (video) {
+                        video->onFound();
+                        tracked_target = id;
+                        active_target = id;
+                    }
+                }
+
                 Matrix44F projectionMatrix = getProjectionGL(camera_.cameraCalibration(), 0.2f,
                                                              500.f);
                 Matrix44F cameraview = getPoseGL(frame.targets()[0].pose());
                 ImageTarget target = frame.targets()[0].target().cast_dynamic<ImageTarget>();
 
-                //用来匹配识别到的目标与需要展示的模型
-//        if(strcmp(target.name(),char* p2)){}
+                //记得把单词拿一下
+                word = target.name();
 
-
-                renderer.render(projectionMatrix, cameraview, target.size());
+                //如果视频检测到了，就不要3d模型渲染了
+                if (tracked_target) {
+                    video->update();
+                    video_renderer->render(projectionMatrix, cameraview, target.size());
+                } else {
+                    //非视频，3d模型渲染
+                    //用来匹配识别到的目标与需要展示的模型
+                    //if(strcmp(target.name(),char* p2)){}
+                    renderer.render(projectionMatrix, cameraview, target.size());
+                }
+            }
+            else {
+                //失去识别体时记得把word置空
+                word = "";
+                if (tracked_target) {
+                    video->onLost();
+                    tracked_target = 0;
+                }
             }
         }
-
     }
 }
 EasyAR::samples::HelloAR ar;
@@ -97,6 +206,8 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * , jobject)) {
     ar.loadAllFromJsonFile("animals.json");
     ar.loadAllFromJsonFile("fruits.json");
     ar.loadAllFromJsonFile("vegetables.json");
+
+    ar.loadAllFromJsonFile("targets.json");
     status &= ar.start();
     return status;
 }
@@ -122,4 +233,9 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRender(JNIEnv * , jobject)) {
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv * , jobject, jboolean
                                                   portrait)) {
     ar.setPortrait(portrait);
+}
+
+JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobject)) {
+    //返回word，供java层调用
+    return env->NewStringUTF(ar.word);
 }

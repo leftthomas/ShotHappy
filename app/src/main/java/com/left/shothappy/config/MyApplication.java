@@ -10,6 +10,7 @@ import com.umeng.socialize.PlatformConfig;
  * Created by left on 16/3/27.
  */
 public class MyApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();

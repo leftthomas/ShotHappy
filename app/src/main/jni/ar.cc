@@ -29,10 +29,18 @@ namespace EasyAR {
 
         AR::AR() {
             portrait_ = false;
+            //视频相关
+            prepared_ = false;
+            found_ = false;
+            callback_ = NULL;
         }
 
         AR::~AR() {
             clear();
+            //视频相关
+            player_.close();
+            if (callback_)
+                delete callback_;
         }
 
         bool AR::initCamera() {
@@ -123,6 +131,71 @@ namespace EasyAR {
 
         void AR::setPortrait(bool portrait) {
             portrait_ = portrait;
+        }
+
+        void AR::openVideoFile(const std::string &path, int texid) {
+            if (!callback_)
+                callback_ = new CallBack(this);
+            path_ = path;
+            player_.setRenderTexture(texid);
+            player_.setVideoType(VideoPlayer::kVideoTypeNormal);
+            player_.open(path.c_str(), kStorageAssets, callback_);
+        }
+
+        void AR::openTransparentVideoFile(const std::string &path, int texid) {
+            if (!callback_)
+                callback_ = new CallBack(this);
+            path_ = path;
+            player_.setRenderTexture(texid);
+            player_.setVideoType(VideoPlayer::kVideoTypeTransparentSideBySide);
+            player_.open(path.c_str(), kStorageAssets, callback_);
+        }
+
+        void AR::openStreamingVideo(const std::string &url, int texid) {
+            if (!callback_)
+                callback_ = new CallBack(this);
+            path_ = url;
+            player_.setRenderTexture(texid);
+            player_.setVideoType(VideoPlayer::kVideoTypeNormal);
+            player_.open(url.c_str(), kStorageAbsolute, callback_);
+        }
+
+        void AR::setVideoStatus(VideoPlayer::Status status) {
+            LOGI("video: %s (%d)\n", path_.c_str(), status);
+            if (status == VideoPlayer::kVideoReady) {
+                prepared_ = true;
+                if (found_)
+                    player_.play();
+            }
+            if (status == VideoPlayer::kVideoCompleted) {
+                if (found_)
+                    player_.play();
+            }
+        }
+
+        void AR::onFound() {
+            found_ = true;
+            if (prepared_) {
+                player_.play();
+            }
+        }
+
+        void AR::onLost() {
+            found_ = false;
+            if (prepared_)
+                player_.pause();
+        }
+
+        void AR::update() {
+            player_.updateFrame();
+        }
+
+        AR::CallBack::CallBack(AR *video) {
+            video_ = video;
+        }
+
+        void AR::CallBack::operator()(VideoPlayer::Status status) {
+            video_->setVideoStatus(status);
         }
 
     }
