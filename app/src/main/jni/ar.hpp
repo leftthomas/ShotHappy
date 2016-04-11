@@ -15,7 +15,6 @@
 #include "easyar/utility.hpp"
 #include "easyar/player.hpp"
 #include <string>
-
 namespace EasyAR {
     namespace samples {
 

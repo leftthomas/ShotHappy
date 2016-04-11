@@ -7,7 +7,8 @@
 #include "ar.hpp"
 #include "renderer.hpp"
 #include <jni.h>
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
+#include <android/asset_manager_jni.h>
 
 #define JNIFUNCTION_NATIVE(sig) Java_com_left_shothappy_views_ARFragment_##sig
 
@@ -52,6 +53,8 @@ namespace EasyAR {
 
             //公有，外部可访问
             const char *word;
+
+            AAssetManager* mgr;
 
         private:
             Vec2I view_size;
@@ -185,7 +188,7 @@ namespace EasyAR {
                     //非视频，3d模型渲染
                     //用来匹配识别到的目标与需要展示的模型
                     //if(strcmp(target.name(),char* p2)){}
-                    renderer.render(projectionMatrix, cameraview, target.size());
+                    renderer.render(projectionMatrix, cameraview, target.size(), mgr);
                 }
             }
             else {
@@ -226,7 +229,8 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeResizeGL(JNIEnv * , jobject, jin
     ar.resizeGL(w, h);
 }
 
-JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRender(JNIEnv * , jobject)) {
+JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRender(JNIEnv *env , jobject assetManager)) {
+    ar.mgr= AAssetManager_fromJava(env, assetManager);
     ar.render();
 }
 

@@ -7,6 +7,7 @@
 #ifndef __EASYAR_SAMPLE_UTILITY_SIMPLERENDERER_H__
 #define __EASYAR_SAMPLE_UTILITY_SIMPLERENDERER_H__
 
+#include <android/asset_manager.h>
 #include "easyar/matrix.hpp"
 
 namespace EasyAR {
@@ -16,11 +17,7 @@ namespace EasyAR {
         public:
             void init();
 
-            void render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview, Vec2F size);
-
-            //obj文件做render
-            void renderObj(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
-                           Vec2F size);
+            void render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview, Vec2F size,AAssetManager* mgr);
 
         private:
             unsigned int program_box;
