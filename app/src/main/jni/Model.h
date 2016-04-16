@@ -1,22 +1,18 @@
-#pragma once
-// Std. Includes
-#include <map>
+#ifndef MODEL_H
+#define MODEL_H
 
-using namespace std;
+#include <map>
 // GL Includes
 #include "Mesh.h"
-#include <SOIL.h>
-#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-GLint TextureFromFile(const char *path, string directory);
-
+//using namespace std;
 class Model {
 public:
     /*  Functions   */
     // Constructor, expects a filepath to a 3D model.
-    Model(GLchar *path) {
+    void init(GLchar *path) {
         this->loadModel(path);
     }
 
@@ -50,6 +46,30 @@ private:
 
         // Process ASSIMP's root node recursively
         this->processNode(scene->mRootNode, scene);
+    }
+
+    GLint TextureFromFile(const char *path, string directory) {
+        //Generate texture ID and load texture data
+        string filename = string(path);
+        filename = directory + '/' + filename;
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        int width, height;
+
+//        unsigned char *image = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+//        // Assign texture to ID
+//        glBindTexture(GL_TEXTURE_2D, textureID);
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+//        glGenerateMipmap(GL_TEXTURE_2D);
+//
+//        // Parameters
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//        glBindTexture(GL_TEXTURE_2D, 0);
+//        SOIL_free_image_data(image);
+        return textureID;
     }
 
     // Processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
@@ -165,26 +185,6 @@ private:
     }
 };
 
+#endif
 
-GLint TextureFromFile(const char *path, string directory) {
-    //Generate texture ID and load texture data
-    string filename = string(path);
-    filename = directory + '/' + filename;
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    int width, height;
-    unsigned char *image = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-    // Assign texture to ID
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    glGenerateMipmap(GL_TEXTURE_2D);
 
-    // Parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    SOIL_free_image_data(image);
-    return textureID;
-}

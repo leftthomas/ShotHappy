@@ -1,15 +1,14 @@
-#pragma once
-// Std. Includes
-#include <vector>
+#ifndef MESH_H
+#define MESH_H
 
+#include <string>
+#include <sstream>
+#include <vector>
 using namespace std;
-// GL Includes
 #include "Shader.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "assimp/Importer.hpp"
-
-using namespace std;
+#include <assimp/Importer.hpp>
 
 struct Vertex {
     // Position
@@ -123,4 +122,4 @@ private:
     }
 };
 
-
+#endif
