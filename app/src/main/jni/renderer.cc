@@ -9,13 +9,10 @@
 #include <OpenGLES/ES3/gl.h>
 #else
 #include <GLES3/gl3.h>
-#include <assimp/Importer.hpp>      // 导入器在该头文件中定义
-#include <assimp/scene.h>           // 读取到的模型数据都放在scene中
-#include <assimp/postprocess.h>     // 该头文件中包含后处理的标志位定义
-#include <android/log.h>
+
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "EasyAR", __VA_ARGS__)
 #endif
-
+//顶点着色器源码
 const char *box_vert = "uniform mat4 trans;\n"
         "uniform mat4 proj;\n"
         "attribute vec4 coord;\n"
@@ -29,6 +26,7 @@ const char *box_vert = "uniform mat4 trans;\n"
         "}\n"
         "\n";
 
+//像素着色器源码
 const char *box_frag = "#ifdef GL_ES\n"
         "precision highp float;\n"
         "#endif\n"
@@ -65,24 +63,116 @@ const char *box_video_frag = "#ifdef GL_ES\n"
         "}\n"
         "\n";
 
-
-const aiScene* scene;
-
 namespace EasyAR {
     namespace samples {
 
         void Renderer::init() {
+//            //着色器程序对象
+//            program_box = glCreateProgram();
+//            //顶点着色器
+//            GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
+//            glShaderSource(vertShader, 1, &box_vert, 0);
+//            glCompileShader(vertShader);
+//            //像素着色器
+//            GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+//            glShaderSource(fragShader, 1, &box_frag, 0);
+//            glCompileShader(fragShader);
+//            //链接着色器
+//            glAttachShader(program_box, vertShader);
+//            glAttachShader(program_box, fragShader);
+//            glLinkProgram(program_box);
+//            //激活程序对象
+//            glUseProgram(program_box);
+//            pos_coord_box = glGetAttribLocation(program_box, "coord");
+//            pos_color_box = glGetAttribLocation(program_box, "color");
+//            pos_trans_box = glGetUniformLocation(program_box, "trans");
+//            pos_proj_box = glGetUniformLocation(program_box, "proj");
+
+
+
+
+
+//            glGenBuffers(1, &vbo_coord_box);
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_coord_box);
+//            const GLfloat cube_vertices[8][3] = {
+//                    /* +z */{1.0f / 2, 1.0f / 2, 0.01f / 2}, {1.0f / 2, -1.0f / 2, 0.01f / 2}, {-1.0f / 2, -1.0f / 2, 0.01f / 2}, {-1.0f / 2, 1.0f / 2, 0.01f / 2},
+//                    /* -z */{1.0f / 2, 1.0f / 2, -0.01f / 2}, {1.0f / 2, -1.0f / 2, -0.01f / 2}, {-1.0f / 2, -1.0f / 2, -0.01f / 2}, {-1.0f / 2, 1.0f / 2, -0.01f / 2}};
+//            glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_DYNAMIC_DRAW);
+//
+//            glGenBuffers(1, &vbo_color_box);
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_color_box);
+//            const GLubyte cube_vertex_colors[8][4] = {
+//                    {255, 0, 0, 128}, {0, 255, 0, 128}, {0, 0, 255, 128}, {0, 0, 0, 128},
+//                    {0, 255, 255, 128}, {255, 0, 255, 128}, {255, 255, 0, 128}, {255, 255, 255, 128}};
+//            glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertex_colors), cube_vertex_colors, GL_STATIC_DRAW);
+//
+//            glGenBuffers(1, &vbo_color_box_2);
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_color_box_2);
+//            const GLubyte cube_vertex_colors_2[8][4] = {
+//                    {255, 0, 0, 255}, {255, 255, 0, 255}, {0, 255, 0, 255}, {255, 0, 255, 255},
+//                    {255, 0, 255, 255}, {255, 255, 255, 255}, {0, 255, 255, 255}, {255, 0, 255, 255}};
+//            glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertex_colors_2), cube_vertex_colors_2, GL_STATIC_DRAW);
+//
+//            glGenBuffers(1, &vbo_faces_box);
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_faces_box);
+//            const GLushort cube_faces[6][4] = {
+//                    /* +z */{3, 2, 1, 0}, /* -y */{2, 3, 7, 6}, /* +y */{0, 1, 5, 4},
+//                    /* -x */{3, 0, 4, 7}, /* +x */{1, 2, 6, 5}, /* -z */{4, 5, 6, 7}};
+//            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_faces), cube_faces, GL_STATIC_DRAW);
 
         }
 
         void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
                               Vec2F size,AAssetManager* mgr) {
+
+//            // 0. 复制顶点数组到缓冲中提供给OpenGL使用
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_coord_box);
+//            float height = size[0] / 1000;
+//            const GLfloat cube_vertices[8][3] = {
+//                    /* +z */{size[0] / 2, size[1] / 2, height / 2}, {size[0] / 2, -size[1] / 2, height / 2}, {-size[0] / 2, -size[1] / 2, height / 2}, {-size[0] / 2, size[1] / 2, height / 2},
+//                    /* -z */{size[0] / 2, size[1] / 2, 0}, {size[0] / 2, -size[1] / 2, 0}, {-size[0] / 2, -size[1] / 2, 0}, {-size[0] / 2, size[1] / 2, 0}};
+//            glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_DYNAMIC_DRAW);
+//
+//            glEnable(GL_BLEND);
+//            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//            glEnable(GL_DEPTH_TEST);
+//            // 2. 当我们打算渲染一个物体时要使用着色器程序
+//            glUseProgram(program_box);
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_coord_box);
+//            // 1. 设置顶点属性指针
+//            glEnableVertexAttribArray(pos_coord_box);
+//            glVertexAttribPointer(pos_coord_box, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_color_box);
+//            glEnableVertexAttribArray(pos_color_box);
+//            glVertexAttribPointer(pos_color_box, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+//            glUniformMatrix4fv(pos_trans_box, 1, 0, cameraview.data);
+//            glUniformMatrix4fv(pos_proj_box, 1, 0, projectionMatrix.data);
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_faces_box);
+//            for(int i = 0; i < 6; i++) {
+//                // 3. 绘制物体
+//                glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, (void*)(i * 4 * sizeof(GLushort)));
+//            }
+//
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_coord_box);
+//            const GLfloat cube_vertices_2[8][3] = {
+//                    /* +z */{size[0] / 4, size[1] / 4, size[0] / 4},{size[0] / 4, -size[1] / 4, size[0] / 4},{-size[0] / 4, -size[1] / 4, size[0] / 4},{-size[0] / 4, size[1] / 4, size[0] / 4},
+//                    /* -z */{size[0] / 4, size[1] / 4, 0},{size[0] / 4, -size[1] / 4, 0},{-size[0] / 4, -size[1] / 4, 0},{-size[0] / 4, size[1] / 4, 0}};
+//            glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices_2), cube_vertices_2, GL_DYNAMIC_DRAW);
+//            glEnableVertexAttribArray(pos_coord_box);
+//            glVertexAttribPointer(pos_coord_box, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//            glBindBuffer(GL_ARRAY_BUFFER, vbo_color_box_2);
+//            glEnableVertexAttribArray(pos_color_box);
+//            glVertexAttribPointer(pos_color_box, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+//            for(int i = 0; i < 6; i++) {
+//                glDrawElements(GL_TRIANGLE_FAN, 4, GL_UNSIGNED_SHORT, (void*)(i * 4 * sizeof(GLushort)));
+//            }
+
             // 定义一个导入器
-            Assimp::Importer importer;
-
-
-            const char *mfile = "Hen.3ds";
-            AAsset* asset = AAssetManager_open(mgr, mfile,AASSET_MODE_UNKNOWN);
+//            Assimp::Importer importer;
+//
+//
+//            const char *mfile = "Hen.3ds";
+//            AAsset* asset = AAssetManager_open(mgr, mfile,AASSET_MODE_UNKNOWN);
 
 //            if(asset==NULL){
 //                LOGI("load asset: %s \n", "null");

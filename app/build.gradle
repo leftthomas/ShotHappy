@@ -24,6 +24,7 @@ model {
         moduleName = "ARNative"
         cppFlags.add("-I${file("../../package/include")}".toString())
         cppFlags.add("-I${file("../../assimp")}".toString())
+        cppFlags.add("-I${file("../../glm_master")}".toString())
         cppFlags.add("-DANDROID")
         cppFlags.add("-fexceptions")
         cppFlags.add("-frtti")
