@@ -23,8 +23,6 @@ model {
     android.ndk {
         moduleName = "ARNative"
         cppFlags.add("-I${file("../../package/include")}".toString())
-        cppFlags.add("-I${file("../../assimp")}".toString())
-        cppFlags.add("-I${file("../../glm_master")}".toString())
         cppFlags.add("-DANDROID")
         cppFlags.add("-fexceptions")
         cppFlags.add("-frtti")
@@ -46,7 +44,6 @@ model {
             jni {
                 dependencies {
                     library file("../../package/Android/libs/armeabi-v7a/libEasyAR.so") abi "armeabi-v7a"
-                    library file("../../assimp/libassimp.so") abi "armeabi-v7a"
                 }
             }
         }

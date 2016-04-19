@@ -5,42 +5,31 @@
 */
 
 #include "renderer.hpp"
-
+#include "soil/SOIL.h"
+#include <android/log.h>
+// include generated arrays
+#include "banana.h"
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
 #else
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "EasyAR", __VA_ARGS__)
 #endif
-//顶点着色器源码
-const char *box_vert = "#version 330\n"
-        "layout (location = 0) in vec3 position;\n"
-        "layout (location = 1) in vec3 normal;\n"
-        "layout (location = 2) in vec2 texCoords;\n"
-        "\n"
-        "out vec2 TexCoords;\n"
-        "\n"
-        "uniform mat4 model;\n"
-        "uniform mat4 view;\n"
-        "uniform mat4 projection;\n"
-        "\n"
+
+const char* box_vert= "attribute vec3 vertex;\n"
+        "attribute vec2 texcoord;\n"
+        "varying vec2 vtexcoord;\n"
         "void main()\n"
         "{\n"
-        "    gl_Position = projection * view * model * vec4(position, 1.0f);\n"
-        "    TexCoords = texCoords;\n"
+        "    vtexcoord = texcoord;\n"
+        "    gl_Position = vec4(vertex,1.0);\n"
         "}";
 
-//像素着色器源码
-const char *box_frag = "#version 330\n"
-        "\n"
-        "in vec2 TexCoords;\n"
-        "\n"
-        "out vec4 color;\n"
-        "\n"
-        "uniform sampler2D texture_diffuse1;\n"
-        "\n"
+const char* box_frag= "varying vec2 vtexcoord;\n"
+        "uniform sampler2D texture;"
         "void main()\n"
-        "{    \n"
-        "    color = vec4(texture(texture_diffuse1, TexCoords));\n"
+        "{\n"
+        "    gl_FragColor = texture(texture, vtexcoord);\n"
+//        "gl_FragColor=vec4(0.2,0.6,0.8,1.0);\n"
         "}";
 
 const char *box_video_vert = "uniform mat4 trans;\n"
@@ -72,28 +61,72 @@ namespace EasyAR {
     namespace samples {
 
         void Renderer::init() {
-            // Setup and compile our shaders
-            shader.init(box_vert, box_frag);
-            // Load models
-            ourModel.init("/sdcard/nanosuit/nanosuit.obj");
-//            ourModel.init("../../nanosuit/nanosuit.obj");
+            program_box = glCreateProgram();
+            GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
+            glShaderSource(vertShader, 1, &box_vert, 0);
+            glCompileShader(vertShader);
+            GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+            glShaderSource(fragShader, 1, &box_frag, 0);
+            glCompileShader(fragShader);
+            glAttachShader(program_box, vertShader);
+            glAttachShader(program_box, fragShader);
+            glLinkProgram(program_box);
+            glUseProgram(program_box);
+            pos_vertex = glGetAttribLocation(program_box, "vertex");
+            pos_texcoord = glGetAttribLocation(program_box, "texcoord");
+
+            glGenBuffers(1, &vbo_vertex);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(bana), catVerts, GL_STATIC_DRAW);
+
+            // TexCoord attribute
+            glGenBuffers(1, &vbo_texcoord);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(catTexCoords), catTexCoords, GL_STATIC_DRAW);
+
+
+            // Load and create a texture
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+            // Set the texture wrapping parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            // Set texture filtering parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // Load image, create texture and generate mipmaps
+            int width, height;
+            unsigned char* image = SOIL_load_image("/sdcard/cat/banana.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+
+            LOGI("load image: %s\n",SOIL_last_result());
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            SOIL_free_image_data(image);
+            glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
         }
 
         void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
                               Vec2F size) {
+            // Render
+            glEnable(GL_DEPTH_TEST);
+            glUseProgram(program_box);
 
-            // Clear the colorbuffer
-//            glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//
-//            shader.Use();   // <-- Don't forget this one!
-//            // Draw the loaded model
-//            glm::mat4 model;
-//            model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-//            model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-//            glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-//            ourModel.Draw(shader);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
+            glVertexAttribPointer(pos_vertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(pos_vertex);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+            glVertexAttribPointer(pos_texcoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(pos_texcoord);
+
+            // Bind Texture
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture);
+
+            // Draw the triangle
+            glDrawArrays(GL_TRIANGLES, 0, catNumVerts);
+
         }
 
         void VideoRenderer::init() {

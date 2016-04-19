@@ -35,12 +35,41 @@ public class ARFragment extends Fragment {
     static {
         System.loadLibrary("EasyAR");
         System.loadLibrary("ARNative");
-        System.loadLibrary("assimp");
     }
 
     private FloatingActionButton fab;
     private CardView cardView;
     private Dict dict;
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+
+
+            String source = nativeGetWord();
+
+            if (source == null || source.equals("")) {
+                data.putString("status", "请对准要识别的物体");
+            } else {
+                try {
+                    dict = IcibaTranslate.translate(source);
+                    data.putString("status", "true");//表示请求成功
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    data.putString("status", "翻译失败，请检查网络");
+                }
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
     private MediaPlayer player;
     /**
      * 接收到网络请求回复的数据之后通知UI更新
@@ -71,36 +100,6 @@ public class ARFragment extends Fragment {
                 Snackbar.make(getView(), val, Snackbar.LENGTH_LONG).show();
             }
 
-        }
-    };
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-
-
-            String source = nativeGetWord();
-
-            if (source == null || source.equals("")) {
-                data.putString("status", "请对准要识别的物体");
-            } else {
-                try {
-                    dict = IcibaTranslate.translate(source);
-                    data.putString("status", "true");//表示请求成功
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    data.putString("status", "翻译失败，请检查网络");
-                }
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
         }
     };
 
