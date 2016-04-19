@@ -190,10 +190,10 @@ unsigned char *stbi_load_from_file(FILE *f, int *x, int *y, int *comp, int req_c
         return stbi_bmp_load_from_file(f, x, y, comp, req_comp);
     if (stbi_psd_test_file(f))
         return stbi_psd_load_from_file(f, x, y, comp, req_comp);
-#ifndef STBI_NO_DDS
-    if (stbi_dds_test_file(f))
-        return stbi_dds_load_from_file(f, x, y, comp, req_comp);
-#endif
+//#ifndef STBI_NO_DDS
+//    if (stbi_dds_test_file(f))
+//        return stbi_dds_load_from_file(f, x, y, comp, req_comp);
+//#endif
 #ifndef STBI_NO_HDR
     if (stbi_hdr_test_file(f)) {
         float *hdr = stbi_hdr_load_from_file(f, x, y, comp, req_comp);
@@ -222,10 +222,10 @@ unsigned char *stbi_load_from_memory(stbi_uc const *buffer, int len, int *x, int
         return stbi_bmp_load_from_memory(buffer, len, x, y, comp, req_comp);
     if (stbi_psd_test_memory(buffer, len))
         return stbi_psd_load_from_memory(buffer, len, x, y, comp, req_comp);
-#ifndef STBI_NO_DDS
-    if (stbi_dds_test_memory(buffer, len))
-        return stbi_dds_load_from_memory(buffer, len, x, y, comp, req_comp);
-#endif
+//#ifndef STBI_NO_DDS
+//    if (stbi_dds_test_memory(buffer, len))
+//        return stbi_dds_load_from_memory(buffer, len, x, y, comp, req_comp);
+//#endif
 #ifndef STBI_NO_HDR
     if (stbi_hdr_test_memory(buffer, len)) {
         float *hdr = stbi_hdr_load_from_memory(buffer, len, x, y, comp, req_comp);
@@ -3751,8 +3751,8 @@ int stbi_write_tga(char const *filename, int x, int y, int comp, void *data) {
 #endif // STBI_NO_WRITE
 
 //	add in my DDS loading support
-#ifndef STBI_NO_DDS
-
-#include "stbi_DDS_aug_c.h"
-
-#endif
+//#ifndef STBI_NO_DDS
+//
+//#include "stbi_DDS_aug_c.h"
+//
+//#endif

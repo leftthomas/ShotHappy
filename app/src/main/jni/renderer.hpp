@@ -25,6 +25,8 @@ namespace EasyAR {
             int pos_vertex;
             int pos_normal;
             int pos_texcoord;
+            int pos_trans_box;
+            int pos_proj_box;
             unsigned int vbo_vertex;
             unsigned int vbo_normal;
             unsigned int vbo_texcoord;
