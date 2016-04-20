@@ -49,7 +49,7 @@ namespace EasyAR {
             virtual void render();
 
             //公有，外部可访问
-            string word;
+            const char *word;
 
         private:
             Vec2I view_size;
@@ -233,6 +233,6 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv * , jobjec
 
 JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobject)) {
     //返回word，供java层调用
-    return env->NewStringUTF(ar.word.c_str());
+    return env->NewStringUTF(ar.word);
 }
 

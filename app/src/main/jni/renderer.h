@@ -10,9 +10,6 @@
 #include <android/asset_manager.h>
 #include "easyar/matrix.hpp"
 #include <GLES2/gl2.h>
-#include <string>
-
-using namespace std;
 
 namespace EasyAR {
     namespace samples {
@@ -22,7 +19,7 @@ namespace EasyAR {
             void init();
 
             void render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview, Vec2F size,
-                        string word);
+                        const char *word);
 
         private:
             unsigned int program_box;

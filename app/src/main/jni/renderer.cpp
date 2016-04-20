@@ -6,7 +6,7 @@
 
 #include "soil/SOIL.h"
 #include "renderer.h"
-#include <map>
+#include <string.h>
 // include generated arrays
 //#include "model/banana.h"
 //#include "model/cat.h"
@@ -14,6 +14,7 @@
 //#include "model/elephant.h"
 #include "model/frog.h"
 //#include "model/lion.h"
+#include "model/spider.h"
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
 #endif
@@ -69,36 +70,10 @@ const char *box_video_frag = "#ifdef GL_ES\n"
         "}\n"
         "\n";
 
-
-typedef struct model {
-    unsigned int numVerts;
-    float verts[];
-    float texCoords[];
-
-    model(unsigned int num, float vert[], float coords[]) {
-        numVerts = num;
-        memcpy(verts, vert, sizeof(vert));
-        memcpy(texCoords, coords, sizeof(coords));
-    }
-};
-
-map<string, model> models;
-
 namespace EasyAR {
     namespace samples {
 
-        //初始化模型对照表
-        void setmodels() {
-            struct model m(frogNumVerts, frogVerts, frogTexCoords);
-
-            models.insert(pair<string, model>("frog", m));
-
-//            m.numVerts=spiderNumVerts;
-//            models.insert(pair<char*,model>("spider",m));
-        }
-
         void Renderer::init() {
-            setmodels();
             program_box = glCreateProgram();
             GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
             glShaderSource(vertShader, 1, &box_vert, 0);
@@ -114,37 +89,11 @@ namespace EasyAR {
             pos_texcoord = glGetAttribLocation(program_box, "texcoord");
             pos_trans_box = glGetUniformLocation(program_box, "trans");
             pos_proj_box = glGetUniformLocation(program_box, "proj");
-        }
-
-        void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
-                              Vec2F size, string word) {
-            float Verts[] = {};
-            memcpy(Verts, frogVerts, sizeof(frogVerts));
-            float TexCoords[] = {};
-            memcpy(TexCoords, frogTexCoords, sizeof(frogTexCoords));
-            unsigned int NumVerts;
-
-            //用来匹配识别到的目标与需要展示的模型
-            map<string, model>::iterator l_it;
-            l_it = models.find(word);
-            if (l_it == models.end()) {
-                LOGI("find model failed: %s\n", word.c_str());
-            }
-            else {
-//                Verts=l_it->second.verts;
-//                TexCoords=l_it->second.texCoords;
-                NumVerts = l_it->second.numVerts;
-                LOGI("NumVerts: %d\n", NumVerts);
-            }
 
             glGenBuffers(1, &vbo_vertex);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(Verts), Verts, GL_STATIC_DRAW);
 
             // TexCoord attribute
             glGenBuffers(1, &vbo_texcoord);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(TexCoords), TexCoords, GL_STATIC_DRAW);
 
             // Load and create a texture
             glGenTextures(1, &texture);
@@ -157,21 +106,54 @@ namespace EasyAR {
             // Set texture filtering parameters
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
             // Load image, create texture and generate mipmaps
             int width, height;
             //确定对应模型的贴图
-            char *imageaddress = "/storage/emulated/0/Download/models/";
-            strcat(imageaddress, word.c_str());
-            strcat(imageaddress, ".jpg");
+            char *imageaddress = "/storage/emulated/0/Download/models/frog.jpg";
+//            strcat(imageaddress, word);
+//            strcat(imageaddress, ".jpg");
+
+//            LOGI("imageaddress: %s\n", imageaddress);
+
             unsigned char *image = SOIL_load_image(imageaddress, &width, &height, 0,
                                                    SOIL_LOAD_RGBA);
-
             LOGI("load image: %s\n", SOIL_last_result());
 
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                          image);
             glGenerateMipmap(GL_TEXTURE_2D);
             SOIL_free_image_data(image);
+        }
+
+        void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
+                              Vec2F size, const char *word) {
+            //模型贴图长宽
+            int width, height;
+            unsigned char *image;
+
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
+            if (strcmp(word, "frog") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(frogVerts), frogVerts, GL_STATIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_STATIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/frog.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            } else if (strcmp(word, "spider") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(spiderVerts), spiderVerts, GL_STATIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(spiderTexCoords), spiderTexCoords,
+                             GL_STATIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/spider.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            }
+
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
+                            image);
+            SOIL_free_image_data(image);
+
 
             // Render
             glEnable(GL_DEPTH_TEST);
@@ -193,8 +175,11 @@ namespace EasyAR {
             glBindTexture(GL_TEXTURE_2D, texture);
 
             // Draw the triangle
-            glDrawArrays(GL_TRIANGLES, 0, NumVerts);
-
+            if (strcmp(word, "frog") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, frogNumVerts);
+            } else if (strcmp(word, "spider") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, spiderNumVerts);
+            }
         }
 
         void VideoRenderer::init() {
