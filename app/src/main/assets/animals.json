@@ -15,6 +15,14 @@
     {
       "image": "animals/spider.jpg",
       "name": "spider"
+    },
+    {
+      "image": "animals/lion.jpg",
+      "name": "lion"
+    },
+    {
+      "image": "animals/elephant.jpg",
+      "name": "elephant"
     }
   ]
 }

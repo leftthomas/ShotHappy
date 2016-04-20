@@ -7,6 +7,10 @@
     {
       "image": "fruits/pear.jpg",
       "name": "pear"
+    },
+    {
+      "image": "fruits/banana.jpg",
+      "name": "banana"
     }
   ]
 }

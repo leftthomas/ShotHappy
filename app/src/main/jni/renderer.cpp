@@ -8,12 +8,12 @@
 #include "renderer.h"
 #include <string.h>
 // include generated arrays
-//#include "model/banana.h"
-//#include "model/cat.h"
-//#include "model/dog.h"
-//#include "model/elephant.h"
+#include "model/banana.h"
+#include "model/cat.h"
+#include "model/dog.h"
+#include "model/elephant.h"
 #include "model/frog.h"
-//#include "model/lion.h"
+#include "model/lion.h"
 #include "model/spider.h"
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
@@ -115,19 +115,59 @@ namespace EasyAR {
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
             if (strcmp(word, "frog") == 0) {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(frogVerts), frogVerts, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(frogVerts), frogVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/frog.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
             } else if (strcmp(word, "spider") == 0) {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(spiderVerts), spiderVerts, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(spiderVerts), spiderVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderTexCoords), spiderTexCoords,
-                             GL_STATIC_DRAW);
+                             GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/spider.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            }else if (strcmp(word, "banana") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(bananaVerts), bananaVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(bananaTexCoords), bananaTexCoords,
+                             GL_DYNAMIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/banana.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            }else if (strcmp(word, "cat") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(catVerts), catVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(catTexCoords), catTexCoords,
+                             GL_DYNAMIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/cat.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            }else if (strcmp(word, "dog") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(dogVerts), dogVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(dogTexCoords), dogTexCoords,
+                             GL_DYNAMIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/dog.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            }else if (strcmp(word, "elephant") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(elephantVerts), elephantVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(elephantTexCoords), elephantTexCoords,
+                             GL_DYNAMIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/elephant.jpg", &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+            }else if (strcmp(word, "lion") == 0) {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(lionVerts), lionVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(lionTexCoords), lionTexCoords,
+                             GL_DYNAMIC_DRAW);
+                //确定对应模型的贴图
+                image = SOIL_load_image("/storage/emulated/0/Download/models/lion.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
             }
 
@@ -159,8 +199,18 @@ namespace EasyAR {
             // Draw the triangle
             if (strcmp(word, "frog") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, frogNumVerts);
-            } else if (strcmp(word, "spider") == 0) {
+            }else if (strcmp(word, "spider") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, spiderNumVerts);
+            }else if (strcmp(word, "banana") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, bananaNumVerts);
+            }else if (strcmp(word, "cat") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, catNumVerts);
+            }else if (strcmp(word, "dog") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, dogNumVerts);
+            }else if (strcmp(word, "elephant") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, elephantNumVerts);
+            }else if (strcmp(word, "lion") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, lionNumVerts);
             }
         }
 
