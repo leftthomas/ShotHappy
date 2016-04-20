@@ -21,7 +21,6 @@
 
 #ifdef ANDROID
 
-#include <android/log.h>
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "EasyAR", __VA_ARGS__)
 #else
 #define LOGI(...) printf(__VA_ARGS__)
@@ -106,24 +105,6 @@ namespace EasyAR {
             // Set texture filtering parameters
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            // Load image, create texture and generate mipmaps
-            int width, height;
-            //确定对应模型的贴图
-            char *imageaddress = "/storage/emulated/0/Download/models/frog.jpg";
-//            strcat(imageaddress, word);
-//            strcat(imageaddress, ".jpg");
-
-//            LOGI("imageaddress: %s\n", imageaddress);
-
-            unsigned char *image = SOIL_load_image(imageaddress, &width, &height, 0,
-                                                   SOIL_LOAD_RGBA);
-            LOGI("load image: %s\n", SOIL_last_result());
-
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                         image);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            SOIL_free_image_data(image);
         }
 
         void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
@@ -150,10 +131,11 @@ namespace EasyAR {
                                         &height, 0, SOIL_LOAD_RGBA);
             }
 
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
-                            image);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         image);
+            glGenerateMipmap(GL_TEXTURE_2D);
             SOIL_free_image_data(image);
-
 
             // Render
             glEnable(GL_DEPTH_TEST);
