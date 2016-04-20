@@ -5,12 +5,12 @@
 */
 
 #include "ar.hpp"
-#include "renderer.hpp"
+#include "renderer.h"
 #include <jni.h>
 
 #define JNIFUNCTION_NATIVE(sig) Java_com_left_shothappy_views_ARFragment_##sig
-
 extern "C" {
+
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * env, jobject
                                                       object));
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeDestory(JNIEnv * env, jobject
@@ -28,7 +28,6 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv * env, job
                                                   portrait));
 JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobject
                                                       obj));
-
 };
 
 namespace EasyAR {
@@ -50,7 +49,7 @@ namespace EasyAR {
             virtual void render();
 
             //公有，外部可访问
-            const char *word;
+            string word;
 
         private:
             Vec2I view_size;
@@ -182,9 +181,7 @@ namespace EasyAR {
                     video_renderer->render(projectionMatrix, cameraview, target.size());
                 } else {
                     //非视频，3d模型渲染
-                    //用来匹配识别到的目标与需要展示的模型
-                    //if(strcmp(target.name(),char* p2)){}
-                    renderer.render(projectionMatrix, cameraview, target.size());
+                    renderer.render(projectionMatrix, cameraview, target.size(), word);
                 }
             }
             else {
@@ -236,5 +233,6 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv * , jobjec
 
 JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobject)) {
     //返回word，供java层调用
-    return env->NewStringUTF(ar.word);
+    return env->NewStringUTF(ar.word.c_str());
 }
+

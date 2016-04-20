@@ -4,15 +4,26 @@
 * and other countries for the augmented reality technology developed by VisionStar Information Technology (Shanghai) Co., Ltd.
 */
 
-
 #include "soil/SOIL.h"
-#include <android/log.h>
+#include "renderer.h"
+#include <map>
 // include generated arrays
+//#include "model/banana.h"
+//#include "model/cat.h"
+//#include "model/dog.h"
+//#include "model/elephant.h"
 #include "model/frog.h"
+//#include "model/lion.h"
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
-#else
+#endif
+
+#ifdef ANDROID
+
+#include <android/log.h>
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "EasyAR", __VA_ARGS__)
+#else
+#define LOGI(...) printf(__VA_ARGS__)
 #endif
 
 const char *box_vert = "uniform mat4 trans;\n"
@@ -58,10 +69,36 @@ const char *box_video_frag = "#ifdef GL_ES\n"
         "}\n"
         "\n";
 
+
+typedef struct model {
+    unsigned int numVerts;
+    float verts[];
+    float texCoords[];
+
+    model(unsigned int num, float vert[], float coords[]) {
+        numVerts = num;
+        memcpy(verts, vert, sizeof(vert));
+        memcpy(texCoords, coords, sizeof(coords));
+    }
+};
+
+map<string, model> models;
+
 namespace EasyAR {
     namespace samples {
 
+        //初始化模型对照表
+        void setmodels() {
+            struct model m(frogNumVerts, frogVerts, frogTexCoords);
+
+            models.insert(pair<string, model>("frog", m));
+
+//            m.numVerts=spiderNumVerts;
+//            models.insert(pair<char*,model>("spider",m));
+        }
+
         void Renderer::init() {
+            setmodels();
             program_box = glCreateProgram();
             GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
             glShaderSource(vertShader, 1, &box_vert, 0);
@@ -77,19 +114,42 @@ namespace EasyAR {
             pos_texcoord = glGetAttribLocation(program_box, "texcoord");
             pos_trans_box = glGetUniformLocation(program_box, "trans");
             pos_proj_box = glGetUniformLocation(program_box, "proj");
+        }
+
+        void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
+                              Vec2F size, string word) {
+            float Verts[] = {};
+            memcpy(Verts, frogVerts, sizeof(frogVerts));
+            float TexCoords[] = {};
+            memcpy(TexCoords, frogTexCoords, sizeof(frogTexCoords));
+            unsigned int NumVerts;
+
+            //用来匹配识别到的目标与需要展示的模型
+            map<string, model>::iterator l_it;
+            l_it = models.find(word);
+            if (l_it == models.end()) {
+                LOGI("find model failed: %s\n", word.c_str());
+            }
+            else {
+//                Verts=l_it->second.verts;
+//                TexCoords=l_it->second.texCoords;
+                NumVerts = l_it->second.numVerts;
+                LOGI("NumVerts: %d\n", NumVerts);
+            }
 
             glGenBuffers(1, &vbo_vertex);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(frogVerts), frogVerts, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Verts), Verts, GL_STATIC_DRAW);
 
             // TexCoord attribute
             glGenBuffers(1, &vbo_texcoord);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(TexCoords), TexCoords, GL_STATIC_DRAW);
 
             // Load and create a texture
             glGenTextures(1, &texture);
-            glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+            glBindTexture(GL_TEXTURE_2D,
+                          texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
             // Set the texture wrapping parameters
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                             GL_CLAMP_TO_EDGE);    // Set texture wrapping to GL_REPEAT (usually basic wrapping method)
@@ -99,19 +159,20 @@ namespace EasyAR {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             // Load image, create texture and generate mipmaps
             int width, height;
-            unsigned char *image = SOIL_load_image("/storage/emulated/0/Download/models/frog.jpg",
-                                                   &width, &height, 0, SOIL_LOAD_RGBA);
+            //确定对应模型的贴图
+            char *imageaddress = "/storage/emulated/0/Download/models/";
+            strcat(imageaddress, word.c_str());
+            strcat(imageaddress, ".jpg");
+            unsigned char *image = SOIL_load_image(imageaddress, &width, &height, 0,
+                                                   SOIL_LOAD_RGBA);
 
-            LOGI("load image: %s\n",SOIL_last_result());
+            LOGI("load image: %s\n", SOIL_last_result());
 
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                          image);
             glGenerateMipmap(GL_TEXTURE_2D);
             SOIL_free_image_data(image);
-        }
 
-        void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
-                              Vec2F size) {
             // Render
             glEnable(GL_DEPTH_TEST);
             glUseProgram(program_box);
@@ -131,9 +192,8 @@ namespace EasyAR {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
 
-
             // Draw the triangle
-            glDrawArrays(GL_TRIANGLES, 0, frogNumVerts);
+            glDrawArrays(GL_TRIANGLES, 0, NumVerts);
 
         }
 

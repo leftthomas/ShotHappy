@@ -10,6 +10,9 @@
 #include <android/asset_manager.h>
 #include "easyar/matrix.hpp"
 #include <GLES2/gl2.h>
+#include <string>
+
+using namespace std;
 
 namespace EasyAR {
     namespace samples {
@@ -18,7 +21,8 @@ namespace EasyAR {
         public:
             void init();
 
-            void render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview, Vec2F size);
+            void render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview, Vec2F size,
+                        string word);
 
         private:
             unsigned int program_box;
@@ -30,7 +34,7 @@ namespace EasyAR {
             unsigned int vbo_vertex;
             unsigned int vbo_normal;
             unsigned int vbo_texcoord;
-            GLuint texture;
+            unsigned int texture;
         };
 
         class VideoRenderer {
