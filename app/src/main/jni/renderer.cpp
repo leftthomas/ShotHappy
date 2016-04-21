@@ -6,12 +6,10 @@
 
 #include "soil/SOIL.h"
 #include "renderer.h"
-#include <string.h>
 // include generated arrays
 #include "model/banana.h"
 #include "model/cat.h"
 #include "model/dog.h"
-#include "model/elephant.h"
 #include "model/frog.h"
 #include "model/lion.h"
 #include "model/spider.h"
@@ -105,6 +103,10 @@ namespace EasyAR {
             // Set texture filtering parameters
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            //初始化设置为空
+            orin_word = "";
+            //初始化设置为true,表示第一次需要绑定
+            flag = true;
         }
 
         void Renderer::render(const Matrix44F &projectionMatrix, const Matrix44F &cameraview,
@@ -114,14 +116,19 @@ namespace EasyAR {
             unsigned char *image;
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
-            if (strcmp(word, "frog") == 0) {
+            //记住，判断的条件是原始的word跟现在识别到的不是同一个，只有满足这个条件，才重新加载贴图，否则不加载
+            if (strcmp(word, "frog") == 0 && orin_word != "frog") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(frogVerts), frogVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/frog.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-            } else if (strcmp(word, "spider") == 0) {
+                //记得更新下orin_word值
+                orin_word = "frog";
+                //一旦更新了，表示就需要重新绑定了
+                flag = true;
+            } else if (strcmp(word, "spider") == 0 && orin_word != "spider") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderVerts), spiderVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderTexCoords), spiderTexCoords,
@@ -129,7 +136,9 @@ namespace EasyAR {
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/spider.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-            }else if (strcmp(word, "banana") == 0) {
+                orin_word = "spider";
+                flag = true;
+            } else if (strcmp(word, "banana") == 0 && orin_word != "banana") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bananaVerts), bananaVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bananaTexCoords), bananaTexCoords,
@@ -137,7 +146,9 @@ namespace EasyAR {
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/banana.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-            }else if (strcmp(word, "cat") == 0) {
+                orin_word = "banana";
+                flag = true;
+            } else if (strcmp(word, "cat") == 0 && orin_word != "cat") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(catVerts), catVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(catTexCoords), catTexCoords,
@@ -145,7 +156,9 @@ namespace EasyAR {
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/cat.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-            }else if (strcmp(word, "dog") == 0) {
+                orin_word = "cat";
+                flag = true;
+            } else if (strcmp(word, "dog") == 0 && orin_word != "dog") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(dogVerts), dogVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(dogTexCoords), dogTexCoords,
@@ -153,15 +166,9 @@ namespace EasyAR {
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/dog.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-            }else if (strcmp(word, "elephant") == 0) {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(elephantVerts), elephantVerts, GL_DYNAMIC_DRAW);
-                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(elephantTexCoords), elephantTexCoords,
-                             GL_DYNAMIC_DRAW);
-                //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/elephant.jpg", &width,
-                                        &height, 0, SOIL_LOAD_RGBA);
-            }else if (strcmp(word, "lion") == 0) {
+                orin_word = "dog";
+                flag = true;
+            } else if (strcmp(word, "lion") == 0 && orin_word != "lion") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionVerts), lionVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionTexCoords), lionTexCoords,
@@ -169,13 +176,20 @@ namespace EasyAR {
                 //确定对应模型的贴图
                 image = SOIL_load_image("/storage/emulated/0/Download/models/lion.jpg", &width,
                                         &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "lion";
+                flag = true;
             }
 
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                         image);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            SOIL_free_image_data(image);
+            //重新绑定贴图
+            if (flag) {
+                glBindTexture(GL_TEXTURE_2D, texture);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                             image);
+                glGenerateMipmap(GL_TEXTURE_2D);
+                SOIL_free_image_data(image);
+                //记得置false,防止多次绑定
+                flag = false;
+            }
 
             // Render
             glEnable(GL_DEPTH_TEST);
@@ -207,8 +221,6 @@ namespace EasyAR {
                 glDrawArrays(GL_TRIANGLES, 0, catNumVerts);
             }else if (strcmp(word, "dog") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, dogNumVerts);
-            }else if (strcmp(word, "elephant") == 0) {
-                glDrawArrays(GL_TRIANGLES, 0, elephantNumVerts);
             }else if (strcmp(word, "lion") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, lionNumVerts);
             }

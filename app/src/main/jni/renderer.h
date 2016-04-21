@@ -10,6 +10,7 @@
 #include <android/asset_manager.h>
 #include "easyar/matrix.hpp"
 #include <GLES2/gl2.h>
+#include <string>
 
 namespace EasyAR {
     namespace samples {
@@ -24,14 +25,15 @@ namespace EasyAR {
         private:
             unsigned int program_box;
             int pos_vertex;
-            int pos_normal;
             int pos_texcoord;
             int pos_trans_box;
             int pos_proj_box;
             unsigned int vbo_vertex;
-            unsigned int vbo_normal;
             unsigned int vbo_texcoord;
             unsigned int texture;
+            //用来记录之前识别到的单词，目的是为了防止render时不必要的每次都重新加载一次贴图
+            std::string orin_word;
+            bool flag;//这个值用来判断需不需要重新绑定
         };
 
         class VideoRenderer {

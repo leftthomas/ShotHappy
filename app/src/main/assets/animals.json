@@ -19,10 +19,6 @@
     {
       "image": "animals/lion.jpg",
       "name": "lion"
-    },
-    {
-      "image": "animals/elephant.jpg",
-      "name": "elephant"
     }
   ]
 }
