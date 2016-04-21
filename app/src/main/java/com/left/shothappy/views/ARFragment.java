@@ -1,6 +1,7 @@
 package com.left.shothappy.views;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,45 @@ public class ARFragment extends Fragment {
     private FloatingActionButton fab;
     private CardView cardView;
     private Dict dict;
+    private MediaPlayer player;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // UI界面的更新等相关操作
+                String text = dict.getKey() + "    " + dict.getPos_acceptations().get(0).getPos() + "    " +
+                        dict.getPos_acceptations().get(0).getAcceptation();
+
+                // 播放发音
+                String path = dict.getPs_prons().get(0).getPron();
+                Uri uri = Uri.parse(path);
+                player = MediaPlayer.create(getContext(), uri);
+                player.start();
+
+                Snackbar.make(getView(), text, Snackbar.LENGTH_LONG).setActionTextColor(Color.GREEN)
+                        .setAction(">>>>>>", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                setCard(dict);
+                                cardView.setVisibility(View.VISIBLE);
+                            }
+                        }).show();
+                //记得去更新Schedule
+                ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
+            } else {
+                // UI界面的更新等相关操作
+                cardView.setVisibility(View.INVISIBLE);
+                Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();
+            }
+
+        }
+    };
     /**
      * 网络操作相关的子线程
      * 调用语音sdk与英文释义部分的网络请求
@@ -51,7 +91,6 @@ public class ARFragment extends Fragment {
             // 在这里进行 http request.网络请求相关操作
             Message msg = new Message();
             Bundle data = new Bundle();
-
 
             String source = nativeGetWord();
 
@@ -68,38 +107,6 @@ public class ARFragment extends Fragment {
             }
             msg.setData(data);
             handler.sendMessage(msg);
-        }
-    };
-    private MediaPlayer player;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // UI界面的更新等相关操作
-                if (cardView.getVisibility() == View.VISIBLE) {
-                    cardView.setVisibility(View.INVISIBLE);
-                } else {
-                    setCard(dict);
-                    cardView.setVisibility(View.VISIBLE);
-                    //记得去更新Schedule
-                    ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
-
-                }
-
-            } else {
-                // UI界面的更新等相关操作
-                if (cardView.getVisibility() == View.VISIBLE) {
-                    cardView.setVisibility(View.INVISIBLE);
-                }
-                Snackbar.make(getView(), val, Snackbar.LENGTH_LONG).show();
-            }
-
         }
     };
 
@@ -193,6 +200,7 @@ public class ARFragment extends Fragment {
 
         ImageView ps1sound = (ImageView) cardView.findViewById(R.id.ps1sound);
         ImageView ps2sound = (ImageView) cardView.findViewById(R.id.ps2sound);
+        ImageView close = (ImageView) cardView.findViewById(R.id.close);
 
         key.setText(dict.getKey());
         ps1.setText("美 [" + dict.getPs_prons().get(0).getPs() + "]");
@@ -220,6 +228,13 @@ public class ARFragment extends Fragment {
                 Uri uri = Uri.parse(path);
                 player = MediaPlayer.create(getContext(), uri);
                 player.start();
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardView.setVisibility(View.INVISIBLE);
             }
         });
     }

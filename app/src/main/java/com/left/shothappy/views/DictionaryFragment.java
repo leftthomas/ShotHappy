@@ -58,14 +58,10 @@ public class DictionaryFragment extends Fragment {
             Bundle data = msg.getData();
             String val = data.getString("status");
             if (val.equals("true")) {
-
-                if (cardView.getVisibility() == View.VISIBLE) {
-                    cardView.setVisibility(View.INVISIBLE);
-                } else {
-                    setcard(dict);
-                    cardView.setVisibility(View.VISIBLE);
-                }
+                setcard(dict);
+                cardView.setVisibility(View.VISIBLE);
             } else {
+                cardView.setVisibility(View.INVISIBLE);
                 Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();
             }
 
@@ -223,6 +219,7 @@ public class DictionaryFragment extends Fragment {
 
         ImageView ps1sound = (ImageView) cardView.findViewById(R.id.ps1sound);
         ImageView ps2sound = (ImageView) cardView.findViewById(R.id.ps2sound);
+        ImageView close = (ImageView) cardView.findViewById(R.id.close);
 
         key.setText(dict.getKey());
         ps1.setText("美 [" + dict.getPs_prons().get(0).getPs() + "]");
@@ -250,6 +247,12 @@ public class DictionaryFragment extends Fragment {
                 Uri uri = Uri.parse(path);
                 player = MediaPlayer.create(getContext(), uri);
                 player.start();
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardView.setVisibility(View.INVISIBLE);
             }
         });
     }
