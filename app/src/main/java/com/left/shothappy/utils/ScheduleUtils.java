@@ -68,33 +68,18 @@ public class ScheduleUtils {
                 }
             });
         } else {
-            List<String> words = schedules.get(0).getWords();
-            //用来判断此key今天是否已经学过了,默认没学过
-            boolean flag = true;
-            for (int i = 0; i < words.size(); i++) {
-                if (words.get(i).equals(key)) {
-                    flag = false;
-                    break;
+            //只有在key之前未添加过的情况下才会被添加
+            Schedule p = new Schedule();
+            p.addUnique("words", key);
+            p.update(activity, schedules.get(0).getObjectId(), new UpdateListener() {
+                @Override
+                public void onSuccess() {
                 }
-            }
-            //根据条件更新此条Schedule
-            if (flag) {
-                //这时才需要更新
-                Schedule p = new Schedule();
-                words.add(key);
-                p.setWords(words);
-                p.update(activity, schedules.get(0).getObjectId(), new UpdateListener() {
 
-                    @Override
-                    public void onSuccess() {
-                    }
-
-                    @Override
-                    public void onFailure(int code, String msg) {
-
-                    }
-                });
-            }
+                @Override
+                public void onFailure(int code, String msg) {
+                }
+            });
         }
     }
 

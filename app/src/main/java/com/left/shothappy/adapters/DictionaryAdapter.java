@@ -2,7 +2,8 @@ package com.left.shothappy.adapters;
 
 
 import android.content.Context;
-import android.media.MediaPlayer;
+import android.media.AsyncPlayer;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,36 +38,6 @@ public class DictionaryAdapter extends BaseAdapter {
 
     private String source;
     private List<Ps_pron> prons;
-
-    private MediaPlayer player;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // 播放声音
-                String path;
-                User user = BmobUser.getCurrentUser(context, User.class);
-                //判断是美音还是英音
-                if (user.isPronunciation()) {
-                    path = prons.get(0).getPron();     //这里给一个歌曲的网络地址就行了
-                } else {
-                    path = prons.get(1).getPron();
-                }
-                Uri uri = Uri.parse(path);
-                player = MediaPlayer.create(context, uri);
-                player.start();
-            } else {
-                Toast.makeText(context, val, Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    };
     /**
      * 网络操作相关的子线程
      * 调用语音sdk与英文释义部分的网络请求
@@ -89,6 +60,34 @@ public class DictionaryAdapter extends BaseAdapter {
             handler.sendMessage(msg);
         }
     };
+    private AsyncPlayer player;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // 播放声音
+                String path;
+                User user = BmobUser.getCurrentUser(context, User.class);
+                //判断是美音还是英音
+                if (user.isPronunciation()) {
+                    path = prons.get(0).getPron();     //这里给一个歌曲的网络地址就行了
+                } else {
+                    path = prons.get(1).getPron();
+                }
+                Uri uri = Uri.parse(path);
+                player.play(context, uri, false, AudioManager.STREAM_MUSIC);
+            } else {
+                Toast.makeText(context, val, Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
 
     //构造方法，参数list传递的就是这一组数据的信息
     public DictionaryAdapter(Context context, List<Map<String, Object>> list) {
@@ -97,6 +96,7 @@ public class DictionaryAdapter extends BaseAdapter {
         layoutInflater = LayoutInflater.from(context);
 
         this.list = list;
+        player = new AsyncPlayer("audio");
     }
 
     //得到总的数量

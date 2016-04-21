@@ -1,6 +1,7 @@
 package com.left.shothappy.views;
 
-import android.media.MediaPlayer;
+import android.media.AsyncPlayer;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,7 +43,7 @@ public class DictionaryFragment extends Fragment {
 
     private PullToRefreshListView mPullToRefreshListView;
     private CardView cardView;
-    private MediaPlayer player;
+    private AsyncPlayer player;
     private List<Map<String, Object>> mItemList;
     private DictionaryAdapter adapter;
     private String type;//用来表明是哪一种词典，实例化fragment时记得一定要赋值
@@ -105,6 +106,8 @@ public class DictionaryFragment extends Fragment {
         initData();
         user = BmobUser.getCurrentUser(getContext(), User.class);
         adapter = new DictionaryAdapter(getContext(), mItemList);
+        player = new AsyncPlayer("audio");
+
         //初始化控件
         mPullToRefreshListView = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
         cardView = (CardView) view.findViewById(R.id.cardview);
@@ -235,8 +238,7 @@ public class DictionaryFragment extends Fragment {
                 // 播放美音
                 String path = dict.getPs_prons().get(0).getPron();
                 Uri uri = Uri.parse(path);
-                player = MediaPlayer.create(getContext(), uri);
-                player.start();
+                player.play(getContext(), uri, false, AudioManager.STREAM_MUSIC);
             }
         });
         ps2sound.setOnClickListener(new View.OnClickListener() {
@@ -245,8 +247,7 @@ public class DictionaryFragment extends Fragment {
                 // 播放英音
                 String path = dict.getPs_prons().get(1).getPron();
                 Uri uri = Uri.parse(path);
-                player = MediaPlayer.create(getContext(), uri);
-                player.start();
+                player.play(getContext(), uri, false, AudioManager.STREAM_MUSIC);
             }
         });
         close.setOnClickListener(new View.OnClickListener() {

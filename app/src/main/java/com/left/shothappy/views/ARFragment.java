@@ -2,7 +2,8 @@ package com.left.shothappy.views;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.media.MediaPlayer;
+import android.media.AsyncPlayer;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,45 +42,6 @@ public class ARFragment extends Fragment {
     private FloatingActionButton fab;
     private CardView cardView;
     private Dict dict;
-    private MediaPlayer player;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // UI界面的更新等相关操作
-                String text = dict.getKey() + "    " + dict.getPos_acceptations().get(0).getPos() + "    " +
-                        dict.getPos_acceptations().get(0).getAcceptation();
-
-                // 播放发音
-                String path = dict.getPs_prons().get(0).getPron();
-                Uri uri = Uri.parse(path);
-                player = MediaPlayer.create(getContext(), uri);
-                player.start();
-
-                Snackbar.make(getView(), text, Snackbar.LENGTH_LONG).setActionTextColor(Color.GREEN)
-                        .setAction(">>>>>>", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                setCard(dict);
-                                cardView.setVisibility(View.VISIBLE);
-                            }
-                        }).show();
-                //记得去更新Schedule
-                ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
-            } else {
-                // UI界面的更新等相关操作
-                cardView.setVisibility(View.INVISIBLE);
-                Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();
-            }
-
-        }
-    };
     /**
      * 网络操作相关的子线程
      * 调用语音sdk与英文释义部分的网络请求
@@ -107,6 +69,43 @@ public class ARFragment extends Fragment {
             }
             msg.setData(data);
             handler.sendMessage(msg);
+        }
+    };
+    private AsyncPlayer player;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // UI界面的更新等相关操作
+                String text = dict.getKey() + "    " + dict.getPos_acceptations().get(0).getPos() + "    " +
+                        dict.getPos_acceptations().get(0).getAcceptation();
+
+                // 播放发音
+                String path = dict.getPs_prons().get(0).getPron();
+                Uri uri = Uri.parse(path);
+                player.play(getContext(), uri, false, AudioManager.STREAM_MUSIC);
+                Snackbar.make(getView(), text, Snackbar.LENGTH_LONG).setActionTextColor(Color.GREEN)
+                        .setAction(">>>>>>", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                setCard(dict);
+                                cardView.setVisibility(View.VISIBLE);
+                            }
+                        }).show();
+                //记得去更新Schedule
+                ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
+            } else {
+                // UI界面的更新等相关操作
+                cardView.setVisibility(View.INVISIBLE);
+                Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();
+            }
+
         }
     };
 
@@ -141,7 +140,7 @@ public class ARFragment extends Fragment {
         ((ViewGroup) view.findViewById(R.id.preview)).addView(glView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         nativeRotationChange(getActivity().getWindowManager().getDefaultDisplay().getRotation() == android.view.Surface.ROTATION_0);
 
-
+        player = new AsyncPlayer("audio");
         fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         cardView = (CardView) view.findViewById(R.id.cardview);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -216,8 +215,7 @@ public class ARFragment extends Fragment {
                 // 播放美音
                 String path = dict.getPs_prons().get(0).getPron();
                 Uri uri = Uri.parse(path);
-                player = MediaPlayer.create(getContext(), uri);
-                player.start();
+                player.play(getContext(), uri, false, AudioManager.STREAM_MUSIC);
             }
         });
         ps2sound.setOnClickListener(new View.OnClickListener() {
@@ -226,8 +224,7 @@ public class ARFragment extends Fragment {
                 // 播放英音
                 String path = dict.getPs_prons().get(1).getPron();
                 Uri uri = Uri.parse(path);
-                player = MediaPlayer.create(getContext(), uri);
-                player.start();
+                player.play(getContext(), uri, false, AudioManager.STREAM_MUSIC);
             }
         });
 
