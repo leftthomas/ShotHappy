@@ -197,7 +197,7 @@ namespace EasyAR {
 }
 EasyAR::samples::HelloAR ar;
 
-JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * , jobject)) {
+JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * env, jobject)) {
     bool status = ar.initCamera();
     ar.loadAllFromJsonFile("animals.json");
     ar.loadAllFromJsonFile("fruits.json");
@@ -205,6 +205,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * , jobject)) {
 
     ar.loadAllFromJsonFile("targets.json");
     status &= ar.start();
+
     return status;
 }
 

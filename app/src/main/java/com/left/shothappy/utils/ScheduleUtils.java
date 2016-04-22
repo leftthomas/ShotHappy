@@ -355,16 +355,8 @@ public class ScheduleUtils {
         final List<DayCoordinate> weeks = getNearWeekTime();
         User user = BmobUser.getCurrentUser(activity, User.class);
         BmobQuery<Schedule> query = new BmobQuery<>();
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        Date afterdate = null;
-        try {
-            afterdate = sdf.parse(sdf.format(getDayEnd(weeks.get(weeks.size() - 1).getDate())));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        query.addWhereLessThanOrEqualTo("createdAt", new BmobDate(afterdate));
-        query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
+        // 查询当前用户的所有Schedule
+        query.addWhereEqualTo("user", user);
         query.order("createdAt");
         query.findObjects(activity, new FindListener<Schedule>() {
             @Override
@@ -410,7 +402,7 @@ public class ScheduleUtils {
 
                         for (int j = 0; j < weeks.size(); j++) {
                             if (getDayZero(date).getTime() <= getDayZero(weeks.get(j).getDate()).getTime()) {
-                                afters.get(j).put(weeks.get(j).getName(), afters.get(j).get(weeks.get(j).getName()) + orins.size());
+                                afters.get(j).put(weeks.get(j).getName(), afters.get(j).get(weeks.get(j).getName()) + orins.get(i).getWords().size());
                             }
                         }
                     } catch (ParseException e) {

@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.Legend;
+import com.github.mikephil.charting.utils.ValueFormatter;
 import com.github.mikephil.charting.utils.XLabels;
 import com.github.mikephil.charting.utils.YLabels;
 import com.left.shothappy.R;
@@ -36,6 +37,12 @@ public class RateoflearningFragment extends Fragment {
     // 自定义字体
     private static Typeface mTf;
     private static View view;
+    private static ValueFormatter valueFormatter = new ValueFormatter() {
+        @Override
+        public String getFormattedValue(float value) {
+            return String.valueOf((int) value);
+        }
+    };
     //进步曲线（总进度，统计历史量）
     private LineChart mLineChart;
     //每日学习量（近七天单日学习量）
@@ -79,6 +86,7 @@ public class RateoflearningFragment extends Fragment {
 
         // set the marker to the chart
         chart.setMarkerView(mv);
+        chart.setValueFormatter(valueFormatter);
 
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend(); // 设置标示
@@ -93,6 +101,7 @@ public class RateoflearningFragment extends Fragment {
         YLabels y = chart.getYLabels(); // y轴的标示
         y.setTextColor(Color.WHITE);
         y.setTypeface(mTf);
+        y.setFormatter(valueFormatter);
 
         XLabels x = chart.getXLabels(); // x轴显示的标签
         x.setTextColor(Color.WHITE);
@@ -130,6 +139,8 @@ public class RateoflearningFragment extends Fragment {
 
         chart.setValueTypeface(mTf);// 设置字体
 
+        chart.setValueFormatter(valueFormatter);
+
         chart.setData(data); // 设置数据
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend(); // 设置标示
@@ -144,6 +155,7 @@ public class RateoflearningFragment extends Fragment {
         YLabels y = chart.getYLabels(); // y轴的标示
         y.setTextColor(Color.WHITE);
         y.setTypeface(mTf);
+        y.setFormatter(valueFormatter);
 
         XLabels x = chart.getXLabels(); // x轴显示的标签
         x.setTextColor(Color.WHITE);

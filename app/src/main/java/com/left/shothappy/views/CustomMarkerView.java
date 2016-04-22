@@ -21,7 +21,7 @@ public class CustomMarkerView extends MarkerView {
 
     @Override
     public void refreshContent(Entry e, int dataSetIndex) {
-        tvContent.setText("" + e.getVal());
+        tvContent.setText(String.valueOf((int) e.getVal()));
     }
 
     @Override

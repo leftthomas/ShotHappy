@@ -24,6 +24,7 @@ import com.left.shothappy.adapters.DictionaryAdapter;
 import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.IcibaTranslate;
+import com.left.shothappy.utils.ScheduleUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,6 +62,8 @@ public class DictionaryFragment extends Fragment {
             if (val.equals("true")) {
                 setcard(dict);
                 cardView.setVisibility(View.VISIBLE);
+                //记得去更新Schedule
+                ScheduleUtils.UpdateSchedule(getActivity(), dict.getKey());
             } else {
                 cardView.setVisibility(View.INVISIBLE);
                 Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();

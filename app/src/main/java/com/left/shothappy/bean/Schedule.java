@@ -13,9 +13,6 @@ public class Schedule extends BmobObject {
     //学习的单词（列表size即是当日学习量）
     private List<String> words;
 
-    //用来记录到此时总共学了有多少单词，方便查询统计
-    private int num;
-
     private User user;
 
     public List<String> getWords() {
@@ -34,11 +31,4 @@ public class Schedule extends BmobObject {
         this.user = user;
     }
 
-    public int getNum() {
-        return num;
-    }
-
-    public void setNum(int num) {
-        this.num = num;
-    }
 }

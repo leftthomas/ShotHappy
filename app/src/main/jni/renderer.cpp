@@ -67,6 +67,8 @@ const char *box_video_frag = "#ifdef GL_ES\n"
         "}\n"
         "\n";
 
+std::string model_texture_path = "/sdcard/Android/data/com.left.shothappy/files/textures/";
+
 namespace EasyAR {
     namespace samples {
 
@@ -122,7 +124,7 @@ namespace EasyAR {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/frog.jpg", &width,
+                image = SOIL_load_image((model_texture_path + "frog.jpg").c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 //记得更新下orin_word值
                 orin_word = "frog";
@@ -134,7 +136,7 @@ namespace EasyAR {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderTexCoords), spiderTexCoords,
                              GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/spider.jpg", &width,
+                image = SOIL_load_image((model_texture_path + ("spider.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "spider";
                 flag = true;
@@ -144,7 +146,7 @@ namespace EasyAR {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bananaTexCoords), bananaTexCoords,
                              GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/banana.jpg", &width,
+                image = SOIL_load_image((model_texture_path + ("banana.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "banana";
                 flag = true;
@@ -154,7 +156,7 @@ namespace EasyAR {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(catTexCoords), catTexCoords,
                              GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/cat.jpg", &width,
+                image = SOIL_load_image((model_texture_path + ("cat.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "cat";
                 flag = true;
@@ -164,7 +166,7 @@ namespace EasyAR {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(dogTexCoords), dogTexCoords,
                              GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/dog.jpg", &width,
+                image = SOIL_load_image((model_texture_path + ("dog.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "dog";
                 flag = true;
@@ -174,7 +176,7 @@ namespace EasyAR {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionTexCoords), lionTexCoords,
                              GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
-                image = SOIL_load_image("/storage/emulated/0/Download/models/lion.jpg", &width,
+                image = SOIL_load_image((model_texture_path + ("lion.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "lion";
                 flag = true;
