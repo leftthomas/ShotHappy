@@ -13,6 +13,7 @@
 #include "model/frog.h"
 #include "model/lion.h"
 #include "model/spider.h"
+
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
 #endif
@@ -135,7 +136,6 @@ namespace EasyAR {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderTexCoords), spiderTexCoords,
                              GL_DYNAMIC_DRAW);
-                //确定对应模型的贴图
                 image = SOIL_load_image((model_texture_path + ("spider.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "spider";
@@ -145,7 +145,6 @@ namespace EasyAR {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bananaTexCoords), bananaTexCoords,
                              GL_DYNAMIC_DRAW);
-                //确定对应模型的贴图
                 image = SOIL_load_image((model_texture_path + ("banana.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "banana";
@@ -155,7 +154,6 @@ namespace EasyAR {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(catTexCoords), catTexCoords,
                              GL_DYNAMIC_DRAW);
-                //确定对应模型的贴图
                 image = SOIL_load_image((model_texture_path + ("cat.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "cat";
@@ -165,7 +163,6 @@ namespace EasyAR {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(dogTexCoords), dogTexCoords,
                              GL_DYNAMIC_DRAW);
-                //确定对应模型的贴图
                 image = SOIL_load_image((model_texture_path + ("dog.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "dog";
@@ -175,10 +172,18 @@ namespace EasyAR {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionTexCoords), lionTexCoords,
                              GL_DYNAMIC_DRAW);
-                //确定对应模型的贴图
                 image = SOIL_load_image((model_texture_path + ("lion.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "lion";
+                flag = true;
+            } else if (strcmp(word, "bat") == 0 && orin_word != "bat") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(batVerts), batVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(batTexCoords), batTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("bat.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "bat";
                 flag = true;
             }
 
@@ -225,6 +230,8 @@ namespace EasyAR {
                 glDrawArrays(GL_TRIANGLES, 0, dogNumVerts);
             }else if (strcmp(word, "lion") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, lionNumVerts);
+            } else if (strcmp(word, "bat") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, batNumVerts);
             }
         }
 

@@ -19,6 +19,10 @@
     {
       "image": "animals/lion.jpg",
       "name": "lion"
+    },
+    {
+      "image": "animals/bat.jpg",
+      "name": "bat"
     }
   ]
 }
