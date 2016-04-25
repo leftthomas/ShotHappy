@@ -13,6 +13,8 @@
 #include "model/frog.h"
 #include "model/lion.h"
 #include "model/spider.h"
+#include "model/bat.h"
+#include "model/pig.h"
 
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
@@ -185,6 +187,15 @@ namespace EasyAR {
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "bat";
                 flag = true;
+            } else if (strcmp(word, "pig") == 0 && orin_word != "pig") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(pigVerts), pigVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(pigTexCoords), pigTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("pig.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "pig";
+                flag = true;
             }
 
             //重新绑定贴图
@@ -232,6 +243,8 @@ namespace EasyAR {
                 glDrawArrays(GL_TRIANGLES, 0, lionNumVerts);
             } else if (strcmp(word, "bat") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, batNumVerts);
+            } else if (strcmp(word, "pig") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, pigNumVerts);
             }
         }
 
