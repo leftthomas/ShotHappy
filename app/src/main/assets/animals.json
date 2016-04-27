@@ -1,32 +1,56 @@
 {
   "images": [
     {
+      "image": "animals/bat.jpg",
+      "name": "bat"
+    },
+    {
+      "image": "animals/bulldog.jpg",
+      "name": "bulldog"
+    },
+    {
       "image": "animals/cat.jpg",
       "name": "cat"
     },
     {
-      "image": "animals/dog.jpg",
-      "name": "dog"
+      "image": "animals/deer.jpg",
+      "name": "deer"
+    },
+    {
+      "image": "animals/doberman.jpg",
+      "name": "doberman"
+    },
+    {
+      "image": "animals/dove.jpg",
+      "name": "dove"
     },
     {
       "image": "animals/frog.jpg",
       "name": "frog"
     },
     {
-      "image": "animals/spider.jpg",
-      "name": "spider"
-    },
-    {
       "image": "animals/lion.jpg",
       "name": "lion"
     },
     {
-      "image": "animals/bat.jpg",
-      "name": "bat"
-    },
-    {
       "image": "animals/pig.jpg",
       "name": "pig"
+    },
+    {
+      "image": "animals/shark.jpg",
+      "name": "shark"
+    },
+    {
+      "image": "animals/spider.jpg",
+      "name": "spider"
+    },
+    {
+      "image": "animals/tiger.jpg",
+      "name": "tiger"
+    },
+    {
+      "image": "animals/wolf.jpg",
+      "name": "wolf"
     }
   ]
 }

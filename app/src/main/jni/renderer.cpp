@@ -8,13 +8,19 @@
 #include "renderer.h"
 // include generated arrays
 #include "model/banana.h"
+#include "model/bat.h"
+#include "model/bulldog.h"
 #include "model/cat.h"
-#include "model/dog.h"
+#include "model/deer.h"
+#include "model/doberman.h"
+#include "model/dove.h"
 #include "model/frog.h"
 #include "model/lion.h"
-#include "model/spider.h"
-#include "model/bat.h"
 #include "model/pig.h"
+#include "model/shark.h"
+#include "model/spider.h"
+#include "model/tiger.h"
+#include "model/wolf.h"
 
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
@@ -160,15 +166,6 @@ namespace EasyAR {
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "cat";
                 flag = true;
-            } else if (strcmp(word, "dog") == 0 && orin_word != "dog") {
-                glBufferData(GL_ARRAY_BUFFER, sizeof(dogVerts), dogVerts, GL_DYNAMIC_DRAW);
-                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(dogTexCoords), dogTexCoords,
-                             GL_DYNAMIC_DRAW);
-                image = SOIL_load_image((model_texture_path + ("dog.jpg")).c_str(), &width,
-                                        &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "dog";
-                flag = true;
             } else if (strcmp(word, "lion") == 0 && orin_word != "lion") {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionVerts), lionVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
@@ -195,6 +192,70 @@ namespace EasyAR {
                 image = SOIL_load_image((model_texture_path + ("pig.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 orin_word = "pig";
+                flag = true;
+            } else if (strcmp(word, "bulldog") == 0 && orin_word != "bulldog") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(bulldogVerts), bulldogVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(bulldogTexCoords), bulldogTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("bulldog.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "bulldog";
+                flag = true;
+            } else if (strcmp(word, "deer") == 0 && orin_word != "deer") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(deerVerts), deerVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(deerTexCoords), deerTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("deer.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "deer";
+                flag = true;
+            } else if (strcmp(word, "doberman") == 0 && orin_word != "doberman") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(dobermanVerts), dobermanVerts,
+                             GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(dobermanTexCoords), dobermanTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("doberman.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "doberman";
+                flag = true;
+            } else if (strcmp(word, "dove") == 0 && orin_word != "dove") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(doveVerts), doveVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(doveTexCoords), doveTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("dove.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "dove";
+                flag = true;
+            } else if (strcmp(word, "shark") == 0 && orin_word != "shark") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(sharkVerts), sharkVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(sharkTexCoords), sharkTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("shark.bmp")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "shark";
+                flag = true;
+            } else if (strcmp(word, "tiger") == 0 && orin_word != "tiger") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(tigerVerts), tigerVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(tigerTexCoords), tigerTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("tiger.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "tiger";
+                flag = true;
+            } else if (strcmp(word, "wolf") == 0 && orin_word != "wolf") {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(wolfVerts), wolfVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(wolfTexCoords), wolfTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("wolf.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                orin_word = "wolf";
                 flag = true;
             }
 
@@ -237,14 +298,26 @@ namespace EasyAR {
                 glDrawArrays(GL_TRIANGLES, 0, bananaNumVerts);
             }else if (strcmp(word, "cat") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, catNumVerts);
-            }else if (strcmp(word, "dog") == 0) {
-                glDrawArrays(GL_TRIANGLES, 0, dogNumVerts);
             }else if (strcmp(word, "lion") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, lionNumVerts);
             } else if (strcmp(word, "bat") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, batNumVerts);
             } else if (strcmp(word, "pig") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, pigNumVerts);
+            } else if (strcmp(word, "bulldog") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, bulldogNumVerts);
+            } else if (strcmp(word, "deer") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, deerNumVerts);
+            } else if (strcmp(word, "doberman") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, dobermanNumVerts);
+            } else if (strcmp(word, "dove") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, doveNumVerts);
+            } else if (strcmp(word, "shark") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, sharkNumVerts);
+            } else if (strcmp(word, "tiger") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, tigerNumVerts);
+            } else if (strcmp(word, "wolf") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, wolfNumVerts);
             }
         }
 
