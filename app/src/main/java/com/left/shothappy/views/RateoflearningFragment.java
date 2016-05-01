@@ -34,6 +34,13 @@ import java.util.Map;
  */
 public class RateoflearningFragment extends Fragment {
 
+    //进步曲线（总进度，统计历史量）
+    public static LineChart mLineChart;
+    //每日学习量（近七天单日学习量）
+    public static BarChart mBarChart;
+    // 自定义颜色
+    public static int mLineColors = Color.rgb(137, 230, 81);
+    public static int mBarColors = Color.rgb(240, 240, 30);
     // 自定义字体
     private static Typeface mTf;
     private static View view;
@@ -43,13 +50,6 @@ public class RateoflearningFragment extends Fragment {
             return String.valueOf((int) value);
         }
     };
-    //进步曲线（总进度，统计历史量）
-    private LineChart mLineChart;
-    //每日学习量（近七天单日学习量）
-    private BarChart mBarChart;
-    // 自定义颜色
-    private int mLineColors = Color.rgb(137, 230, 81);
-    private int mBarColors = Color.rgb(240, 240, 30);
 
     // 设置显示的样式
     public static void setupLineChart(final LineChart chart, LineData data, int color) {

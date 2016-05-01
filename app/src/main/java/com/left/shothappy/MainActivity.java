@@ -15,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.PicUtils;
+import com.left.shothappy.utils.ScheduleUtils;
 import com.left.shothappy.views.ARFragment;
 import com.left.shothappy.views.RateoflearningFragment;
 import com.left.shothappy.views.SettingFragment;
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity
     private TextView email;
     private User user;
     private Bitmap head;//头像Bitmap
+    private Menu top_right_menu;//右上角那一块的menu，主要是用来查找刷新按钮和搜索按钮
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +146,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        top_right_menu = menu;
+
         return true;
     }
 
@@ -178,7 +184,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.share_wechatmoments) {
             share(SHARE_MEDIA.WEIXIN_CIRCLE);
             return true;
-        } else if (id == R.id.share_wechat) {
+        }
+        if (id == R.id.share_wechat) {
             share(SHARE_MEDIA.WEIXIN);
             return true;
         }
@@ -194,6 +201,15 @@ public class MainActivity extends AppCompatActivity
             share(SHARE_MEDIA.SINA);
             return true;
         }
+        //刷新，重新绘制
+        if (id == R.id.icon_refresh_search) {
+            //绘制BarChart
+            ScheduleUtils.getDailyData(this, RateoflearningFragment.mBarChart, RateoflearningFragment.mBarColors);
+            //绘制LineChart
+            ScheduleUtils.getImprovementData(this, RateoflearningFragment.mLineChart, RateoflearningFragment.mLineColors);
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -209,24 +225,31 @@ public class MainActivity extends AppCompatActivity
                 arFragment = new ARFragment();
             }
             showFragment(arFragment, R.string.title_ar);
+            top_right_menu.findItem(R.id.icon_refresh_search).setVisible(false);
             fab.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_gallery) {
             if (thesaurusFragment == null) {
                 thesaurusFragment = new ThesaurusFragment();
             }
             showFragment(thesaurusFragment, R.string.title_thesaurus);
+//            top_right_menu.findItem(R.id.icon_refresh_search).setVisible(true);
+//            top_right_menu.findItem(R.id.icon_refresh_search).setIcon(R.drawable.search);
+            top_right_menu.findItem(R.id.icon_refresh_search).setVisible(false);
             fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_slideshow) {
             if (rateoflearningFragment == null) {
                 rateoflearningFragment = new RateoflearningFragment();
             }
             showFragment(rateoflearningFragment, R.string.title_rateoflearning);
+            top_right_menu.findItem(R.id.icon_refresh_search).setVisible(true);
+            top_right_menu.findItem(R.id.icon_refresh_search).setIcon(R.drawable.refresh);
             fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_manage) {
             if (settingFragment == null) {
                 settingFragment = new SettingFragment();
             }
             showFragment(settingFragment, R.string.title_setting);
+            top_right_menu.findItem(R.id.icon_refresh_search).setVisible(false);
             fab.setVisibility(View.INVISIBLE);
         } else if (id == R.id.nav_share) {
             //调用分享
