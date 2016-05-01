@@ -23,4 +23,9 @@
         <item name="android:background">#5fa3d0</item>
     </style>
 
+    <style name="FullScreenTheme" parent="AppTheme.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>

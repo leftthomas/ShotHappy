@@ -15,13 +15,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.left.shothappy.bean.RewardVideo;
+import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.utils.PicUtils;
 import com.left.shothappy.utils.ScheduleUtils;
@@ -34,10 +36,17 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
@@ -56,13 +65,13 @@ public class MainActivity extends AppCompatActivity
     private RateoflearningFragment rateoflearningFragment;
     private ThesaurusFragment thesaurusFragment;
     private SettingFragment settingFragment;
-    private CircleImageView imageView;
+    private CircleImageView head_imageView;
     private TextView username;
     private TextView email;
     private User user;
     private Bitmap head;//头像Bitmap
+    private ImageView today_card;//今日卡片
     private Menu top_right_menu;//右上角那一块的menu，主要是用来查找刷新按钮和搜索按钮
-    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +94,8 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        imageView = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        head_imageView = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        today_card = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.today_card);
         username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.username);
         email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.email);
 
@@ -107,7 +117,7 @@ public class MainActivity extends AppCompatActivity
                             .bitmapConfig(Bitmap.Config.RGB_565)
                             .build();
                     //载入图片
-                    ImageLoader.getInstance().displayImage(o.getHead().getFileUrl(getApplicationContext()), imageView, options);
+                    ImageLoader.getInstance().displayImage(o.getHead().getFileUrl(getApplicationContext()), head_imageView, options);
                 }
 
                 @Override
@@ -122,13 +132,113 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        head_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //从相册里面取照片
                 Intent intent = new Intent(Intent.ACTION_PICK, null);
                 intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                 startActivityForResult(intent, 1);
+            }
+        });
+
+        today_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                BmobQuery<Schedule> query = new BmobQuery<>();
+                List<BmobQuery<Schedule>> and = new ArrayList<>();
+                //大于00：00：00
+                BmobQuery<Schedule> q1 = new BmobQuery<>();
+                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = null;
+                try {
+                    date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                q1.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
+                and.add(q1);
+
+                //小于23：59：59
+                BmobQuery<Schedule> q2 = new BmobQuery<>();
+                Date date1 = null;
+                try {
+                    date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                q2.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
+                and.add(q2);
+                //添加复合与查询
+                query.and(and);
+
+                query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
+                query.order("createdAt");
+                query.findObjects(getApplicationContext(), new FindListener<Schedule>() {
+                    @Override
+                    public void onSuccess(List<Schedule> list) {
+                        if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                            Snackbar.make(navigationView, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            //查找到当日的奖励视频
+                            BmobQuery<RewardVideo> videoBmobQuery = new BmobQuery<>();
+                            List<BmobQuery<RewardVideo>> videoand = new ArrayList<>();
+                            //大于00：00：00
+                            BmobQuery<RewardVideo> q3 = new BmobQuery<>();
+                            Date date = null;
+                            try {
+                                date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            q3.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
+                            videoand.add(q3);
+
+                            //小于23：59：59
+                            BmobQuery<RewardVideo> q4 = new BmobQuery<>();
+                            Date date1 = null;
+                            try {
+                                date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            q4.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
+                            videoand.add(q4);
+                            //添加复合与查询
+                            videoBmobQuery.and(videoand);
+                            videoBmobQuery.order("createdAt");
+                            videoBmobQuery.findObjects(getApplicationContext(), new FindListener<RewardVideo>() {
+                                @Override
+                                public void onSuccess(List<RewardVideo> list) {
+                                    if (list == null || list.size() == 0 || list.get(0).getVideo() == null) {
+                                        Snackbar.make(navigationView, getString(R.string.reward_tip), Snackbar.LENGTH_SHORT).show();
+                                    } else {
+                                         /* 开始播放视频 */
+                                        Intent intent = new Intent();
+                                        //设置传递方向
+                                        intent.setClass(getApplicationContext(), RewardActivity.class);
+                                        //绑定数据
+                                        intent.putExtra("path", list.get(0).getVideo().getFileUrl(getApplicationContext()));
+                                        //启动activity
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(int i, String s) {
+                                    Snackbar.make(navigationView, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        Snackbar.make(navigationView, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+                drawer.closeDrawer(GravityCompat.START);
             }
         });
     }
@@ -303,7 +413,7 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onSuccess() {
                                         //用ImageView显示出来
-                                        imageView.setImageBitmap(head);
+                                        head_imageView.setImageBitmap(head);
                                     }
 
                                     @Override

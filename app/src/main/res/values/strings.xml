@@ -69,4 +69,6 @@
     <string name="share_activity_text">我在用“拍拍乐”学习英语，有趣好玩的AR交互模式，你还在等什么，快来体验吧！</string>
     <string name="URL">http://www.wanpeng.com/</string>
     <string name="refresh">刷新</string>
+    <string name="today_tip">请完成今日任务(至少学习10单词)</string>
+    <string name="reward_tip">今日奖励还未出炉，请稍候再试</string>
 </resources>

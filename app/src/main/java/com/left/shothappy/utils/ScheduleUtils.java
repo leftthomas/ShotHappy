@@ -88,7 +88,7 @@ public class ScheduleUtils {
      *
      * @return
      */
-    private static Date getTodayZero() {
+    public static Date getTodayZero() {
         Calendar todayStart = Calendar.getInstance();
         todayStart.set(Calendar.HOUR_OF_DAY, 0);
         todayStart.set(Calendar.MINUTE, 0);
@@ -102,7 +102,7 @@ public class ScheduleUtils {
      *
      * @return
      */
-    private static Date getTodayEnd() {
+    public static Date getTodayEnd() {
         Calendar todayEnd = Calendar.getInstance();
         todayEnd.set(Calendar.HOUR_OF_DAY, 23);
         todayEnd.set(Calendar.MINUTE, 59);
@@ -118,7 +118,7 @@ public class ScheduleUtils {
      * @param date
      * @return
      */
-    private static Date getDayZero(Date date) {
+    public static Date getDayZero(Date date) {
         Calendar dayStart = Calendar.getInstance();
         dayStart.setTime(date);
         dayStart.set(Calendar.HOUR_OF_DAY, 0);
@@ -135,7 +135,7 @@ public class ScheduleUtils {
      * @param date
      * @return
      */
-    private static Date getDayEnd(Date date) {
+    public static Date getDayEnd(Date date) {
         Calendar dayEnd = Calendar.getInstance();
         dayEnd.setTime(date);
         dayEnd.set(Calendar.HOUR_OF_DAY, 23);
