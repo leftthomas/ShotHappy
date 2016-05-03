@@ -101,7 +101,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".RewardActivity"
-            android:theme="@style/FullScreenTheme"></activity>
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

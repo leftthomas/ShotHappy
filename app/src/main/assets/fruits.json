@@ -11,6 +11,26 @@
     {
       "image": "fruits/banana.jpg",
       "name": "banana"
+    },
+    {
+      "image": "fruits/mandarin.jpg",
+      "name": "mandarin"
+    },
+    {
+      "image": "fruits/mango.jpg",
+      "name": "mango"
+    },
+    {
+      "image": "fruits/peach.jpg",
+      "name": "peach"
+    },
+    {
+      "image": "fruits/raspberry.jpg",
+      "name": "raspberry"
+    },
+    {
+      "image": "fruits/strawberry.jpg",
+      "name": "strawberry"
     }
   ]
 }

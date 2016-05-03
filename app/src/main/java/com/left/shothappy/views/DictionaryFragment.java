@@ -232,8 +232,8 @@ public class DictionaryFragment extends Fragment {
         ps2.setText("英 [" + dict.getPs_prons().get(1).getPs() + "]");
         pos.setText(dict.getPos_acceptations().get(0).getPos());
         acceptation.setText(dict.getPos_acceptations().get(0).getAcceptation());
-        orig.setText(dict.getSents().get(0).getOrig());
-        trans.setText(dict.getSents().get(0).getTrans());
+        orig.setText(dict.getSents().get(0).getOrig().trim());
+        trans.setText(dict.getSents().get(0).getTrans().trim());
 
         ps1sound.setOnClickListener(new View.OnClickListener() {
             @Override

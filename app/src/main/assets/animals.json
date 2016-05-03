@@ -51,6 +51,22 @@
     {
       "image": "animals/wolf.jpg",
       "name": "wolf"
+    },
+    {
+      "image": "animals/leopard.jpg",
+      "name": "leopard"
+    },
+    {
+      "image": "animals/ostrich.jpg",
+      "name": "ostrich"
+    },
+    {
+      "image": "animals/parakeet.jpg",
+      "name": "parakeet"
+    },
+    {
+      "image": "animals/penguin.jpg",
+      "name": "penguin"
     }
   ]
 }

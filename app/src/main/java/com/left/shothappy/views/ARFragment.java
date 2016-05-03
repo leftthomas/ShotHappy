@@ -42,35 +42,6 @@ public class ARFragment extends Fragment {
     private FloatingActionButton fab;
     private CardView cardView;
     private Dict dict;
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-
-            String source = nativeGetWord();
-
-            if (source == null || source.equals("")) {
-                data.putString("status", "请对准要识别的物体");
-            } else {
-                try {
-                    dict = IcibaTranslate.translate(source);
-                    data.putString("status", "true");//表示请求成功
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    data.putString("status", "翻译失败，请检查网络");
-                }
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
-        }
-    };
     private AsyncPlayer player;
     /**
      * 接收到网络请求回复的数据之后通知UI更新
@@ -106,6 +77,35 @@ public class ARFragment extends Fragment {
                 Snackbar.make(getView(), val, Snackbar.LENGTH_SHORT).show();
             }
 
+        }
+    };
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+
+            String source = nativeGetWord();
+
+            if (source == null || source.equals("")) {
+                data.putString("status", "请对准要识别的物体");
+            } else {
+                try {
+                    dict = IcibaTranslate.translate(source);
+                    data.putString("status", "true");//表示请求成功
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    data.putString("status", "翻译失败，请检查网络");
+                }
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
         }
     };
 
@@ -206,8 +206,8 @@ public class ARFragment extends Fragment {
         ps2.setText("英 [" + dict.getPs_prons().get(1).getPs() + "]");
         pos.setText(dict.getPos_acceptations().get(0).getPos());
         acceptation.setText(dict.getPos_acceptations().get(0).getAcceptation());
-        orig.setText(dict.getSents().get(0).getOrig());
-        trans.setText(dict.getSents().get(0).getTrans());
+        orig.setText(dict.getSents().get(0).getOrig().trim());
+        trans.setText(dict.getSents().get(0).getTrans().trim());
 
         ps1sound.setOnClickListener(new View.OnClickListener() {
             @Override

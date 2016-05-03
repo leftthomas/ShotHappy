@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity
                                         //设置传递方向
                                         intent.setClass(getApplicationContext(), RewardActivity.class);
                                         //绑定数据
+                                        intent.putExtra("name", list.get(0).getName());
                                         intent.putExtra("path", list.get(0).getVideo().getFileUrl(getApplicationContext()));
                                         //启动activity
                                         startActivity(intent);

@@ -8,6 +8,7 @@
     <VideoView
         android:id="@+id/reward_video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

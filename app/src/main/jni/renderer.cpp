@@ -21,6 +21,16 @@
 #include "model/spider.h"
 #include "model/tiger.h"
 #include "model/wolf.h"
+#include "model/carrot.h"
+#include "model/leopard.h"
+#include "model/mandarin.h"
+#include "model/mango.h"
+#include "model/ostrich.h"
+#include "model/parakeet.h"
+#include "model/peach.h"
+#include "model/penguin.h"
+#include "model/raspberry.h"
+#include "model/strawberry.h"
 
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
@@ -129,89 +139,90 @@ namespace EasyAR {
             glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex);
             //记住，判断的条件是原始的word跟现在识别到的不是同一个，只有满足这个条件，才重新加载贴图，否则不加载
             if (strcmp(word, "frog") == 0 && orin_word != "frog") {
+                //记得更新下orin_word值
+                orin_word = "frog";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(frogVerts), frogVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(frogTexCoords), frogTexCoords, GL_DYNAMIC_DRAW);
                 //确定对应模型的贴图
                 image = SOIL_load_image((model_texture_path + "frog.jpg").c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                //记得更新下orin_word值
-                orin_word = "frog";
                 //一旦更新了，表示就需要重新绑定了
                 flag = true;
             } else if (strcmp(word, "spider") == 0 && orin_word != "spider") {
+                orin_word = "spider";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderVerts), spiderVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(spiderTexCoords), spiderTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("spider.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "spider";
                 flag = true;
             } else if (strcmp(word, "banana") == 0 && orin_word != "banana") {
+                orin_word = "banana";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bananaVerts), bananaVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bananaTexCoords), bananaTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("banana.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "banana";
                 flag = true;
             } else if (strcmp(word, "cat") == 0 && orin_word != "cat") {
+                orin_word = "cat";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(catVerts), catVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(catTexCoords), catTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("cat.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "cat";
                 flag = true;
             } else if (strcmp(word, "lion") == 0 && orin_word != "lion") {
+                orin_word = "lion";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionVerts), lionVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(lionTexCoords), lionTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("lion.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "lion";
                 flag = true;
             } else if (strcmp(word, "bat") == 0 && orin_word != "bat") {
+                orin_word = "bat";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(batVerts), batVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(batTexCoords), batTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("bat.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "bat";
                 flag = true;
             } else if (strcmp(word, "pig") == 0 && orin_word != "pig") {
+                orin_word = "pig";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(pigVerts), pigVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(pigTexCoords), pigTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("pig.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "pig";
                 flag = true;
             } else if (strcmp(word, "bulldog") == 0 && orin_word != "bulldog") {
+                orin_word = "bulldog";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bulldogVerts), bulldogVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(bulldogTexCoords), bulldogTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("bulldog.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "bulldog";
                 flag = true;
             } else if (strcmp(word, "deer") == 0 && orin_word != "deer") {
+                orin_word = "deer";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(deerVerts), deerVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(deerTexCoords), deerTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("deer.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "deer";
                 flag = true;
             } else if (strcmp(word, "doberman") == 0 && orin_word != "doberman") {
+                orin_word = "doberman";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(dobermanVerts), dobermanVerts,
                              GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
@@ -219,43 +230,132 @@ namespace EasyAR {
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("doberman.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "doberman";
                 flag = true;
             } else if (strcmp(word, "dove") == 0 && orin_word != "dove") {
+                orin_word = "dove";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(doveVerts), doveVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(doveTexCoords), doveTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("dove.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "dove";
                 flag = true;
             } else if (strcmp(word, "shark") == 0 && orin_word != "shark") {
+                orin_word = "shark";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(sharkVerts), sharkVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(sharkTexCoords), sharkTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("shark.bmp")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "shark";
                 flag = true;
             } else if (strcmp(word, "tiger") == 0 && orin_word != "tiger") {
+                orin_word = "tiger";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(tigerVerts), tigerVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(tigerTexCoords), tigerTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("tiger.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "tiger";
                 flag = true;
             } else if (strcmp(word, "wolf") == 0 && orin_word != "wolf") {
+                orin_word = "wolf";
                 glBufferData(GL_ARRAY_BUFFER, sizeof(wolfVerts), wolfVerts, GL_DYNAMIC_DRAW);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(wolfTexCoords), wolfTexCoords,
                              GL_DYNAMIC_DRAW);
                 image = SOIL_load_image((model_texture_path + ("wolf.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
-                orin_word = "wolf";
+                flag = true;
+            }else if (strcmp(word, "carrot") == 0 && orin_word != "carrot") {
+                orin_word = "carrot";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(carrotVerts), carrotVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(carrotTexCoords), carrotTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("carrot.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "leopard") == 0 && orin_word != "leopard") {
+                orin_word = "leopard";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(leopardVerts), leopardVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(leopardTexCoords), leopardTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("leopard.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "mandarin") == 0 && orin_word != "mandarin") {
+                orin_word = "mandarin";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(mandarinVerts), mandarinVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(mandarinTexCoords), mandarinTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("mandarin.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "mango") == 0 && orin_word != "mango") {
+                orin_word = "mango";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(mangoVerts), mangoVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(mangoTexCoords), mangoTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("mango.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "ostrich") == 0 && orin_word != "ostrich") {
+                orin_word = "ostrich";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(ostrichVerts), ostrichVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(ostrichTexCoords), ostrichTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("ostrich.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "parakeet") == 0 && orin_word != "parakeet") {
+                orin_word = "parakeet";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(parakeetVerts), parakeetVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(parakeetTexCoords), parakeetTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("parakeet.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "peach") == 0 && orin_word != "peach") {
+                orin_word = "peach";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(peachVerts), peachVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(peachTexCoords), peachTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("peach.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "penguin") == 0 && orin_word != "penguin") {
+                orin_word = "penguin";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(penguinVerts), penguinVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(penguinTexCoords), penguinTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("penguin.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "raspberry") == 0 && orin_word != "raspberry") {
+                orin_word = "raspberry";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(raspberryVerts), raspberryVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(raspberryTexCoords), raspberryTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("raspberry.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "strawberry") == 0 && orin_word != "strawberry") {
+                orin_word = "strawberry";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(strawberryVerts), strawberryVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(strawberryTexCoords), strawberryTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("strawberry.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
                 flag = true;
             }
 
@@ -318,6 +418,26 @@ namespace EasyAR {
                 glDrawArrays(GL_TRIANGLES, 0, tigerNumVerts);
             } else if (strcmp(word, "wolf") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, wolfNumVerts);
+            } else if (strcmp(word, "carrot") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, carrotNumVerts);
+            }else if (strcmp(word, "leopard") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, leopardNumVerts);
+            }else if (strcmp(word, "mandarin") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, mandarinNumVerts);
+            }else if (strcmp(word, "mango") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, mangoNumVerts);
+            }else if (strcmp(word, "ostrich") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, ostrichNumVerts);
+            }else if (strcmp(word, "parakeet") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, parakeetNumVerts);
+            }else if (strcmp(word, "peach") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, peachNumVerts);
+            }else if (strcmp(word, "penguin") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, penguinNumVerts);
+            }else if (strcmp(word, "raspberry") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, raspberryNumVerts);
+            }else if (strcmp(word, "strawberry") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, strawberryNumVerts);
             }
         }
 
