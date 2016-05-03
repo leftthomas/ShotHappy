@@ -27,7 +27,7 @@ public class RewardActivity extends AppCompatActivity {
         setTitle(name);
 
         uri = Uri.parse(path);
-        video.setMediaController(new MediaController(getApplicationContext()));
+        video.setMediaController(new MediaController(this));
         video.setVideoURI(uri);
         video.start();
         video.requestFocus();
