@@ -31,6 +31,10 @@
     {
       "image": "fruits/strawberry.jpg",
       "name": "strawberry"
+    },
+    {
+      "image": "fruits/grapefruit.jpg",
+      "name": "grapefruit"
     }
   ]
 }

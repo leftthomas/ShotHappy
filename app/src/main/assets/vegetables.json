@@ -11,6 +11,10 @@
     {
       "image": "vegetables/carrot.jpg",
       "name": "carrot"
+    },
+    {
+      "image": "vegetables/redradish.jpg",
+      "name": "red radish"
     }
   ]
 }

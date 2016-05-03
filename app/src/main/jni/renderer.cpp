@@ -31,6 +31,8 @@
 #include "model/penguin.h"
 #include "model/raspberry.h"
 #include "model/strawberry.h"
+#include "model/grapefruit.h"
+#include "model/redradish.h"
 
 #if defined __APPLE__
 #include <OpenGLES/ES3/gl.h>
@@ -357,6 +359,24 @@ namespace EasyAR {
                 image = SOIL_load_image((model_texture_path + ("strawberry.jpg")).c_str(), &width,
                                         &height, 0, SOIL_LOAD_RGBA);
                 flag = true;
+            }else if (strcmp(word, "grapefruit") == 0 && orin_word != "grapefruit") {
+                orin_word = "grapefruit";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(grapefruitVerts), grapefruitVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(grapefruitTexCoords), grapefruitTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("grapefruit.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
+            }else if (strcmp(word, "red radish") == 0 && orin_word != "red radish") {
+                orin_word = "red radish";
+                glBufferData(GL_ARRAY_BUFFER, sizeof(redradishVerts), redradishVerts, GL_DYNAMIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(redradishTexCoords), redradishTexCoords,
+                             GL_DYNAMIC_DRAW);
+                image = SOIL_load_image((model_texture_path + ("redradish.jpg")).c_str(), &width,
+                                        &height, 0, SOIL_LOAD_RGBA);
+                flag = true;
             }
 
             //重新绑定贴图
@@ -438,6 +458,10 @@ namespace EasyAR {
                 glDrawArrays(GL_TRIANGLES, 0, raspberryNumVerts);
             }else if (strcmp(word, "strawberry") == 0) {
                 glDrawArrays(GL_TRIANGLES, 0, strawberryNumVerts);
+            }else if (strcmp(word, "grapefruit") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, grapefruitNumVerts);
+            }else if (strcmp(word, "red radish") == 0) {
+                glDrawArrays(GL_TRIANGLES, 0, redradishNumVerts);
             }
         }
 
