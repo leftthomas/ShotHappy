@@ -142,13 +142,13 @@ namespace EasyAR {
                         if (frame.targets()[0].target().name() == std::string("friend") &&
                             texid[0]) {
                             video = new AR;
-                            video->openVideoFile("friend.avi", texid[0]);
+                            video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/friend.mp4", texid[0]);
                             video_renderer = pVideoRenderer[0];
                         }
                         else if (frame.targets()[0].target().name() == std::string("mouse") &&
                                  texid[1]) {
                             video = new AR;
-                            video->openVideoFile("mouse.mp4", texid[1]);
+                            video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/mouse.mp4", texid[1]);
                             video_renderer = pVideoRenderer[1];
                         }
                         else if (frame.targets()[0].target().name() == std::string("dumb") &&
