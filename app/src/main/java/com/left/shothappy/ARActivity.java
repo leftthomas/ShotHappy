@@ -1,10 +1,12 @@
 package com.left.shothappy;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +28,9 @@ import com.left.shothappy.utils.ScheduleUtils;
 import com.left.shothappy.views.GLView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import java.util.HashMap;
+import java.util.Random;
+
 import cn.easyar.engine.EasyAR;
 
 /**
@@ -34,7 +39,7 @@ import cn.easyar.engine.EasyAR;
 public class ARActivity extends AppCompatActivity {
 
     private static String key = "d5356f4fba54d722115519ad830267a5zb8JO6yVcvKqdMGZREIYgvtkTjIlmPiUibOw0ge9OsN5DjcVfrOJKpUGM1MwEavrkvcZuEVvKB78wbeIsscymKohIytJAzPWYRhcMlDD3q9oKr5uBTiVtUHizWuMpcxxo0LLtKRdwJE0rbTEnliocezla7mnTJXmN1PzwniC";
-    private static View view, share_panel;
+    private static View view, share_panel, speak_tip_view;
 
     static {
         System.loadLibrary("EasyAR");
@@ -44,43 +49,6 @@ public class ARActivity extends AppCompatActivity {
     private ImageView fab;
     private CardView cardView;
     private Dict dict;
-    private AsyncPlayer player;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // UI界面的更新等相关操作
-                String text = dict.getKey() + "    " + dict.getPos_acceptations().get(0).getPos() + "    " +
-                        dict.getPos_acceptations().get(0).getAcceptation();
-
-                // 播放发音
-                String path = dict.getPs_prons().get(0).getPron();
-                Uri uri = Uri.parse(path);
-                player.play(getApplicationContext(), uri, false, AudioManager.STREAM_MUSIC);
-                Snackbar.make(view, text, Snackbar.LENGTH_LONG).setActionTextColor(Color.GREEN)
-                        .setAction(">>>>>>", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                setCard(dict);
-                                cardView.setVisibility(View.VISIBLE);
-                            }
-                        }).show();
-                //记得去更新Schedule
-                ScheduleUtils.UpdateSchedule(ARActivity.this, dict.getKey());
-            } else {
-                // UI界面的更新等相关操作
-                cardView.setVisibility(View.INVISIBLE);
-                Snackbar.make(view, val, Snackbar.LENGTH_SHORT).show();
-            }
-
-        }
-    };
     /**
      * 网络操作相关的子线程
      * 调用语音sdk与英文释义部分的网络请求
@@ -110,7 +78,53 @@ public class ARActivity extends AppCompatActivity {
             handler.sendMessage(msg);
         }
     };
-    private ImageView share, back, close, share_wechatmoments, share_wechat, share_qzone, share_qq, share_weibo;
+    private AsyncPlayer player;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // UI界面的更新等相关操作
+                String text = dict.getKey() + "    " + dict.getPos_acceptations().get(0).getPos() + "    " +
+                        dict.getPos_acceptations().get(0).getAcceptation();
+
+                // 播放发音
+                String path = dict.getPs_prons().get(0).getPron();
+                Uri uri = Uri.parse(path);
+                player.play(getApplicationContext(), uri, false, AudioManager.STREAM_MUSIC);
+                Snackbar.make(view, text, Snackbar.LENGTH_LONG).setActionTextColor(Color.GREEN)
+                        .setAction(">>>>>>", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                setCard(dict);
+                                speak_tip_view.setVisibility(View.INVISIBLE);
+                                cardView.setVisibility(View.VISIBLE);
+                            }
+                        }).show();
+                //记得去更新Schedule
+                ScheduleUtils.UpdateSchedule(ARActivity.this, dict.getKey());
+                speak_tip_view.setVisibility(View.INVISIBLE);
+                follow_speak_view.setVisibility(View.VISIBLE);
+            } else {
+                // UI界面的更新等相关操作
+                cardView.setVisibility(View.INVISIBLE);
+                follow_speak_view.setVisibility(View.INVISIBLE);
+                speak_tip_view.setVisibility(View.INVISIBLE);
+                Snackbar.make(view, val, Snackbar.LENGTH_SHORT).show();
+            }
+
+        }
+    };
+    private SoundPool soundPool;
+    private HashMap<Integer, Integer> soundPoolMap = new HashMap<>();
+    private ARActivity activity;
+    private ImageView share, back, close, share_wechatmoments, speak_over,
+            share_wechat, share_qzone, share_qq, share_weibo, follow_speak_view;
 
     public static native void nativeInitGL();
 
@@ -220,6 +234,33 @@ public class ARActivity extends AppCompatActivity {
                 share_panel.setVisibility(View.INVISIBLE);
             }
         });
+        follow_speak_view = (ImageView) findViewById(R.id.follow_speak_view);
+        follow_speak_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                follow_speak_view.setVisibility(View.INVISIBLE);
+                speak_tip_view.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        soundPoolMap.put(1, soundPool.load(this, R.raw.excellent, 1));
+        soundPoolMap.put(2, soundPool.load(this, R.raw.great, 2));
+        soundPoolMap.put(3, soundPool.load(this, R.raw.good, 3));
+        soundPoolMap.put(4, soundPool.load(this, R.raw.perfect, 4));
+        activity = this;
+
+        speak_tip_view = findViewById(R.id.speak_tip_view);
+        speak_over = (ImageView) findViewById(R.id.speak_over);
+        speak_over.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //随机播放评分声音
+                speak_tip_view.setVisibility(View.INVISIBLE);
+                activity.playSound(new Random().nextInt(soundPoolMap.size()) + 1, 0);
+            }
+        });
     }
 
     @Override
@@ -312,6 +353,16 @@ public class ARActivity extends AppCompatActivity {
         finish();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
         super.onBackPressed();
+    }
+
+
+    public void playSound(int sound, int loop) {
+        AudioManager mgr = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        float volume = streamVolumeCurrent / streamVolumeMax;
+        soundPool.play(soundPoolMap.get(sound), volume, volume, 1, loop, 1f);
+        //参数：1、Map中取值   2、当前音量     3、最大音量  4、优先级   5、重播次数   6、播放速度
     }
 
 }
