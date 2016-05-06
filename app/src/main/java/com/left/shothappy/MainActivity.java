@@ -1,6 +1,9 @@
 package com.left.shothappy;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -28,11 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
 //    private ImageView today_card;//今日卡片
 
+    protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
     private Button to_ar, to_thesaurus, to_rateoflearning, to_test;
     private ImageView to_rank, share_app, to_setting;
-
     private User user;
-
     private View main_view;
 
     @Override
@@ -264,4 +271,18 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 在当前的activity中注册广播
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("ExitApp");
+        this.registerReceiver(this.broadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(this.broadcastReceiver);
+    }
 }

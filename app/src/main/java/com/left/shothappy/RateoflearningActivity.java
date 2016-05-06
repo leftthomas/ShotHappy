@@ -244,8 +244,8 @@ public class RateoflearningActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rateoflearning);
-        setTitle(R.string.title_rateoflearning);
-        mTf = Typeface.createFromAsset(getAssets(), "OpenSans-Bold.ttf");
+
+        mTf = Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Bold.ttf");
         mLineChart = (LineChart) findViewById(R.id.linechart);
         mBarChart = (BarChart) findViewById(R.id.barchart);
         view = findViewById(R.id.rateoflearning_view);

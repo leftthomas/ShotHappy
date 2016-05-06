@@ -41,8 +41,7 @@
         <activity android:name=".ForgetPasswordActivity" />
         <activity
             android:name="com.umeng.socialize.editorpage.ShareActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.UMDefault" />
+            android:excludeFromRecents="true" />
 
         <meta-data
             android:name="UMENG_APPKEY"

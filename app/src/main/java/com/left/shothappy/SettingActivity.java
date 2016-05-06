@@ -3,6 +3,7 @@ package com.left.shothappy;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.Feedback;
@@ -38,26 +40,34 @@ public class SettingActivity extends AppCompatActivity {
     private TextView change_password;
     private TextView feedback;
     private TextView about;
-    private TextView logout;
+    private ImageView logout;
     private View view;
     private CircleImageView head_imageView;
     private TextView username_email;
     private User user;
     private Bitmap head;//头像Bitmap
+    private Typeface typeFace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        setTitle(R.string.title_setting);
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabit.ttf");
+
         pronunciation = (TextView) findViewById(R.id.pronunciation);
         change_password = (TextView) findViewById(R.id.change_password);
         feedback = (TextView) findViewById(R.id.feedback);
         about = (TextView) findViewById(R.id.about);
-        logout = (TextView) findViewById(R.id.logout);
+        logout = (ImageView) findViewById(R.id.logout);
         view = findViewById(R.id.setting_view);
         head_imageView = (CircleImageView) findViewById(R.id.imageView);
         username_email = (TextView) findViewById(R.id.username_email);
+
+        pronunciation.setTypeface(typeFace);
+        change_password.setTypeface(typeFace);
+        feedback.setTypeface(typeFace);
+        about.setTypeface(typeFace);
+        username_email.setTypeface(typeFace);
 
         user = BmobUser.getCurrentUser(this, User.class);
         if (user != null) {
@@ -242,8 +252,13 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //退出登录
                 User.logOut(getApplicationContext());   //清除缓存用户对象
+
+                Intent intent = new Intent();
+                intent.setAction("ExitApp");
+                sendBroadcast(intent);
                 //跳转至登录页
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
                 finish();
             }
         });
@@ -302,6 +317,14 @@ public class SettingActivity extends AppCompatActivity {
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+        super.onBackPressed();
     }
 
 }

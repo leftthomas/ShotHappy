@@ -34,7 +34,6 @@ public class ThesaurusActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thesaurus);
-        setTitle(R.string.title_thesaurus);
         initControls();
     }
 
