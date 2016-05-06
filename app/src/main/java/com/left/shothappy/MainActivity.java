@@ -3,10 +3,26 @@ package com.left.shothappy;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.left.shothappy.bean.Schedule;
+import com.left.shothappy.bean.User;
+import com.left.shothappy.utils.ScheduleUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobDate;
+import cn.bmob.v3.listener.FindListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,11 +31,16 @@ public class MainActivity extends AppCompatActivity {
     private Button to_ar, to_thesaurus, to_rateoflearning, to_test;
     private ImageView to_rank, share_app, to_setting;
 
+    private User user;
+
+    private View main_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        user = BmobUser.getCurrentUser(this, User.class);
         to_ar = (Button) findViewById(R.id.to_ar);
         to_thesaurus = (Button) findViewById(R.id.to_thesaurus);
         to_rateoflearning = (Button) findViewById(R.id.to_rateoflearning);
@@ -27,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         to_rank = (ImageView) findViewById(R.id.to_rank);
         share_app = (ImageView) findViewById(R.id.share_app);
         to_setting = (ImageView) findViewById(R.id.to_setting);
+        main_view = findViewById(R.id.main_view);
 
         to_ar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ARActivity.class));
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
@@ -39,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ThesaurusActivity.class));
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
@@ -46,13 +70,62 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), RateoflearningActivity.class));
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
         to_test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), TestActivity.class));
+
+                BmobQuery<Schedule> query = new BmobQuery<>();
+                List<BmobQuery<Schedule>> and = new ArrayList<>();
+                //大于00：00：00
+                BmobQuery<Schedule> q1 = new BmobQuery<>();
+                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = null;
+                try {
+                    date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                q1.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
+                and.add(q1);
+
+                //小于23：59：59
+                BmobQuery<Schedule> q2 = new BmobQuery<>();
+                Date date1 = null;
+                try {
+                    date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                q2.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
+                and.add(q2);
+                //添加复合与查询
+                query.and(and);
+
+                query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
+                query.order("createdAt");
+                query.findObjects(getApplicationContext(), new FindListener<Schedule>() {
+                    @Override
+                    public void onSuccess(List<Schedule> list) {
+
+                        if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                            Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), TestActivity.class);
+                            intent.putExtra("words", list.get(0).getWords().toArray());
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        Snackbar.make(main_view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -84,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
