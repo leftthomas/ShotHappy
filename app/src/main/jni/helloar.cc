@@ -8,7 +8,7 @@
 #include "renderer.h"
 #include <jni.h>
 
-#define JNIFUNCTION_NATIVE(sig) Java_com_left_shothappy_views_ARFragment_##sig
+#define JNIFUNCTION_NATIVE(sig) Java_com_left_shothappy_ARActivity_##sig
 extern "C" {
 
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * env, jobject

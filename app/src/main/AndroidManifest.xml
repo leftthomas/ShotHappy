@@ -102,7 +102,22 @@
         <activity
             android:name=".RewardActivity"
             android:screenOrientation="landscape"
-            android:theme='@style/NoTitleFullscreen'></activity>
+            android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".ARActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ThesaurusActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".RateoflearningActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".SettingActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".TestActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

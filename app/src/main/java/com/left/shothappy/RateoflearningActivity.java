@@ -1,12 +1,9 @@
-package com.left.shothappy.views;
+package com.left.shothappy;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -20,10 +17,10 @@ import com.github.mikephil.charting.utils.Legend;
 import com.github.mikephil.charting.utils.ValueFormatter;
 import com.github.mikephil.charting.utils.XLabels;
 import com.github.mikephil.charting.utils.YLabels;
-import com.left.shothappy.R;
 import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.utils.ScheduleUtils;
+import com.left.shothappy.views.CustomMarkerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +29,7 @@ import java.util.Map;
 /**
  * 学习进度的页面
  */
-public class RateoflearningFragment extends Fragment {
+public class RateoflearningActivity extends BaseActivity {
 
     //进步曲线（总进度，统计历史量）
     public static LineChart mLineChart;
@@ -238,24 +235,18 @@ public class RateoflearningFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_rateoflearning, container, false);
-        mTf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Bold.ttf");
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mLineChart = (LineChart) view.findViewById(R.id.linechart);
-        mBarChart = (BarChart) view.findViewById(R.id.barchart);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_rateoflearning);
+        setTitle(R.string.title_rateoflearning);
+        mTf = Typeface.createFromAsset(getAssets(), "OpenSans-Bold.ttf");
+        mLineChart = (LineChart) findViewById(R.id.linechart);
+        mBarChart = (BarChart) findViewById(R.id.barchart);
+        view = findViewById(R.id.rateoflearning_view);
         //绘制BarChart
-        ScheduleUtils.getDailyData(getActivity(), mBarChart, mBarColors);
+        ScheduleUtils.getDailyData(this, mBarChart, mBarColors);
         //绘制LineChart
-        ScheduleUtils.getImprovementData(getActivity(), mLineChart, mLineColors);
-
+        ScheduleUtils.getImprovementData(this, mLineChart, mLineColors);
     }
+
 }

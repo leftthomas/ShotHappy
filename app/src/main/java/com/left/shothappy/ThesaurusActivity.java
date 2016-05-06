@@ -1,16 +1,13 @@
-package com.left.shothappy.views;
+package com.left.shothappy;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.left.shothappy.R;
 import com.left.shothappy.adapters.ThesaurusAdapter;
+import com.left.shothappy.views.DictionaryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.List;
 /**
  * 词库的页面
  */
-public class ThesaurusFragment extends Fragment {
+public class ThesaurusActivity extends BaseActivity {
 
     private TabLayout tab_FindFragment_title;                            //定义TabLayout
     private ViewPager vp_FindFragment_pager;                             //定义viewPager
@@ -31,28 +28,23 @@ public class ThesaurusFragment extends Fragment {
     private DictionaryFragment fruitFragment;              //水果fragment
     private DictionaryFragment vegetableFragment;       //蔬菜fragment
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_thesaurus, container, false);
-        initControls(view);
-        return view;
-    }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_thesaurus);
+        setTitle(R.string.title_thesaurus);
+        initControls();
     }
+
 
     /**
      * 初始化各控件
-     *
-     * @param view
      */
-    private void initControls(View view) {
+    private void initControls() {
 
-        tab_FindFragment_title = (TabLayout) view.findViewById(R.id.tab_fragment_title);
-        vp_FindFragment_pager = (ViewPager) view.findViewById(R.id.vp_fragment_pager);
+        tab_FindFragment_title = (TabLayout) findViewById(R.id.tab_fragment_title);
+        vp_FindFragment_pager = (ViewPager) findViewById(R.id.vp_fragment_pager);
 
         //初始化各fragment
         animalFragment = new DictionaryFragment();
@@ -81,7 +73,7 @@ public class ThesaurusFragment extends Fragment {
         tab_FindFragment_title.addTab(tab_FindFragment_title.newTab().setText(list_title.get(1)));
         tab_FindFragment_title.addTab(tab_FindFragment_title.newTab().setText(list_title.get(2)));
 
-        fAdapter = new ThesaurusAdapter(getActivity().getSupportFragmentManager(), list_fragment, list_title);
+        fAdapter = new ThesaurusAdapter(getSupportFragmentManager(), list_fragment, list_title);
 
         //viewpager加载adapter
         vp_FindFragment_pager.setAdapter(fAdapter);

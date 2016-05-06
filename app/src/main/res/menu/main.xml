@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/icon_refresh_search"
-        android:icon="@drawable/refresh"
-        android:visible="false"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/share_wechatmoments"
         android:icon="@drawable/umeng_socialize_wxcircle"
         android:title="@string/share_wechatmoments"

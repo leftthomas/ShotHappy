@@ -6,10 +6,10 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
+import com.left.shothappy.RateoflearningActivity;
 import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.bean.User;
-import com.left.shothappy.views.RateoflearningFragment;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -327,9 +327,9 @@ public class ScheduleUtils {
                     //记得一定要做数据填充检查
                     List<Schedule> sc = formatNearSchedules(object, weeks, user);
                     //设置bar数据
-                    BarData barData = RateoflearningFragment.getBarData(weeks, sc);
+                    BarData barData = RateoflearningActivity.getBarData(weeks, sc);
                     //设置bar样式
-                    RateoflearningFragment.setupBarChart(chart, barData, color);
+                    RateoflearningActivity.setupBarChart(chart, barData, color);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -363,9 +363,9 @@ public class ScheduleUtils {
             public void onSuccess(List<Schedule> object) {
                 List<Map<String, Integer>> maps = formatSchedules(object, weeks);
                 //设置line数据
-                LineData lineData = RateoflearningFragment.getLineData(weeks, maps);
+                LineData lineData = RateoflearningActivity.getLineData(weeks, maps);
                 //设置line样式
-                RateoflearningFragment.setupLineChart(chart, lineData, color);
+                RateoflearningActivity.setupLineChart(chart, lineData, color);
             }
 
             @Override
