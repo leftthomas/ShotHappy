@@ -2,10 +2,11 @@ package com.left.shothappy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-public class TestActivity extends BaseActivity {
+public class TestActivity extends AppCompatActivity {
 
     private Button next;
 

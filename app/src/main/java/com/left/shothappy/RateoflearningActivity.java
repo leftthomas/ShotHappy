@@ -1,9 +1,12 @@
 package com.left.shothappy;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -19,8 +22,10 @@ import com.github.mikephil.charting.utils.XLabels;
 import com.github.mikephil.charting.utils.YLabels;
 import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
+import com.left.shothappy.utils.PicUtils;
 import com.left.shothappy.utils.ScheduleUtils;
 import com.left.shothappy.views.CustomMarkerView;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +34,7 @@ import java.util.Map;
 /**
  * 学习进度的页面
  */
-public class RateoflearningActivity extends BaseActivity {
+public class RateoflearningActivity extends AppCompatActivity {
 
     //进步曲线（总进度，统计历史量）
     public static LineChart mLineChart;
@@ -40,7 +45,7 @@ public class RateoflearningActivity extends BaseActivity {
     public static int mBarColors = Color.rgb(240, 240, 30);
     // 自定义字体
     private static Typeface mTf;
-    private static View view;
+    private static View view, share_panel;
     private static ValueFormatter valueFormatter = new ValueFormatter() {
         @Override
         public String getFormattedValue(float value) {
@@ -48,13 +53,14 @@ public class RateoflearningActivity extends BaseActivity {
         }
     };
 
+    private ImageView share, back, close, share_wechatmoments, share_wechat, share_qzone, share_qq, share_weibo;
+
     // 设置显示的样式
     public static void setupLineChart(final LineChart chart, LineData data, int color) {
 
         // disable the drawing of values into the chart
         chart.setDrawYValues(false);
         chart.setDrawBorder(false);
-
         //不显示数据描述
         chart.setDescription("");
 
@@ -243,10 +249,90 @@ public class RateoflearningActivity extends BaseActivity {
         mLineChart = (LineChart) findViewById(R.id.linechart);
         mBarChart = (BarChart) findViewById(R.id.barchart);
         view = findViewById(R.id.rateoflearning_view);
+        back = (ImageView) findViewById(R.id.back);
+        share = (ImageView) findViewById(R.id.share);
+
+        share_qq = (ImageView) findViewById(R.id.share_qq);
+        share_qzone = (ImageView) findViewById(R.id.share_qzone);
+        share_wechat = (ImageView) findViewById(R.id.share_wechat);
+        share_wechatmoments = (ImageView) findViewById(R.id.share_wechatmoments);
+        share_weibo = (ImageView) findViewById(R.id.share_weibo);
+        close = (ImageView) findViewById(R.id.close_share);
+        share_panel = findViewById(R.id.share_panel);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+            }
+        });
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share_panel.setVisibility(View.VISIBLE);
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_qq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.QQ);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_wechat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.WEIXIN);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_qzone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.QZONE);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_wechatmoments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.WEIXIN_CIRCLE);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_weibo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.SINA);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
         //绘制BarChart
         ScheduleUtils.getDailyData(this, mBarChart, mBarColors);
         //绘制LineChart
         ScheduleUtils.getImprovementData(this, mLineChart, mLineColors);
     }
 
+
+    /**
+     * 分享
+     */
+    private void share(SHARE_MEDIA num) {
+        Bitmap shot = PicUtils.takeShot(this);
+        PicUtils.share(num, this, shot);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+        super.onBackPressed();
+    }
 }

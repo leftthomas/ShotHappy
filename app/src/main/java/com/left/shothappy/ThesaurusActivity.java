@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.left.shothappy.adapters.ThesaurusAdapter;
 import com.left.shothappy.views.DictionaryFragment;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * 词库的页面
  */
-public class ThesaurusActivity extends BaseActivity {
+public class ThesaurusActivity extends AppCompatActivity {
 
     private TabLayout tab_FindFragment_title;                            //定义TabLayout
     private ViewPager vp_FindFragment_pager;                             //定义viewPager

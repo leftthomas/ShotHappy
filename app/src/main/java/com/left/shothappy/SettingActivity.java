@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * 设置的页面
  */
-public class SettingActivity extends BaseActivity {
+public class SettingActivity extends AppCompatActivity {
 
     private TextView pronunciation;
     private TextView change_password;

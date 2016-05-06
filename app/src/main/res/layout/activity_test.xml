@@ -37,7 +37,7 @@
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/button_background" />
+                android:src="@drawable/ar_page" />
 
             <ImageView
                 android:id="@+id/to_thesaurus"
@@ -45,7 +45,7 @@
                 android:layout_height="100dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/button_background" />
+                android:src="@drawable/thesaurus_page" />
         </LinearLayout>
 
         <LinearLayout
@@ -60,7 +60,7 @@
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/button_background" />
+                android:src="@drawable/rateoflearning_page" />
 
             <ImageView
                 android:id="@+id/to_test"
@@ -68,7 +68,7 @@
                 android:layout_height="100dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/button_background" />
+                android:src="@drawable/test_page" />
         </LinearLayout>
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package com.left.shothappy;
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
@@ -8,8 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,58 +20,31 @@ import android.widget.TextView;
 
 import com.left.shothappy.bean.Dict;
 import com.left.shothappy.utils.IcibaTranslate;
+import com.left.shothappy.utils.PicUtils;
 import com.left.shothappy.utils.Renderer;
 import com.left.shothappy.utils.ScheduleUtils;
 import com.left.shothappy.views.GLView;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import cn.easyar.engine.EasyAR;
 
 /**
  * AR认知的页面
  */
-public class ARActivity extends BaseActivity {
+public class ARActivity extends AppCompatActivity {
 
     private static String key = "d5356f4fba54d722115519ad830267a5zb8JO6yVcvKqdMGZREIYgvtkTjIlmPiUibOw0ge9OsN5DjcVfrOJKpUGM1MwEavrkvcZuEVvKB78wbeIsscymKohIytJAzPWYRhcMlDD3q9oKr5uBTiVtUHizWuMpcxxo0LLtKRdwJE0rbTEnliocezla7mnTJXmN1PzwniC";
+    private static View view, share_panel;
 
     static {
         System.loadLibrary("EasyAR");
         System.loadLibrary("ARNative");
     }
 
-    private FloatingActionButton fab;
+    private ImageView fab;
     private CardView cardView;
     private Dict dict;
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-
-            String source = nativeGetWord();
-
-            if (source == null || source.equals("")) {
-                data.putString("status", "请对准要识别的物体");
-            } else {
-                try {
-                    dict = IcibaTranslate.translate(source);
-                    data.putString("status", "true");//表示请求成功
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    data.putString("status", "翻译失败，请检查网络");
-                }
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
-        }
-    };
     private AsyncPlayer player;
-    private View view;
     /**
      * 接收到网络请求回复的数据之后通知UI更新
      */
@@ -107,6 +81,36 @@ public class ARActivity extends BaseActivity {
 
         }
     };
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+
+            String source = nativeGetWord();
+
+            if (source == null || source.equals("")) {
+                data.putString("status", "请对准要识别的物体");
+            } else {
+                try {
+                    dict = IcibaTranslate.translate(source);
+                    data.putString("status", "true");//表示请求成功
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    data.putString("status", "翻译失败，请检查网络");
+                }
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
+    private ImageView share, back, close, share_wechatmoments, share_wechat, share_qzone, share_qq, share_weibo;
 
     public static native void nativeInitGL();
 
@@ -140,7 +144,7 @@ public class ARActivity extends BaseActivity {
         nativeRotationChange(getWindowManager().getDefaultDisplay().getRotation() == android.view.Surface.ROTATION_0);
 
         player = new AsyncPlayer("audio");
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (ImageView) findViewById(R.id.fab);
         cardView = (CardView) findViewById(R.id.cardview);
         view = findViewById(R.id.ar_frameLayout);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +152,72 @@ public class ARActivity extends BaseActivity {
             public void onClick(View view) {
                 // 开启一个子线程，进行翻译与语音API请求，注意，不能直接在主线程操作
                 new Thread(networkTask).start();
+            }
+        });
+
+        back = (ImageView) findViewById(R.id.back);
+        share = (ImageView) findViewById(R.id.share);
+
+        share_qq = (ImageView) findViewById(R.id.share_qq);
+        share_qzone = (ImageView) findViewById(R.id.share_qzone);
+        share_wechat = (ImageView) findViewById(R.id.share_wechat);
+        share_wechatmoments = (ImageView) findViewById(R.id.share_wechatmoments);
+        share_weibo = (ImageView) findViewById(R.id.share_weibo);
+        close = (ImageView) findViewById(R.id.close_share);
+        share_panel = findViewById(R.id.share_panel);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+            }
+        });
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share_panel.setVisibility(View.VISIBLE);
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_qq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.QQ);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_wechat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.WEIXIN);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_qzone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.QZONE);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_wechatmoments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.WEIXIN_CIRCLE);
+                share_panel.setVisibility(View.INVISIBLE);
+            }
+        });
+        share_weibo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share(SHARE_MEDIA.SINA);
+                share_panel.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -227,6 +297,21 @@ public class ARActivity extends BaseActivity {
                 cardView.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    /**
+     * 分享
+     */
+    private void share(SHARE_MEDIA num) {
+        Bitmap shot = PicUtils.takeShot(this);
+        PicUtils.share(num, this, shot);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+        super.onBackPressed();
     }
 
 }

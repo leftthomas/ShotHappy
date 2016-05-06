@@ -29,8 +29,7 @@
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_background"
-                android:text="@string/title_ar" />
+                android:background="@drawable/ar_page" />
 
             <Button
                 android:id="@+id/to_thesaurus"
@@ -38,8 +37,7 @@
                 android:layout_height="100dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_background"
-                android:text="@string/title_thesaurus" />
+                android:background="@drawable/thesaurus_page" />
         </LinearLayout>
 
         <LinearLayout
@@ -54,8 +52,7 @@
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_background"
-                android:text="@string/title_rateoflearning" />
+                android:background="@drawable/rateoflearning_page" />
 
             <Button
                 android:id="@+id/to_test"
@@ -63,8 +60,7 @@
                 android:layout_height="100dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_background"
-                android:text="@string/title_test" />
+                android:background="@drawable/test_page" />
         </LinearLayout>
 
     </LinearLayout>
