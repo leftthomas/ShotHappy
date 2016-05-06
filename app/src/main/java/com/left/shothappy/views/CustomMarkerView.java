@@ -1,6 +1,7 @@
 package com.left.shothappy.views;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.data.Entry;
@@ -14,9 +15,13 @@ public class CustomMarkerView extends MarkerView {
 
     private TextView tvContent;
 
+    private Typeface typeFace;
+
     public CustomMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
+        typeFace = Typeface.createFromAsset(context.getAssets(), "fonts/bear-rabbit.ttf");
         tvContent = (TextView) findViewById(R.id.tvContent);
+        tvContent.setTypeface(typeFace);
     }
 
     @Override

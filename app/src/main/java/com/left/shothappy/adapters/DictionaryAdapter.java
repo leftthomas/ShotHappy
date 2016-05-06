@@ -2,6 +2,7 @@ package com.left.shothappy.adapters;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -38,28 +39,7 @@ public class DictionaryAdapter extends BaseAdapter {
 
     private String source;
     private List<Ps_pron> prons;
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-            try {
-                prons = IcibaTranslate.getProns(source);
-                data.putString("status", "true");//表示请求成功
-            } catch (Exception e) {
-                e.printStackTrace();
-                data.putString("status", "发音失败，请检查网络");
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
-        }
-    };
+    private Typeface typeFace;
     private AsyncPlayer player;
     /**
      * 接收到网络请求回复的数据之后通知UI更新
@@ -88,6 +68,28 @@ public class DictionaryAdapter extends BaseAdapter {
 
         }
     };
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+            try {
+                prons = IcibaTranslate.getProns(source);
+                data.putString("status", "true");//表示请求成功
+            } catch (Exception e) {
+                e.printStackTrace();
+                data.putString("status", "发音失败，请检查网络");
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
 
     //构造方法，参数list传递的就是这一组数据的信息
     public DictionaryAdapter(Context context, List<Map<String, Object>> list) {
@@ -97,6 +99,9 @@ public class DictionaryAdapter extends BaseAdapter {
 
         this.list = list;
         player = new AsyncPlayer("audio");
+
+        typeFace = Typeface.createFromAsset(context.getAssets(), "fonts/bear-rabbit.ttf");
+
     }
 
     //得到总的数量
@@ -126,6 +131,7 @@ public class DictionaryAdapter extends BaseAdapter {
         final String word = list.get(position).get("word").toString();
         //从list对象中为子组件赋值
         tv.setText(word);
+        tv.setTypeface(typeFace);
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

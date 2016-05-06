@@ -1,5 +1,6 @@
 package com.left.shothappy.views;
 
+import android.graphics.Typeface;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -50,6 +51,8 @@ public class DictionaryFragment extends Fragment {
     private String type;//用来表明是哪一种词典，实例化fragment时记得一定要赋值
     private int index;//用来控制每次加载单词个数
     private Dict dict;
+    private Typeface typeFace;
+
     /**
      * 接收到网络请求回复的数据之后通知UI更新
      */
@@ -105,7 +108,7 @@ public class DictionaryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dictionary, container, false);
-
+        typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/bear-rabbit.ttf");
         initData();
         user = BmobUser.getCurrentUser(getContext(), User.class);
         adapter = new DictionaryAdapter(getContext(), mItemList);
@@ -220,8 +223,18 @@ public class DictionaryFragment extends Fragment {
         TextView ps2 = (TextView) cardView.findViewById(R.id.ps2);
         TextView pos = (TextView) cardView.findViewById(R.id.pos);
         TextView acceptation = (TextView) cardView.findViewById(R.id.acceptation);
+        TextView bilingual = (TextView) cardView.findViewById(R.id.bilingual);
         TextView orig = (TextView) cardView.findViewById(R.id.orig);
         TextView trans = (TextView) cardView.findViewById(R.id.trans);
+
+        key.setTypeface(typeFace);
+//        ps1.setTypeface(typeFace);
+//        ps2.setTypeface(typeFace);
+        pos.setTypeface(typeFace);
+        acceptation.setTypeface(typeFace);
+        bilingual.setTypeface(typeFace);
+        orig.setTypeface(typeFace);
+        trans.setTypeface(typeFace);
 
         ImageView ps1sound = (ImageView) cardView.findViewById(R.id.ps1sound);
         ImageView ps2sound = (ImageView) cardView.findViewById(R.id.ps2sound);

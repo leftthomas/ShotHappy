@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/speakButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="20dp"
-        android:src="@android:drawable/ic_btn_speak_now" />
+        android:src="@drawable/speak" />
 
     <TextView
         android:id="@+id/wordTextView"
@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:text="@string/word"
+        android:textColor="@color/colorAccent"
         android:textSize="22sp"
         android:textStyle="bold" />
 

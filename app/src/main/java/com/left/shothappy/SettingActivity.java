@@ -52,7 +52,7 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabit.ttf");
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabbit.ttf");
 
         pronunciation = (TextView) findViewById(R.id.pronunciation);
         change_password = (TextView) findViewById(R.id.change_password);
