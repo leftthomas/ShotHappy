@@ -4,32 +4,40 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.ScheduleUtils;
 
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.GetListener;
 
 public class MainActivity extends AppCompatActivity {
-
-//    private ImageView today_card;//今日卡片
 
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -38,16 +46,46 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private Button to_ar, to_thesaurus, to_rateoflearning, to_test;
-    private ImageView to_rank, share_app, to_setting;
+    private ImageView to_rank, share_app, to_setting,card_box,reward_card;
     private User user;
-    private View main_view;
+    private View main_view,card_panel;
+    private TextView unlock;
+    private Typeface typeFace;
+    //用来查询显示的奖励图片
+    private Map<String,String> rewards_map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabbit.ttf");
 
         user = BmobUser.getCurrentUser(this, User.class);
+
+        BmobQuery<User> query = new BmobQuery<>();
+        query.getObject(this, user.getObjectId(), new GetListener<User>() {
+            @Override
+            public void onSuccess(User object) {
+                //及时设置下全局的rewards，待会要传给ndk层
+                ((MyApplication)getApplication()).setRewards(object.getRewards());
+            }
+            @Override
+            public void onFailure(int code, String arg0) {
+
+            }
+        });
+
+        rewards_map=new HashMap<>();
+        rewards_map.put("2016-05-07","crayon.jpg");
+        rewards_map.put("2016-05-08","detective.jpg");
+        rewards_map.put("2016-05-09","dragonball.jpg");
+        rewards_map.put("2016-05-10","dumb.png");
+        rewards_map.put("2016-05-11","friend.png");
+        rewards_map.put("2016-05-12","mouse.png");
+        rewards_map.put("2016-05-13","ninja.jpg");
+        rewards_map.put("2016-05-14","robot.jpg");
+        rewards_map.put("2016-05-15","sheep.jpg");
+
         to_ar = (Button) findViewById(R.id.to_ar);
         to_thesaurus = (Button) findViewById(R.id.to_thesaurus);
         to_rateoflearning = (Button) findViewById(R.id.to_rateoflearning);
@@ -55,7 +93,76 @@ public class MainActivity extends AppCompatActivity {
         to_rank = (ImageView) findViewById(R.id.to_rank);
         share_app = (ImageView) findViewById(R.id.share_app);
         to_setting = (ImageView) findViewById(R.id.to_setting);
+        card_box= (ImageView) findViewById(R.id.card_box);
         main_view = findViewById(R.id.main_view);
+        card_panel=findViewById(R.id.card_panel);
+        reward_card= (ImageView) findViewById(R.id.reward_card);
+        unlock= (TextView) findViewById(R.id.unlock);
+        unlock.setTypeface(typeFace);
+        card_box.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                BmobQuery<Schedule> query = new BmobQuery<>();
+                List<BmobQuery<Schedule>> and = new ArrayList<>();
+                //大于00：00：00
+                BmobQuery<Schedule> q1 = new BmobQuery<>();
+                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = null;
+                try {
+                    date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                q1.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
+                and.add(q1);
+
+                //小于23：59：59
+                BmobQuery<Schedule> q2 = new BmobQuery<>();
+                Date date1 = null;
+                try {
+                    date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                q2.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
+                and.add(q2);
+                //添加复合与查询
+                query.and(and);
+
+                query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
+                query.order("createdAt");
+                query.findObjects(getApplicationContext(), new FindListener<Schedule>() {
+                    @Override
+                    public void onSuccess(List<Schedule> list) {
+
+                        if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                            Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            try {
+                                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                final String tex=sdf.format(ScheduleUtils.getTodayZero());
+                                InputStream in=getAssets().open("videos/"+rewards_map.get(tex));
+                                Bitmap bmp= BitmapFactory.decodeStream(in);
+                                reward_card.setImageBitmap(bmp);
+                                card_panel.setVisibility(View.VISIBLE);
+                                new Handler().postDelayed(new Runnable(){
+                                    public void run() {
+                                        card_panel.setVisibility(View.INVISIBLE);}
+                                }, 3000);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        Snackbar.make(main_view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
 
         to_ar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,108 +274,6 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
-
-
-//        today_card.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                BmobQuery<Schedule> query = new BmobQuery<>();
-//                List<BmobQuery<Schedule>> and = new ArrayList<>();
-//                //大于00：00：00
-//                BmobQuery<Schedule> q1 = new BmobQuery<>();
-//                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                Date date = null;
-//                try {
-//                    date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                q1.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
-//                and.add(q1);
-//
-//                //小于23：59：59
-//                BmobQuery<Schedule> q2 = new BmobQuery<>();
-//                Date date1 = null;
-//                try {
-//                    date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                q2.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
-//                and.add(q2);
-//                //添加复合与查询
-//                query.and(and);
-//
-//                query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
-//                query.order("createdAt");
-//                query.findObjects(getApplicationContext(), new FindListener<Schedule>() {
-//                    @Override
-//                    public void onSuccess(List<Schedule> list) {
-//                        if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
-//                            Snackbar.make(navigationView, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
-//                        } else {
-//                            //查找到当日的奖励视频
-//                            BmobQuery<RewardVideo> videoBmobQuery = new BmobQuery<>();
-//                            List<BmobQuery<RewardVideo>> videoand = new ArrayList<>();
-//                            //大于00：00：00
-//                            BmobQuery<RewardVideo> q3 = new BmobQuery<>();
-//                            Date date = null;
-//                            try {
-//                                date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
-//                            q3.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
-//                            videoand.add(q3);
-//
-//                            //小于23：59：59
-//                            BmobQuery<RewardVideo> q4 = new BmobQuery<>();
-//                            Date date1 = null;
-//                            try {
-//                                date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
-//                            q4.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
-//                            videoand.add(q4);
-//                            //添加复合与查询
-//                            videoBmobQuery.and(videoand);
-//                            videoBmobQuery.order("createdAt");
-//                            videoBmobQuery.findObjects(getApplicationContext(), new FindListener<RewardVideo>() {
-//                                @Override
-//                                public void onSuccess(List<RewardVideo> list) {
-//                                    if (list == null || list.size() == 0 || list.get(0).getVideo() == null) {
-//                                        Snackbar.make(navigationView, getString(R.string.reward_tip), Snackbar.LENGTH_SHORT).show();
-//                                    } else {
-//                                         /* 开始播放视频 */
-//                                        Intent intent = new Intent();
-//                                        //设置传递方向
-//                                        intent.setClass(getApplicationContext(), RewardActivity.class);
-//                                        //绑定数据
-//                                        intent.putExtra("name", list.get(0).getName());
-//                                        intent.putExtra("path", list.get(0).getVideo().getFileUrl(getApplicationContext()));
-//                                        //启动activity
-//                                        startActivity(intent);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onError(int i, String s) {
-//                                    Snackbar.make(navigationView, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
-//                                }
-//                            });
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(int i, String s) {
-//                        Snackbar.make(navigationView, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
-//                    }
-//                });
-//                drawer.closeDrawer(GravityCompat.START);
-//            }
-//        });
     }
 
     @Override

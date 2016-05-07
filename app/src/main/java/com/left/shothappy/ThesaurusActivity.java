@@ -83,4 +83,11 @@ public class ThesaurusActivity extends AppCompatActivity {
         tab_FindFragment_title.setupWithViewPager(vp_FindFragment_pager);
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+        super.onBackPressed();
+    }
+
 }

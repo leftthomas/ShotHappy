@@ -56,10 +56,10 @@ namespace EasyAR {
             Renderer renderer;
 
             //视频相关
-            VideoRenderer *pVideoRenderer[3];
+            VideoRenderer *pVideoRenderer[9];
             int tracked_target;
             int active_target;
-            int texid[3];
+            int texid[9];
             AR *video;
             VideoRenderer *video_renderer;
         };
@@ -72,7 +72,7 @@ namespace EasyAR {
             //视频相关
             tracked_target = 0;
             active_target = 0;
-            for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < 9; ++i) {
                 texid[i] = 0;
                 pVideoRenderer[i] = new VideoRenderer;
             }
@@ -82,7 +82,7 @@ namespace EasyAR {
 
         //视频相关
         HelloAR::~HelloAR() {
-            for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < 9; ++i) {
                 delete pVideoRenderer[i];
             }
         }
@@ -92,7 +92,7 @@ namespace EasyAR {
             augmenter_ = Augmenter();
 
             //视频相关
-            for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < 9; ++i) {
                 pVideoRenderer[i]->init();
                 texid[i] = pVideoRenderer[i]->texId();
             }
@@ -142,7 +142,16 @@ namespace EasyAR {
                         if (frame.targets()[0].target().name() == std::string("friend") &&
                             texid[0]) {
                             video = new AR;
-                            video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/friend.mp4", texid[0]);
+
+
+
+
+
+
+
+
+
+//                            video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/friend.mp4", texid[0]);
                             video_renderer = pVideoRenderer[0];
                         }
                         else if (frame.targets()[0].target().name() == std::string("mouse") &&
@@ -158,6 +167,54 @@ namespace EasyAR {
                                     "http://file.bmob.cn/M03/22/46/oYYBAFcJ1h2AAWuHAL71_sMJ6DI259.mp4",
                                     texid[2]);
                             video_renderer = pVideoRenderer[2];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("crayon") &&
+                                 texid[3]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2016/05/07/3d0a15ed40275ebe80edbfec82ca8d20.MP4",
+                                    texid[3]);
+                            video_renderer = pVideoRenderer[3];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("detective") &&
+                                 texid[4]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://www.gardenofvisual.com/static/videos/detective.mp4",
+                                    texid[4]);
+                            video_renderer = pVideoRenderer[4];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("dragonball") &&
+                                 texid[5]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://www.gardenofvisual.com/static/videos/dragonball.mp4",
+                                    texid[5]);
+                            video_renderer = pVideoRenderer[5];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("ninja") &&
+                                 texid[6]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://www.gardenofvisual.com/static/videos/ninja.mp4",
+                                    texid[6]);
+                            video_renderer = pVideoRenderer[6];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("robot") &&
+                                 texid[7]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://www.gardenofvisual.com/static/videos/robot.mp4",
+                                    texid[7]);
+                            video_renderer = pVideoRenderer[7];
+                        }
+                        else if (frame.targets()[0].target().name() == std::string("sheep") &&
+                                 texid[8]) {
+                            video = new AR;
+                            video->openStreamingVideo(
+                                    "http://www.gardenofvisual.com/static/videos/sheep.mp4",
+                                    texid[8]);
+                            video_renderer = pVideoRenderer[8];
                         }
                     }
                     if (video) {
@@ -178,7 +235,18 @@ namespace EasyAR {
                 //如果视频检测到了，就不要3d模型渲染了
                 if (tracked_target) {
                     video->update();
-                    video_renderer->render(projectionMatrix, cameraview, target.size());
+
+
+
+
+
+
+
+
+
+
+
+//                    video_renderer->render(projectionMatrix, cameraview, target.size());
                 } else {
                     //非视频，3d模型渲染
                     renderer.render(projectionMatrix, cameraview, target.size(), word);

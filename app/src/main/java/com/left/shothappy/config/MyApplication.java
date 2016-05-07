@@ -11,11 +11,14 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.socialize.PlatformConfig;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by left on 16/3/27.
  */
 public class MyApplication extends Application {
+
+    private List<String> rewards;
 
     Handler handler = new Handler() {
         @Override
@@ -71,6 +74,14 @@ public class MyApplication extends Application {
         //开启拷贝
         new Thread(networkTask).start();
 
+    }
+
+    public List<String> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<String> rewards) {
+        this.rewards = rewards;
     }
 
 }

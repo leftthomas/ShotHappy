@@ -1,5 +1,7 @@
 package com.left.shothappy.bean;
 
+import java.util.List;
+
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -11,6 +13,8 @@ public class User extends BmobUser {
     //头像
     private BmobFile head;
     private boolean pronunciation;//默认美音
+    //获得的奖励卡片
+    private List<String> rewards;
 
     public boolean isPronunciation() {
         return pronunciation;
@@ -28,4 +32,11 @@ public class User extends BmobUser {
         this.head = head;
     }
 
+    public List<String> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<String> rewards) {
+        this.rewards = rewards;
+    }
 }

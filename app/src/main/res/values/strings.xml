@@ -73,4 +73,5 @@
     <string name="today_tip">请完成今日任务(至少学习10单词)</string>
     <string name="reward_tip">今日奖励还未出炉，请稍候再试</string>
     <string name="next">下一题</string>
+    <string name="unlock_today_card">卡片已解锁(•̀ᴗ•́)\n快去观看动画吧</string>
 </resources>

@@ -11,6 +11,30 @@
     {
       "image": "videos/dumb.png",
       "name": "dumb"
+    },
+    {
+      "image": "videos/crayon.jpg",
+      "name": "crayon"
+    },
+    {
+      "image": "videos/detective.jpg",
+      "name": "detective"
+    },
+    {
+      "image": "videos/dragonball.jpg",
+      "name": "dragonball"
+    },
+    {
+      "image": "videos/ninja.jpg",
+      "name": "ninja"
+    },
+    {
+      "image": "videos/robot.jpg",
+      "name": "robot"
+    },
+    {
+      "image": "videos/sheep.jpg",
+      "name": "sheep"
     }
   ]
 }

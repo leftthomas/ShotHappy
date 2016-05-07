@@ -10,6 +10,7 @@ import com.left.shothappy.RateoflearningActivity;
 import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,11 +44,13 @@ public class ScheduleUtils {
      * @param activity
      * @param key
      */
-    private static void updateSchedule(Activity activity, String key) {
+    private static void updateSchedule(final Activity activity, String key) {
+
+        final User user = BmobUser.getCurrentUser(activity, User.class);
+
         //如果今天还没有Schedule
         if (schedules == null || schedules.size() == 0) {
             //生成一条Schedule到云端
-            User user = BmobUser.getCurrentUser(activity, User.class);
             // 创建Schedule信息
             Schedule schedule = new Schedule();
             List<String> word = new ArrayList<>();
@@ -81,6 +84,63 @@ public class ScheduleUtils {
                 }
             });
         }
+        //判断有没有学到10个单词
+        BmobQuery<Schedule> query = new BmobQuery<>();
+        List<BmobQuery<Schedule>> and = new ArrayList<>();
+        //大于00：00：00
+        BmobQuery<Schedule> q1 = new BmobQuery<>();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse(sdf.format(ScheduleUtils.getTodayZero()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        q1.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(date));
+        and.add(q1);
+
+        //小于23：59：59
+        BmobQuery<Schedule> q2 = new BmobQuery<>();
+        Date date1 = null;
+        try {
+            date1 = sdf.parse(sdf.format(ScheduleUtils.getTodayEnd()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        q2.addWhereLessThanOrEqualTo("createdAt", new BmobDate(date1));
+        and.add(q2);
+        //添加复合与查询
+        query.and(and);
+
+        query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
+        query.order("createdAt");
+        query.findObjects(activity, new FindListener<Schedule>() {
+            @Override
+            public void onSuccess(List<Schedule> list) {
+                if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                } else if(list.get(0).getWords().size() == 10){
+                    //奖励一张卡片
+                    // 添加String类型的数组,奖励卡片的名字以时间命名
+                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    final String tex=sdf.format(ScheduleUtils.getTodayZero());
+
+                    user.add("rewards",tex);
+                    user.update(activity, new UpdateListener() {
+                        @Override
+                        public void onSuccess() {
+                            //及时设置下全局的rewards，待会要传给ndk层
+                            ((MyApplication)activity.getApplication()).getRewards().add(tex);
+                        }
+                        @Override
+                        public void onFailure(int code, String msg) {
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onError(int i, String s) {
+            }
+        });
     }
 
     /**
