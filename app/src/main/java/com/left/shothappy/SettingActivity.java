@@ -81,7 +81,8 @@ public class SettingActivity extends BaseActivity {
                             .bitmapConfig(Bitmap.Config.RGB_565)
                             .build();
                     //载入图片
-                    ImageLoader.getInstance().displayImage(o.getHead().getFileUrl(getApplicationContext()), head_imageView, options);
+                    if (o.getHead() != null)
+                        ImageLoader.getInstance().displayImage(o.getHead().getFileUrl(getApplicationContext()), head_imageView, options);
                 }
 
                 @Override
