@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.Dict;
+import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.IcibaTranslate;
 import com.left.shothappy.utils.PicUtils;
 import com.left.shothappy.utils.Renderer;
@@ -50,35 +51,6 @@ public class ARActivity extends AppCompatActivity {
     private ImageView fab;
     private CardView cardView;
     private Dict dict;
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-
-            String source = nativeGetWord();
-
-            if (source == null || source.equals("")) {
-                data.putString("status", "请对准要识别的物体");
-            } else {
-                try {
-                    dict = IcibaTranslate.translate(source);
-                    data.putString("status", "true");//表示请求成功
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    data.putString("status", "翻译失败，请检查网络");
-                }
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
-        }
-    };
     private AsyncPlayer player;
     private Typeface typeFace;
     /**
@@ -122,6 +94,35 @@ public class ARActivity extends AppCompatActivity {
 
         }
     };
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+
+            String source = nativeGetWord();
+
+            if (source == null || source.equals("")) {
+                data.putString("status", "请对准要识别的物体");
+            } else {
+                try {
+                    dict = IcibaTranslate.translate(source);
+                    data.putString("status", "true");//表示请求成功
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    data.putString("status", "翻译失败，请检查网络");
+                }
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
     private SoundPool soundPool;
     private HashMap<Integer, Integer> soundPoolMap = new HashMap<>();
     private ARActivity activity;
@@ -134,6 +135,9 @@ public class ARActivity extends AppCompatActivity {
 
     public static native void nativeRender();
 
+    //用来更新c层的rewards
+    public static native void nativeUpdateRewards(String[] rewards);
+
     private native boolean nativeInit();
 
     private native void nativeDestory();
@@ -142,7 +146,6 @@ public class ARActivity extends AppCompatActivity {
 
     //获取单词
     private native String nativeGetWord();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +157,8 @@ public class ARActivity extends AppCompatActivity {
 
         EasyAR.initialize(this, key);
         nativeInit();
+        //记得一定要去调用这个方法，不然视频没法放
+        ARActivity.nativeUpdateRewards(((MyApplication) getApplication()).getRewards());
         GLView glView = new GLView(this);
         glView.setRenderer(new Renderer());
         glView.setZOrderMediaOverlay(true);

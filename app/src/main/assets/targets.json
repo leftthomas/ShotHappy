@@ -2,39 +2,39 @@
   "images": [
     {
       "image": "videos/friend.png",
-      "name": "friend"
+      "name": "2016-05-07"
     },
     {
       "image": "videos/mouse.png",
-      "name": "mouse"
+      "name": "2016-05-08"
     },
     {
       "image": "videos/dumb.png",
-      "name": "dumb"
+      "name": "2016-05-09"
     },
     {
       "image": "videos/crayon.jpg",
-      "name": "crayon"
+      "name": "2016-05-10"
     },
     {
       "image": "videos/detective.jpg",
-      "name": "detective"
+      "name": "2016-05-11"
     },
     {
       "image": "videos/dragonball.jpg",
-      "name": "dragonball"
+      "name": "2016-05-12"
     },
     {
       "image": "videos/ninja.jpg",
-      "name": "ninja"
+      "name": "2016-05-13"
     },
     {
       "image": "videos/robot.jpg",
-      "name": "robot"
+      "name": "2016-05-14"
     },
     {
       "image": "videos/sheep.jpg",
-      "name": "sheep"
+      "name": "2016-05-15"
     }
   ]
 }

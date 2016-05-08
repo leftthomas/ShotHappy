@@ -11,14 +11,11 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.socialize.PlatformConfig;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by left on 16/3/27.
  */
 public class MyApplication extends Application {
-
-    private List<String> rewards;
 
     Handler handler = new Handler() {
         @Override
@@ -53,6 +50,7 @@ public class MyApplication extends Application {
             handler.sendMessage(msg);
         }
     };
+    private String[] rewards = {};
 
     @Override
     public void onCreate() {
@@ -76,11 +74,11 @@ public class MyApplication extends Application {
 
     }
 
-    public List<String> getRewards() {
+    public String[] getRewards() {
         return rewards;
     }
 
-    public void setRewards(List<String> rewards) {
+    public void setRewards(String[] rewards) {
         this.rewards = rewards;
     }
 

@@ -123,13 +123,17 @@ public class ScheduleUtils {
                     // 添加String类型的数组,奖励卡片的名字以时间命名
                     final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     final String tex=sdf.format(ScheduleUtils.getTodayZero());
-
                     user.add("rewards",tex);
                     user.update(activity, new UpdateListener() {
                         @Override
                         public void onSuccess() {
                             //及时设置下全局的rewards，待会要传给ndk层
-                            ((MyApplication)activity.getApplication()).getRewards().add(tex);
+                            String[] sts = new String[((MyApplication) activity.getApplication()).getRewards().length + 1];
+                            for (int i = 0; i < ((MyApplication) activity.getApplication()).getRewards().length; i++) {
+                                sts[i] = ((MyApplication) activity.getApplication()).getRewards()[i];
+                            }
+                            sts[sts.length - 1] = tex;
+                            ((MyApplication) activity.getApplication()).setRewards(sts);
                         }
                         @Override
                         public void onFailure(int code, String msg) {

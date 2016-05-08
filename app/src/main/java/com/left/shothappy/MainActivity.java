@@ -66,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
         query.getObject(this, user.getObjectId(), new GetListener<User>() {
             @Override
             public void onSuccess(User object) {
-                //及时设置下全局的rewards，待会要传给ndk层
-                ((MyApplication)getApplication()).setRewards(object.getRewards());
+                //及时设置下全局的rewards，传给ndk层
+                if (object.getRewards() != null)
+                    ((MyApplication) getApplication()).setRewards(object.getRewards());
             }
             @Override
             public void onFailure(int code, String arg0) {
@@ -76,12 +77,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         rewards_map=new HashMap<>();
-        rewards_map.put("2016-05-07","crayon.jpg");
-        rewards_map.put("2016-05-08","detective.jpg");
-        rewards_map.put("2016-05-09","dragonball.jpg");
-        rewards_map.put("2016-05-10","dumb.png");
-        rewards_map.put("2016-05-11","friend.png");
-        rewards_map.put("2016-05-12","mouse.png");
+        rewards_map.put("2016-05-07", "friend.png");
+        rewards_map.put("2016-05-08", "mouse.png");
+        rewards_map.put("2016-05-09", "dumb.png");
+        rewards_map.put("2016-05-10", "crayon.jpg");
+        rewards_map.put("2016-05-11", "detective.jpg");
+        rewards_map.put("2016-05-12", "dragonball.jpg");
         rewards_map.put("2016-05-13","ninja.jpg");
         rewards_map.put("2016-05-14","robot.jpg");
         rewards_map.put("2016-05-15","sheep.jpg");

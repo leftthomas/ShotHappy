@@ -7,8 +7,9 @@
 #include "ar.hpp"
 #include "renderer.h"
 #include <jni.h>
-
+#include <android/log.h>
 #define JNIFUNCTION_NATIVE(sig) Java_com_left_shothappy_ARActivity_##sig
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "EasyAR", __VA_ARGS__)
 extern "C" {
 
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * env, jobject
@@ -28,6 +29,9 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeRotationChange(JNIEnv * env, job
                                                   portrait));
 JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobject
                                                       obj));
+JNIEXPORT void JNICALL JNIFUNCTION_NATIVE (nativeUpdateRewards(JNIEnv * env, jclass
+                                                   type, jobjectArray
+                                                   rewards));
 };
 
 namespace EasyAR {
@@ -50,6 +54,20 @@ namespace EasyAR {
 
             //公有，外部可访问
             const char *word;
+            //用来存放长度，c语言太差了，连取长度的函数都没
+            int rewards_length;
+            //用来存放从java层传过来的当前用的奖励视频数据
+            const char *rewards[10];
+
+            //用来判断当前的视频是不是已经在当前用户的奖励列表里
+            bool iscontainreward(const char *name) {
+                for (int i = 0; i < rewards_length; i++) {
+                    if (strcmp(rewards[i], name) == 0) {
+                        return true;
+                    }
+                }
+                return false;
+            }
 
         private:
             Vec2I view_size;
@@ -68,7 +86,7 @@ namespace EasyAR {
             view_size[0] = -1;
             //初始为空
             word = "";
-
+            rewards_length = 0;
             //视频相关
             tracked_target = 0;
             active_target = 0;
@@ -139,78 +157,80 @@ namespace EasyAR {
                 }
                 if (!tracked_target) {
                     if (video == NULL) {
-                        if (frame.targets()[0].target().name() == std::string("friend") &&
+                        if (frame.targets()[0].target().name() == std::string("2016-05-07") &&
                             texid[0]) {
                             video = new AR;
-
-
-
-
-
-
-
-
-
-//                            video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/friend.mp4", texid[0]);
+                            if (iscontainreward(frame.targets()[0].target().name()))
+                                video->openStreamingVideo(
+                                        "http://www.gardenofvisual.com/static/videos/friend.mp4",
+                                        texid[0]);
                             video_renderer = pVideoRenderer[0];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("mouse") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-08") &&
                                  texid[1]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/mouse.mp4", texid[1]);
                             video_renderer = pVideoRenderer[1];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("dumb") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-09") &&
                                  texid[2]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://file.bmob.cn/M03/22/46/oYYBAFcJ1h2AAWuHAL71_sMJ6DI259.mp4",
                                     texid[2]);
                             video_renderer = pVideoRenderer[2];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("crayon") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-10") &&
                                  texid[3]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://bmob-cdn-929.b0.upaiyun.com/2016/05/07/3d0a15ed40275ebe80edbfec82ca8d20.MP4",
                                     texid[3]);
                             video_renderer = pVideoRenderer[3];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("detective") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-11") &&
                                  texid[4]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://www.gardenofvisual.com/static/videos/detective.mp4",
                                     texid[4]);
                             video_renderer = pVideoRenderer[4];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("dragonball") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-12") &&
                                  texid[5]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://www.gardenofvisual.com/static/videos/dragonball.mp4",
                                     texid[5]);
                             video_renderer = pVideoRenderer[5];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("ninja") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-13") &&
                                  texid[6]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://www.gardenofvisual.com/static/videos/ninja.mp4",
                                     texid[6]);
                             video_renderer = pVideoRenderer[6];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("robot") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-14") &&
                                  texid[7]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://www.gardenofvisual.com/static/videos/robot.mp4",
                                     texid[7]);
                             video_renderer = pVideoRenderer[7];
                         }
-                        else if (frame.targets()[0].target().name() == std::string("sheep") &&
+                        else if (frame.targets()[0].target().name() == std::string("2016-05-15") &&
                                  texid[8]) {
                             video = new AR;
+                            if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://www.gardenofvisual.com/static/videos/sheep.mp4",
                                     texid[8]);
@@ -235,18 +255,9 @@ namespace EasyAR {
                 //如果视频检测到了，就不要3d模型渲染了
                 if (tracked_target) {
                     video->update();
-
-
-
-
-
-
-
-
-
-
-
-//                    video_renderer->render(projectionMatrix, cameraview, target.size());
+                    //有才放
+                    if (iscontainreward(word))
+                        video_renderer->render(projectionMatrix, cameraview, target.size());
                 } else {
                     //非视频，3d模型渲染
                     renderer.render(projectionMatrix, cameraview, target.size(), word);
@@ -263,10 +274,12 @@ namespace EasyAR {
         }
     }
 }
+
 EasyAR::samples::HelloAR ar;
 
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInit(JNIEnv * env, jobject)) {
     bool status = ar.initCamera();
+
     ar.loadAllFromJsonFile("animals.json");
     ar.loadAllFromJsonFile("fruits.json");
     ar.loadAllFromJsonFile("vegetables.json");
@@ -305,3 +318,19 @@ JNIEXPORT jstring JNICALL JNIFUNCTION_NATIVE (nativeGetWord(JNIEnv * env, jobjec
     return env->NewStringUTF(ar.word);
 }
 
+JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeUpdateRewards(JNIEnv * env, jclass
+                                                  type,
+                                                          jobjectArray
+                                                  rewards)) {
+    //把jobjectArray数组中的值取出来
+    int size = env->GetArrayLength(rewards);//得到数组的长度值
+    ar.rewards_length = size;
+    LOGI("rewards size: %d \n", ar.rewards_length);
+
+    for (int i = 0; i < size; i++) {
+        jstring obj = (jstring) env->GetObjectArrayElement(rewards, i);
+        const char *chars = env->GetStringUTFChars(obj, NULL);//将jstring类型转换成char类型输出
+        ar.rewards[i] = chars;
+        LOGI("load rewards: %s \n", ar.rewards[i]);
+    }
+}
