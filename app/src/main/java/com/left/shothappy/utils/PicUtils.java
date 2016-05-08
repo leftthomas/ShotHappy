@@ -1,8 +1,10 @@
 package com.left.shothappy.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -168,6 +171,25 @@ public class PicUtils {
         matrix.postScale(scaleWidth, scaleHeight);
         Bitmap bitmap = Bitmap.createBitmap(bgimage, 0, 0, (int) width,
                 (int) height, matrix, true);
+        return bitmap;
+    }
+
+
+    /**
+     * 加载本地图片
+     *
+     * @param url
+     * @return
+     */
+    public static Bitmap getLocalBitmapByAssets(Context c, String url) {
+        Bitmap bitmap = null;
+        InputStream in = null;
+        try {
+            in = c.getResources().getAssets().open(url);
+            bitmap = BitmapFactory.decodeStream(in);
+        } catch (IOException e) {
+//            e.printStackTrace();
+        }
         return bitmap;
     }
 }
