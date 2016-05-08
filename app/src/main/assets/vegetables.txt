@@ -1,83 +1,59 @@
-agaric
-asparagus
-artichoke
-agar
 abalone mushroom
+agar
+agaric
 aloe
 aniseed
-bell pepper
+artichoke
+asparagus
+baby corn
 bean
-beet
 bean sprout
-broad bean
-Brussels sprouts
+beet
+bell pepper
 bitter gourd
-Baby corn
-bamboo sprout
-brown mushroom
-Broccoli
-button mushroom
 black mushroom
-Cauliflower
-capsicum
-cucumber
-carrot
+broad bean
+broccoli
+button mushroom
 cabbage
-chive
-cos lettuce
+capsicum
+carrot
+cauliflower
 celery
-Caper
-Chervil
+champignon
 chick-pea
 chicory
-cress
-cumin
-celery
-cauliflower
-Chinese leaves
+chive
+cinnamon
+clove
 coriander
 corn
-cane shoots
-clove
-cinnamon
-champignon
-Dandelion
-day-lily buds
-dwarf Bean
+cress
+cucumber
+cumin
 eggplant
-eddoes
-French bean
-Flat Beans
-garlic sprout
+french bean
 garlic
 gherkin
 ginger
-Horseradish
-hair-like seaweed
-Iceberg
-Jerusalem artichoke
-Kale
-kohlrabi
-Lentil
-lotus seed
+horseradish
+kale
 laver
-licorice
+lentil
 lotus root
-Marrow
+lotus seed
+marrow
 mushroom
-mater convolvulus
-Onion
 okra
+onion
+pea
 potato
 pumpkin
-parsnip
-pea
-Rhubarb
 red cabbage
-Soybean
+red radish
+soybean
 summer radish
 tomato
 water caltrop
 white gourd
-yam
 zucchini
