@@ -57,7 +57,6 @@
     <string name="feedback_content_hint">请详细描述你的问题</string>
     <string name="in_feedback_content">请输入反馈内容</string>
     <string name="success_feedback">你的反馈已提交，我们将尽快处理</string>
-    <string name="download_dictionary">离线词库</string>
     <string name="animals_dictionary">动物</string>
     <string name="fruits_dictionary">水果</string>
     <string name="vegetables_dictionary">蔬菜</string>
@@ -72,6 +71,8 @@
     <string name="refresh">刷新</string>
     <string name="today_tip">请完成今日任务(至少学习10单词)</string>
     <string name="reward_tip">今日奖励还未出炉，请稍候再试</string>
-    <string name="next">下一题</string>
+    <string name="game_to">获得游戏资格啦，快去玩吧</string>
+    <string name="choice_tip">选择一个你认为正确的答案</string>
+    <string name="game_tip">通过10道测试题才能玩游戏哦</string>
     <string name="unlock_today_card">卡片已解锁(•̀ᴗ•́)\n快去观看动画吧</string>
 </resources>

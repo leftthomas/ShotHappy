@@ -34,10 +34,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class SettingActivity extends BaseActivity {
 
-    private TextView pronunciation;
-    private TextView change_password;
-    private TextView feedback;
-    private TextView about;
+    private ImageView pronunciation;
+    private ImageView change_password;
+    private ImageView feedback;
+    private ImageView about;
     private ImageView logout;
     private View view;
     private CircleImageView head_imageView;
@@ -50,19 +50,15 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        pronunciation = (TextView) findViewById(R.id.pronunciation);
-        change_password = (TextView) findViewById(R.id.change_password);
-        feedback = (TextView) findViewById(R.id.feedback);
-        about = (TextView) findViewById(R.id.about);
+        pronunciation = (ImageView) findViewById(R.id.pronunciation);
+        change_password = (ImageView) findViewById(R.id.change_password);
+        feedback = (ImageView) findViewById(R.id.feedback);
+        about = (ImageView) findViewById(R.id.about);
         logout = (ImageView) findViewById(R.id.logout);
         view = findViewById(R.id.setting_view);
         head_imageView = (CircleImageView) findViewById(R.id.imageView);
         username_email = (TextView) findViewById(R.id.username_email);
 
-        pronunciation.setTypeface(MainActivity.typeFace);
-        change_password.setTypeface(MainActivity.typeFace);
-        feedback.setTypeface(MainActivity.typeFace);
-        about.setTypeface(MainActivity.typeFace);
         username_email.setTypeface(MainActivity.typeFace);
 
         user = BmobUser.getCurrentUser(this, User.class);
@@ -114,7 +110,7 @@ public class SettingActivity extends BaseActivity {
                 if (user != null) {
                     final AlertDialog.Builder builder =
                             new AlertDialog.Builder(SettingActivity.this, R.style.AppCompatAlertDialogStyle);
-                    builder.setTitle(pronunciation.getText());
+                    builder.setTitle(R.string.pronunciation);
                     String[] items = {"美音", "英音"};
 
                     int what;

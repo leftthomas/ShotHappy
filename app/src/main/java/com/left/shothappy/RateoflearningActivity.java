@@ -50,7 +50,7 @@ public class RateoflearningActivity extends BaseActivity {
         }
     };
 
-    private ImageView share, back, close, share_wechatmoments, share_wechat, share_qzone, share_qq, share_weibo;
+    private ImageView share, back, close, share_wechatmoments, share_wechat, share_qzone, share_qq, share_weibo, title;
 
     // 设置显示的样式
     public static void setupLineChart(final LineChart chart, LineData data, int color) {
@@ -245,6 +245,8 @@ public class RateoflearningActivity extends BaseActivity {
         mLineChart = (LineChart) findViewById(R.id.linechart);
         mBarChart = (BarChart) findViewById(R.id.barchart);
         view = findViewById(R.id.rateoflearning_view);
+        title = (ImageView) findViewById(R.id.title);
+        title.setImageResource(R.drawable.title_rateoflearning);
         back = (ImageView) findViewById(R.id.back);
         share = (ImageView) findViewById(R.id.share);
 

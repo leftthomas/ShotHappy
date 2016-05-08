@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -38,11 +42,18 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
      * 当前的ImageView
      */
     private ImageView currentImage;
-    private ImageView next;
-    private TextView word;
+    //用来记录正确的ImageView
+    private ImageView trueImage;
+    private ImageView to_game;
+    private TextView word, number_text;
+    private View view;
     private ArrayList<String> words;
     //用来设置选项的时候做随机
     private ArrayList<ImageView> images;
+    //用来记录当前做到了第几题
+    private int number;
+    private SoundPool soundPool;
+    private HashMap<Integer, Integer> soundPoolMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +61,19 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_test);
         Intent intent = getIntent();
         words = intent.getStringArrayListExtra("words");
+        //初始化为1
+        number = 1;
         //只随机保留10个已学过的单词
         while (words.size() > 10) {
             words.remove(new Random().nextInt(words.size()));
         }
 
+        view = findViewById(R.id.test_view);
         word = (TextView) findViewById(R.id.word);
+        number_text = (TextView) findViewById(R.id.number);
         word.setTypeface(MainActivity.typeFace);
+        number_text.setTypeface(MainActivity.typeFace);
+        number_text.setText(number + "/10");
         imageView1 = (ImageView) findViewById(R.id.imageView1);
         imageView2 = (ImageView) findViewById(R.id.imageView2);
         imageView3 = (ImageView) findViewById(R.id.imageView3);
@@ -71,18 +88,28 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         images.add(imageView3);
         images.add(imageView4);
 
+        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        soundPoolMap.put(1, soundPool.load(this, R.raw.excellent, 1));
+        soundPoolMap.put(2, soundPool.load(this, R.raw.great, 2));
+        soundPoolMap.put(3, soundPool.load(this, R.raw.good, 3));
+        soundPoolMap.put(4, soundPool.load(this, R.raw.perfect, 4));
+
         //默认没有哪张图被选中
         currentImage = null;
+        trueImage = null;
         //设置第一个单词的选项
         setAllView(words.get(0));
 
-        next = (ImageView) findViewById(R.id.next);
-        next.setOnClickListener(new View.OnClickListener() {
+        to_game = (ImageView) findViewById(R.id.next);
+        to_game.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //
-                startActivity(new Intent(getApplicationContext(), GameActivity.class));
+                //做下判断,看看是否做完了10道测试题,记住，一定是11
+                if (number == 11) {
+                    startActivity(new Intent(getApplicationContext(), GameActivity.class));
+                } else {
+                    Snackbar.make(view, R.string.game_tip, Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -91,6 +118,34 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         handleImageView((ImageView) v);
+        if (currentImage == trueImage) {
+            //还没做满10道题目
+            if (number < 10) {
+                //发声音
+                playSound(new Random().nextInt(soundPoolMap.size()) + 1, 0);
+                //当前选中题置空
+                currentImage.setImageDrawable(null);
+                currentImage = null;
+                //换下一道题
+                setAllView(words.get(number));
+                number++;
+                //重新设置下number值
+                number_text.setText(number + "/10");
+            } else if (number == 10) {
+                //发声音
+                playSound(new Random().nextInt(soundPoolMap.size()) + 1, 0);
+                number++;
+                Snackbar.make(view, R.string.game_to, Snackbar.LENGTH_SHORT).show();
+            } else {
+                //也就是number＝11的情况
+                Snackbar.make(view, R.string.game_to, Snackbar.LENGTH_SHORT).show();
+            }
+
+        } else {
+            //没选对，发出try again的声音
+
+
+        }
     }
 
     /**
@@ -113,15 +168,17 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
      */
     private void setAllView(String name) {
 
-        ArrayList<ImageView> temps = images;
+        ArrayList<ImageView> temps = new ArrayList<>(images);
         word.setText(name);
-        Bitmap bmp = PicUtils.getLocalBitmapByAssets(this, "animals/" + name.toLowerCase().replace(" ", "") + ".jpg");
+        Bitmap bmp = PicUtils.getLocalBitmapByAssets(this, getString(R.string.animals) + "/" + name.toLowerCase().replace(" ", "") + ".jpg");
         if (bmp != null) {
             //如果返回的bmp不为空，表示存在这个资源
             int index = new Random().nextInt(temps.size());
             temps.get(index).setBackgroundDrawable(new BitmapDrawable(bmp));
+            //记得把正确的image记录下
+            trueImage = images.get(index);
             temps.remove(index);
-            List<String> imgs = getImageNamesList("animals", name);
+            List<String> imgs = getImageNamesList(getString(R.string.animals), name);
             while (temps.size() > 0) {
                 //记录当前选中的图片位置
                 int f = new Random().nextInt(imgs.size());
@@ -132,13 +189,14 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                 imgs.remove(f);
             }
         } else {
-            bmp = PicUtils.getLocalBitmapByAssets(this, "fruits/" + name.toLowerCase().replace(" ", "") + ".jpg");
+            bmp = PicUtils.getLocalBitmapByAssets(this, getString(R.string.fruits) + "/" + name.toLowerCase().replace(" ", "") + ".jpg");
             if (bmp != null) {
                 //如果返回的bmp不为空，表示存在这个资源
                 int index = new Random().nextInt(temps.size());
                 temps.get(index).setBackgroundDrawable(new BitmapDrawable(bmp));
+                trueImage = images.get(index);
                 temps.remove(index);
-                List<String> imgs = getImageNamesList("fruits", name);
+                List<String> imgs = getImageNamesList(getString(R.string.fruits), name);
                 while (temps.size() > 0) {
                     //记录当前选中的图片位置
                     int f = new Random().nextInt(imgs.size());
@@ -149,13 +207,14 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                     imgs.remove(f);
                 }
             } else {
-                bmp = PicUtils.getLocalBitmapByAssets(this, "vegetables/" + name.toLowerCase().replace(" ", "") + ".jpg");
+                bmp = PicUtils.getLocalBitmapByAssets(this, getString(R.string.vegetables) + "/" + name.toLowerCase().replace(" ", "") + ".jpg");
                 if (bmp != null) {
                     //如果返回的bmp不为空，表示存在这个资源
                     int index = new Random().nextInt(temps.size());
                     temps.get(index).setBackgroundDrawable(new BitmapDrawable(bmp));
+                    trueImage = images.get(index);
                     temps.remove(index);
-                    List<String> imgs = getImageNamesList("vegetables", name);
+                    List<String> imgs = getImageNamesList(getString(R.string.vegetables), name);
                     while (temps.size() > 0) {
                         //记录当前选中的图片位置
                         int f = new Random().nextInt(imgs.size());
@@ -194,6 +253,15 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
             e.printStackTrace();
         }
         return imageNames;
+    }
+
+    public void playSound(int sound, int loop) {
+        AudioManager mgr = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        float volume = streamVolumeCurrent / streamVolumeMax;
+        soundPool.play(soundPoolMap.get(sound), volume, volume, 1, loop, 1f);
+        //参数：1、Map中取值   2、当前音量     3、最大音量  4、优先级   5、重播次数   6、播放速度
     }
 
     @Override
