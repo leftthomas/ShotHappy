@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,8 +36,9 @@ import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.GetListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
+    public static Typeface typeFace;
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private User user;
     private View main_view,card_panel;
     private TextView unlock;
-    private Typeface typeFace;
     //用来查询显示的奖励图片
     private Map<String,String> rewards_map;
 
@@ -169,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ARActivity.class));
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
@@ -177,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ThesaurusActivity.class));
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
@@ -185,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), RateoflearningActivity.class));
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
 
@@ -232,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), TestActivity.class);
                             intent.putStringArrayListExtra("words", new ArrayList<>(list.get(0).getWords()));
                             startActivity(intent);
-                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         }
                     }
 
@@ -272,7 +267,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
     }

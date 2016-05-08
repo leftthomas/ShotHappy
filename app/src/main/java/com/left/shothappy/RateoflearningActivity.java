@@ -2,9 +2,7 @@ package com.left.shothappy;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -34,7 +32,7 @@ import java.util.Map;
 /**
  * 学习进度的页面
  */
-public class RateoflearningActivity extends AppCompatActivity {
+public class RateoflearningActivity extends BaseActivity {
 
     //进步曲线（总进度，统计历史量）
     public static LineChart mLineChart;
@@ -43,8 +41,7 @@ public class RateoflearningActivity extends AppCompatActivity {
     // 自定义颜色
     public static int mLineColors = Color.rgb(137, 230, 81);
     public static int mBarColors = Color.rgb(240, 240, 30);
-    // 自定义字体
-    private static Typeface mTf;
+
     private static View view, share_panel;
     private static ValueFormatter valueFormatter = new ValueFormatter() {
         @Override
@@ -81,7 +78,7 @@ public class RateoflearningActivity extends AppCompatActivity {
 
         chart.setBackgroundColor(color);// 设置背景
 
-        chart.setValueTypeface(mTf);// 设置字体
+        chart.setValueTypeface(MainActivity.typeFace);// 设置字体
 
         chart.setData(data); // 设置数据
 
@@ -99,16 +96,16 @@ public class RateoflearningActivity extends AppCompatActivity {
         l.setForm(Legend.LegendForm.CIRCLE);// 样式
         l.setFormSize(6f);// 字体
         l.setTextColor(Color.WHITE);// 颜色
-        l.setTypeface(mTf);// 字体
+        l.setTypeface(MainActivity.typeFace);// 字体
 
         YLabels y = chart.getYLabels(); // y轴的标示
         y.setTextColor(Color.WHITE);
-        y.setTypeface(mTf);
+        y.setTypeface(MainActivity.typeFace);
         y.setFormatter(valueFormatter);
 
         XLabels x = chart.getXLabels(); // x轴显示的标签
         x.setTextColor(Color.WHITE);
-        x.setTypeface(mTf);
+        x.setTypeface(MainActivity.typeFace);
 
         // animate calls invalidate()...
         chart.animateX(3000); // 立即执行的动画,x轴
@@ -140,7 +137,7 @@ public class RateoflearningActivity extends AppCompatActivity {
         chart.setScaleEnabled(false);
         chart.setBackgroundColor(color);// 设置背景
 
-        chart.setValueTypeface(mTf);// 设置字体
+        chart.setValueTypeface(MainActivity.typeFace);// 设置字体
 
         chart.setValueFormatter(valueFormatter);
 
@@ -153,16 +150,16 @@ public class RateoflearningActivity extends AppCompatActivity {
         l.setForm(Legend.LegendForm.CIRCLE);// 样式
         l.setFormSize(6f);// 字体
         l.setTextColor(Color.WHITE);// 颜色
-        l.setTypeface(mTf);// 字体
+        l.setTypeface(MainActivity.typeFace);// 字体
 
         YLabels y = chart.getYLabels(); // y轴的标示
         y.setTextColor(Color.WHITE);
-        y.setTypeface(mTf);
+        y.setTypeface(MainActivity.typeFace);
         y.setFormatter(valueFormatter);
 
         XLabels x = chart.getXLabels(); // x轴显示的标签
         x.setTextColor(Color.WHITE);
-        x.setTypeface(mTf);
+        x.setTypeface(MainActivity.typeFace);
 
         // animate calls invalidate()...
         chart.animateY(3000); // 立即执行的动画,x轴
@@ -245,7 +242,6 @@ public class RateoflearningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rateoflearning);
 
-        mTf = Typeface.createFromAsset(getAssets(), "fonts/bear-rabbit.ttf");
         mLineChart = (LineChart) findViewById(R.id.linechart);
         mBarChart = (BarChart) findViewById(R.id.barchart);
         view = findViewById(R.id.rateoflearning_view);
@@ -264,7 +260,6 @@ public class RateoflearningActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
             }
         });
         share.setOnClickListener(new View.OnClickListener() {
@@ -329,10 +324,4 @@ public class RateoflearningActivity extends AppCompatActivity {
         PicUtils.share(num, this, shot);
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-        super.onBackPressed();
-    }
 }

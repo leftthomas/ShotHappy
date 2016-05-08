@@ -2,14 +2,13 @@ package com.left.shothappy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends BaseActivity {
 
     private WebView webView;
 
@@ -44,7 +43,6 @@ public class GameActivity extends AppCompatActivity {
             intent.setAction("ExitTest");
             sendBroadcast(intent);
             finish();
-            overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
             return true;
         }
         return false;

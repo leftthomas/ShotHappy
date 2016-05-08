@@ -3,106 +3,81 @@ asparagus
 artichoke
 agar
 abalone mushroom
+aloe
+aniseed
 bell pepper
 bean
 beet
 bean sprout
 broad bean
-brussels sprouts
+Brussels sprouts
 bitter gourd
-baby corn
-broccoli
+Baby corn
+bamboo sprout
+brown mushroom
+Broccoli
 button mushroom
 black mushroom
-cauliflower
+Cauliflower
 capsicum
-cucumber 
+cucumber
 carrot
 cabbage
 chive
+cos lettuce
 celery
-caper
+Caper
+Chervil
 chick-pea
 chicory
 cress
 cumin
+celery
+cauliflower
+Chinese leaves
 coriander
 corn
+cane shoots
 clove
 cinnamon
-cantaloupe
 champignon
-cilantro
-dandelion
-dried mushroom
+Dandelion
+day-lily buds
+dwarf Bean
 eggplant
-fennel
-french bean
+eddoes
+French bean
+Flat Beans
 garlic sprout
 garlic
 gherkin
 ginger
-green pepper
-greens
-hot pepper
-horseradish
-honeydew
-iceberg 
-jerusalem artichoke
-kale
+Horseradish
+hair-like seaweed
+Iceberg
+Jerusalem artichoke
+Kale
 kohlrabi
-laurel
-lentil
-leek
-lettuce
-lily
+Lentil
 lotus seed
 laver
 licorice
 lotus root
-marrow
-melon
+Marrow
 mushroom
-onion
+mater convolvulus
+Onion
 okra
-oyster mushroom
 potato
 pumpkin
-parsley
 parsnip
 pea
-radish
-rhubarb
+Rhubarb
 red cabbage
-romaine
-red pepper
-soybean
-sweet pepper
-soybean sprout
+Soybean
 summer radish
-sorrel
-sweet corn
-spring onions
-salted vegetable
-sweet potato
-spinach
-straw mushroom
-string bean
 tomato
-tarragon
-thyme
-truffle
-turnip
-taro
-the sponge gourd
-wheat gluten
 water caltrop
 white gourd
-watercress
-white cabbage
-water chestnut
-water shield
-wax gourd
-yellow pepper
 yam
 zucchini

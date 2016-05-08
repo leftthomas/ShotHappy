@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class TestActivity extends AppCompatActivity implements View.OnClickListener {
+public class TestActivity extends BaseActivity implements View.OnClickListener {
 
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -32,14 +30,12 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView currentImage;
     private ImageView next;
     private TextView word;
-    private Typeface typeFace;
     private ArrayList<String> words;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabbit.ttf");
         Intent intent = getIntent();
         words = intent.getStringArrayListExtra("words");
         //只随机保留10个已学过的单词
@@ -48,7 +44,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         word = (TextView) findViewById(R.id.word);
-        word.setTypeface(typeFace);
+        word.setTypeface(MainActivity.typeFace);
         imageView1 = (ImageView) findViewById(R.id.imageView1);
         imageView2 = (ImageView) findViewById(R.id.imageView2);
         imageView3 = (ImageView) findViewById(R.id.imageView3);
@@ -71,7 +67,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
                 //
                 startActivity(new Intent(getApplicationContext(), GameActivity.class));
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
     }
@@ -92,13 +87,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             currentImage.setImageDrawable(null);
         imageView.setImageResource(R.drawable.border);
         currentImage = imageView;
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-        super.onBackPressed();
     }
 
     @Override
