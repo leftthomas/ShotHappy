@@ -7,7 +7,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,10 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 
 import cn.bmob.v3.listener.ResetPasswordByEmailListener;
 
-public class ForgetPasswordActivity extends AppCompatActivity {
+public class ForgetPasswordActivity extends BaseActivity {
 
     private EditText mEmailView;
     private View mProgressView;
@@ -34,6 +34,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         mResetButton = (Button) findViewById(R.id.reset_button);
         mFormView = findViewById(R.id.forget_form);
         mProgressView = findViewById(R.id.progress);
+
+        mEmailView.setTypeface(MyApplication.typeFace);
+        mResetButton.setTypeface(MyApplication.typeFace);
 
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override

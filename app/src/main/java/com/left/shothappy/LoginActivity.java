@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
@@ -28,7 +28,7 @@ import cn.bmob.v3.listener.LogInListener;
 /**
  * Created by left on 16/3/18.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private EditText mAccountView;
     private EditText mPasswordView;
@@ -55,6 +55,12 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        mAccountView.setTypeface(MyApplication.typeFace);
+        mPasswordView.setTypeface(MyApplication.typeFace);
+        tvregister.setTypeface(MyApplication.typeFace);
+        tvforget.setTypeface(MyApplication.typeFace);
+        mLoginButton.setTypeface(MyApplication.typeFace);
 
         //利用本地缓存用户登录
         User user = BmobUser.getCurrentUser(this, User.class);

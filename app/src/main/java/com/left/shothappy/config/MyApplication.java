@@ -1,6 +1,7 @@
 package com.left.shothappy.config;
 
 import android.app.Application;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,8 @@ import java.io.IOException;
  * Created by left on 16/3/27.
  */
 public class MyApplication extends Application {
+
+    public static Typeface typeFace;
 
     Handler handler = new Handler() {
         @Override
@@ -55,6 +58,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabbit.ttf");
+
         //创建默认的ImageLoader配置参数
         ImageLoaderConfiguration configuration = ImageLoaderConfiguration
                 .createDefault(this);

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -16,10 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 
 import cn.bmob.v3.listener.SaveListener;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     private EditText mEmailView;
     private EditText mPasswordView;
@@ -41,6 +41,12 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
         mRegisterButton = (Button) findViewById(R.id.register_button);
+
+        mEmailView.setTypeface(MyApplication.typeFace);
+        mPasswordView.setTypeface(MyApplication.typeFace);
+        mUsernameView.setTypeface(MyApplication.typeFace);
+        mRePasswordView.setTypeface(MyApplication.typeFace);
+        mRegisterButton.setTypeface(MyApplication.typeFace);
 
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override

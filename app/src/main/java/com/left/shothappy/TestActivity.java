@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.PicUtils;
 
 import java.io.BufferedReader;
@@ -71,8 +72,8 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         view = findViewById(R.id.test_view);
         word = (TextView) findViewById(R.id.word);
         number_text = (TextView) findViewById(R.id.number);
-        word.setTypeface(MainActivity.typeFace);
-        number_text.setTypeface(MainActivity.typeFace);
+        word.setTypeface(MyApplication.typeFace);
+        number_text.setTypeface(MyApplication.typeFace);
         number_text.setText(number + "/10");
         imageView1 = (ImageView) findViewById(R.id.imageView1);
         imageView2 = (ImageView) findViewById(R.id.imageView2);

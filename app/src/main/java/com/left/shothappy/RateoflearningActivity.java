@@ -20,6 +20,7 @@ import com.github.mikephil.charting.utils.XLabels;
 import com.github.mikephil.charting.utils.YLabels;
 import com.left.shothappy.bean.DayCoordinate;
 import com.left.shothappy.bean.Schedule;
+import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.PicUtils;
 import com.left.shothappy.utils.ScheduleUtils;
 import com.left.shothappy.views.CustomMarkerView;
@@ -78,7 +79,7 @@ public class RateoflearningActivity extends BaseActivity {
 
         chart.setBackgroundColor(color);// 设置背景
 
-        chart.setValueTypeface(MainActivity.typeFace);// 设置字体
+        chart.setValueTypeface(MyApplication.typeFace);// 设置字体
 
         chart.setData(data); // 设置数据
 
@@ -96,16 +97,16 @@ public class RateoflearningActivity extends BaseActivity {
         l.setForm(Legend.LegendForm.CIRCLE);// 样式
         l.setFormSize(6f);// 字体
         l.setTextColor(Color.WHITE);// 颜色
-        l.setTypeface(MainActivity.typeFace);// 字体
+        l.setTypeface(MyApplication.typeFace);// 字体
 
         YLabels y = chart.getYLabels(); // y轴的标示
         y.setTextColor(Color.WHITE);
-        y.setTypeface(MainActivity.typeFace);
+        y.setTypeface(MyApplication.typeFace);
         y.setFormatter(valueFormatter);
 
         XLabels x = chart.getXLabels(); // x轴显示的标签
         x.setTextColor(Color.WHITE);
-        x.setTypeface(MainActivity.typeFace);
+        x.setTypeface(MyApplication.typeFace);
 
         // animate calls invalidate()...
         chart.animateX(3000); // 立即执行的动画,x轴
@@ -137,7 +138,7 @@ public class RateoflearningActivity extends BaseActivity {
         chart.setScaleEnabled(false);
         chart.setBackgroundColor(color);// 设置背景
 
-        chart.setValueTypeface(MainActivity.typeFace);// 设置字体
+        chart.setValueTypeface(MyApplication.typeFace);// 设置字体
 
         chart.setValueFormatter(valueFormatter);
 
@@ -150,16 +151,16 @@ public class RateoflearningActivity extends BaseActivity {
         l.setForm(Legend.LegendForm.CIRCLE);// 样式
         l.setFormSize(6f);// 字体
         l.setTextColor(Color.WHITE);// 颜色
-        l.setTypeface(MainActivity.typeFace);// 字体
+        l.setTypeface(MyApplication.typeFace);// 字体
 
         YLabels y = chart.getYLabels(); // y轴的标示
         y.setTextColor(Color.WHITE);
-        y.setTypeface(MainActivity.typeFace);
+        y.setTypeface(MyApplication.typeFace);
         y.setFormatter(valueFormatter);
 
         XLabels x = chart.getXLabels(); // x轴显示的标签
         x.setTextColor(Color.WHITE);
-        x.setTypeface(MainActivity.typeFace);
+        x.setTypeface(MyApplication.typeFace);
 
         // animate calls invalidate()...
         chart.animateY(3000); // 立即执行的动画,x轴
@@ -241,7 +242,6 @@ public class RateoflearningActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rateoflearning);
-
         mLineChart = (LineChart) findViewById(R.id.linechart);
         mBarChart = (BarChart) findViewById(R.id.barchart);
         view = findViewById(R.id.rateoflearning_view);

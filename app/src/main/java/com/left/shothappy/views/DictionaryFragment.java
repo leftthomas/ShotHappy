@@ -19,11 +19,11 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.left.shothappy.MainActivity;
 import com.left.shothappy.R;
 import com.left.shothappy.adapters.DictionaryAdapter;
 import com.left.shothappy.bean.Dict;
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.IcibaTranslate;
 import com.left.shothappy.utils.ScheduleUtils;
 
@@ -225,14 +225,14 @@ public class DictionaryFragment extends Fragment {
         TextView orig = (TextView) cardView.findViewById(R.id.orig);
         TextView trans = (TextView) cardView.findViewById(R.id.trans);
 
-        key.setTypeface(MainActivity.typeFace);
+        key.setTypeface(MyApplication.typeFace);
 //        ps1.setTypeface(typeFace);
 //        ps2.setTypeface(typeFace);
-        pos.setTypeface(MainActivity.typeFace);
-        acceptation.setTypeface(MainActivity.typeFace);
-        bilingual.setTypeface(MainActivity.typeFace);
-        orig.setTypeface(MainActivity.typeFace);
-        trans.setTypeface(MainActivity.typeFace);
+        pos.setTypeface(MyApplication.typeFace);
+        acceptation.setTypeface(MyApplication.typeFace);
+        bilingual.setTypeface(MyApplication.typeFace);
+        orig.setTypeface(MyApplication.typeFace);
+        trans.setTypeface(MyApplication.typeFace);
 
         ImageView ps1sound = (ImageView) cardView.findViewById(R.id.ps1sound);
         ImageView ps2sound = (ImageView) cardView.findViewById(R.id.ps2sound);

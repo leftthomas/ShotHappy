@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +37,6 @@ import cn.bmob.v3.listener.GetListener;
 
 public class MainActivity extends BaseActivity {
 
-    public static Typeface typeFace;
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -57,7 +55,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        typeFace = Typeface.createFromAsset(getAssets(), "fonts/bear-rabbit.ttf");
 
         user = BmobUser.getCurrentUser(this, User.class);
 
@@ -98,7 +95,7 @@ public class MainActivity extends BaseActivity {
         card_panel=findViewById(R.id.card_panel);
         reward_card= (ImageView) findViewById(R.id.reward_card);
         unlock= (TextView) findViewById(R.id.unlock);
-        unlock.setTypeface(typeFace);
+        unlock.setTypeface(MyApplication.typeFace);
         card_box.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){

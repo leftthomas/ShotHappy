@@ -5,8 +5,8 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.utils.MarkerView;
-import com.left.shothappy.MainActivity;
 import com.left.shothappy.R;
+import com.left.shothappy.config.MyApplication;
 
 /**
  * Created by left on 16/3/30.
@@ -18,7 +18,7 @@ public class CustomMarkerView extends MarkerView {
     public CustomMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
         tvContent = (TextView) findViewById(R.id.tvContent);
-        tvContent.setTypeface(MainActivity.typeFace);
+        tvContent.setTypeface(MyApplication.typeFace);
     }
 
     @Override

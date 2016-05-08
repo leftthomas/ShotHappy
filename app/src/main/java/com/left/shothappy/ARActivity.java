@@ -49,6 +49,40 @@ public class ARActivity extends BaseActivity {
     private ImageView fab;
     private CardView cardView;
     private Dict dict;
+    /**
+     * 网络操作相关的子线程
+     * 调用语音sdk与英文释义部分的网络请求
+     */
+    Runnable networkTask = new Runnable() {
+
+        @Override
+        public void run() {
+            // 在这里进行 http request.网络请求相关操作
+            Message msg = new Message();
+            Bundle data = new Bundle();
+
+            String source = nativeGetWord();
+
+            if (source == null || source.equals("")) {
+                data.putString("status", "请对准要识别的物体");
+            } else {
+                //临时的办法，防止视频去翻译
+                if (!source.startsWith("2")) {
+                    try {
+                        dict = IcibaTranslate.translate(source);
+                        data.putString("status", "true");//表示请求成功
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        data.putString("status", "翻译失败，请检查网络");
+                    }
+                } else {
+                    data.putString("status", "false");
+                }
+            }
+            msg.setData(data);
+            handler.sendMessage(msg);
+        }
+    };
     private AsyncPlayer player;
     /**
      * 接收到网络请求回复的数据之后通知UI更新
@@ -91,40 +125,6 @@ public class ARActivity extends BaseActivity {
                     Snackbar.make(view, val, Snackbar.LENGTH_SHORT).show();
             }
 
-        }
-    };
-    /**
-     * 网络操作相关的子线程
-     * 调用语音sdk与英文释义部分的网络请求
-     */
-    Runnable networkTask = new Runnable() {
-
-        @Override
-        public void run() {
-            // 在这里进行 http request.网络请求相关操作
-            Message msg = new Message();
-            Bundle data = new Bundle();
-
-            String source = nativeGetWord();
-
-            if (source == null || source.equals("")) {
-                data.putString("status", "请对准要识别的物体");
-            } else {
-                //临时的办法，防止视频去翻译
-                if (!source.startsWith("2")) {
-                    try {
-                        dict = IcibaTranslate.translate(source);
-                        data.putString("status", "true");//表示请求成功
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        data.putString("status", "翻译失败，请检查网络");
-                    }
-                } else {
-                    data.putString("status", "false");
-                }
-            }
-            msg.setData(data);
-            handler.sendMessage(msg);
         }
     };
     private SoundPool soundPool;
@@ -312,14 +312,14 @@ public class ARActivity extends BaseActivity {
         TextView orig = (TextView) cardView.findViewById(R.id.orig);
         TextView trans = (TextView) cardView.findViewById(R.id.trans);
 
-        key.setTypeface(MainActivity.typeFace);
+        key.setTypeface(MyApplication.typeFace);
 //        ps1.setTypeface(typeFace);
 //        ps2.setTypeface(typeFace);
-        pos.setTypeface(MainActivity.typeFace);
-        acceptation.setTypeface(MainActivity.typeFace);
-        bilingual.setTypeface(MainActivity.typeFace);
-        orig.setTypeface(MainActivity.typeFace);
-        trans.setTypeface(MainActivity.typeFace);
+        pos.setTypeface(MyApplication.typeFace);
+        acceptation.setTypeface(MyApplication.typeFace);
+        bilingual.setTypeface(MyApplication.typeFace);
+        orig.setTypeface(MyApplication.typeFace);
+        trans.setTypeface(MyApplication.typeFace);
 
         ImageView ps1sound = (ImageView) cardView.findViewById(R.id.ps1sound);
         ImageView ps2sound = (ImageView) cardView.findViewById(R.id.ps2sound);

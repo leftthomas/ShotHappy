@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.left.shothappy.bean.Feedback;
 import com.left.shothappy.bean.User;
+import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.PicUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -59,7 +60,7 @@ public class SettingActivity extends BaseActivity {
         head_imageView = (CircleImageView) findViewById(R.id.imageView);
         username_email = (TextView) findViewById(R.id.username_email);
 
-        username_email.setTypeface(MainActivity.typeFace);
+        username_email.setTypeface(MyApplication.typeFace);
 
         user = BmobUser.getCurrentUser(this, User.class);
         if (user != null) {
