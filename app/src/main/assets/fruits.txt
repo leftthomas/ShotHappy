@@ -1,39 +1,23 @@
 almond
 apple
-apricot
 arbutus
 avocado
-bagasse
 banana
-bartlett
-bennet
-bergamot
 berry
 betelnut
-bilberry
-bitter orange
 blackberry
 blueberry
-bush fruit
 cantaloupe
 carambola
-cascara
 cherry
 chestnut
 coconut
-citron
-currant
-core
 cranberry
 custard apple
 damson
-date
 date palm
-dew
 durian
-duke
 fig
-filbert
 flat peach
 ginkgo
 gooseberry
@@ -42,39 +26,22 @@ grapefruit
 greengage
 guava
 haw
-herbaceous fruit
-hickory
-hawthorn
 hazelnut
-juicy peach
 jujube
-kernel fruit
-kiwifruit
-kiwi
 kumquat
 lemon
 lichee
 longan
 loquat
-lily
 lime
-litchi
-morello
-mulberry
 mandarin
 mango
 mangosteen
-muskmelon
-marc
 melon
 nectarine
-nucleus
 nut
-nutmeg
-oleaster
 olive
 orange
-papaya
 pawpaw
 peach
 peanut
@@ -86,18 +53,12 @@ pitaya
 plum
 pomegranate
 pomelo
-quince
 rambutan
 raspberry
-segment
-shaddock
 strawberry
 sugarcane
-sultana
-sloe
 tangerine
 walnut
-warden
 water caltrop
 water-chestnut
 watermelon

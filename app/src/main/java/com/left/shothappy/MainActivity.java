@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                             Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
                         } else {
                             Intent intent = new Intent(getApplicationContext(), TestActivity.class);
-                            intent.putExtra("words", list.get(0).getWords().toArray());
+                            intent.putStringArrayListExtra("words", new ArrayList<>(list.get(0).getWords()));
                             startActivity(intent);
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         }

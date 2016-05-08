@@ -1,5 +1,6 @@
 package com.left.shothappy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -39,6 +40,9 @@ public class GameActivity extends AppCompatActivity {
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_BACK) && !webView.canGoBack()) {
             webView.loadUrl("about:blank");
+            Intent intent = new Intent();
+            intent.setAction("ExitTest");
+            sendBroadcast(intent);
             finish();
             overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
             return true;
