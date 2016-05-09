@@ -95,7 +95,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         soundPoolMap.put(3, soundPool.load(this, R.raw.good, 3));
         soundPoolMap.put(4, soundPool.load(this, R.raw.perfect, 4));
         //最后一个是选错的提示音
-        soundPoolMap.put(5, soundPool.load(this, R.raw.perfect, 5));
+        soundPoolMap.put(5, soundPool.load(this, R.raw.tryagain, 5));
 
         //默认没有哪张图被选中
         currentImage = null;
