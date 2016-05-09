@@ -74,5 +74,5 @@
     <string name="game_to">获得游戏资格啦，快去玩吧</string>
     <string name="choice_tip">选择一个你认为正确的答案</string>
     <string name="game_tip">通过10道测试题才能玩游戏哦</string>
-    <string name="unlock_today_card">卡片已解锁(•̀ᴗ•́)\n快去观看动画吧</string>
+    <string name="unlock_today_card">&#160;&#160;~卡片已解锁~\n快去观看动画吧</string>
 </resources>

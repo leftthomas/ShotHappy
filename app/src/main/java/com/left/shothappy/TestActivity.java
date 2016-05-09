@@ -89,11 +89,13 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         images.add(imageView3);
         images.add(imageView4);
 
-        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 100);
         soundPoolMap.put(1, soundPool.load(this, R.raw.excellent, 1));
         soundPoolMap.put(2, soundPool.load(this, R.raw.great, 2));
         soundPoolMap.put(3, soundPool.load(this, R.raw.good, 3));
         soundPoolMap.put(4, soundPool.load(this, R.raw.perfect, 4));
+        //最后一个是选错的提示音
+        soundPoolMap.put(5, soundPool.load(this, R.raw.perfect, 5));
 
         //默认没有哪张图被选中
         currentImage = null;
@@ -123,7 +125,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
             //还没做满10道题目
             if (number < 10) {
                 //发声音
-                playSound(new Random().nextInt(soundPoolMap.size()) + 1, 0);
+                playSound(new Random().nextInt(soundPoolMap.size() - 1) + 1, 0);
                 //当前选中题置空
                 currentImage.setImageDrawable(null);
                 currentImage = null;
@@ -134,7 +136,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                 number_text.setText(number + "/10");
             } else if (number == 10) {
                 //发声音
-                playSound(new Random().nextInt(soundPoolMap.size()) + 1, 0);
+                playSound(new Random().nextInt(soundPoolMap.size() - 1) + 1, 0);
                 number++;
                 Snackbar.make(view, R.string.game_to, Snackbar.LENGTH_SHORT).show();
             } else {
@@ -144,8 +146,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
 
         } else {
             //没选对，发出try again的声音
-
-
+            playSound(5, 0);
         }
     }
 

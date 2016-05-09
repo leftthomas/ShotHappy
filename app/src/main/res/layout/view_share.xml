@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:layout_marginLeft="30dp"
     android:layout_marginRight="30dp"
-    android:background="@drawable/share_panel"
+    android:background="@drawable/share_background"
     android:orientation="vertical"
     android:visibility="gone">
 
