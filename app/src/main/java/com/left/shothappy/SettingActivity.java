@@ -72,7 +72,8 @@ public class SettingActivity extends BaseActivity {
                     .bitmapConfig(Bitmap.Config.RGB_565)
                     .build();
             //载入图片
-            ImageLoader.getInstance().displayImage(user.getHead().getFileUrl(), head_imageView, options);
+            if (user.getHead() != null)
+                ImageLoader.getInstance().displayImage(user.getHead().getFileUrl(), head_imageView, options);
         } else {
             //缓存用户对象为空时， 打开登录界面
             Snackbar.make(view, getString(R.string.userinfo_overdue), Snackbar.LENGTH_SHORT).show();
