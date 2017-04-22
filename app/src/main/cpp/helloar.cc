@@ -157,82 +157,84 @@ namespace EasyAR {
                 }
                 if (!tracked_target) {
                     if (video == NULL) {
-                        if (frame.targets()[0].target().name() == std::string("2016-05-07") &&
+                        if (frame.targets()[0].target().name() == std::string("2017-04-22") &&
                             texid[0]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                                 video->openStreamingVideo(
-                                        "http://www.gardenofvisual.com/static/videos/friend.mp4",
+                                        "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/96c7a4f44069f75080c3fd4e5691c185.mp4",
                                         texid[0]);
                             video_renderer = pVideoRenderer[0];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-08") &&
-                                 texid[1]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-23") &&
+                                texid[1]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
-                            video->openStreamingVideo("http://www.gardenofvisual.com/static/videos/mouse.mp4", texid[1]);
+                                video->openStreamingVideo(
+                                        "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/6543d8ff40a01913805695d63e9e4601.mp4",
+                                        texid[1]);
                             video_renderer = pVideoRenderer[1];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-09") &&
-                                 texid[2]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-24") &&
+                                texid[2]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
-                                    "http://file.bmob.cn/M03/22/46/oYYBAFcJ1h2AAWuHAL71_sMJ6DI259.mp4",
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/9594e31a405ca98080b9e67705328fa5.mp4",
                                     texid[2]);
                             video_renderer = pVideoRenderer[2];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-10") &&
-                                 texid[3]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-25") &&
+                                texid[3]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
                                     "http://bmob-cdn-929.b0.upaiyun.com/2016/05/07/3d0a15ed40275ebe80edbfec82ca8d20.MP4",
                                     texid[3]);
                             video_renderer = pVideoRenderer[3];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-11") &&
-                                 texid[4]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-26") &&
+                                texid[4]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
-                                    "http://www.gardenofvisual.com/static/videos/detective.mp4",
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/345664f840b9419e8000ab5723d459ff.mp4",
                                     texid[4]);
                             video_renderer = pVideoRenderer[4];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-12") &&
-                                 texid[5]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-27") &&
+                                texid[5]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
-                                    "http://www.gardenofvisual.com/static/videos/dragonball.mp4",
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/5ef896f240230ff18083d022ddec78bf.mp4",
                                     texid[5]);
                             video_renderer = pVideoRenderer[5];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-13") &&
-                                 texid[6]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-28") &&
+                                texid[6]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
-                                    "http://www.gardenofvisual.com/static/videos/ninja.mp4",
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/dbc60ef340a575c980e4ed2feda4574c.mp4",
                                     texid[6]);
                             video_renderer = pVideoRenderer[6];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-14") &&
-                                 texid[7]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-29") &&
+                                texid[7]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
-                                    "http://www.gardenofvisual.com/static/videos/robot.mp4",
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/111db2c540a03cb9806e4e7703351228.mp4",
                                     texid[7]);
                             video_renderer = pVideoRenderer[7];
-                        }
-                        else if (frame.targets()[0].target().name() == std::string("2016-05-15") &&
-                                 texid[8]) {
+                        } else if (
+                                frame.targets()[0].target().name() == std::string("2017-04-30") &&
+                                texid[8]) {
                             video = new AR;
                             if (iscontainreward(frame.targets()[0].target().name()))
                             video->openStreamingVideo(
-                                    "http://www.gardenofvisual.com/static/videos/sheep.mp4",
+                                    "http://bmob-cdn-929.b0.upaiyun.com/2017/04/22/5cc342854091d58480874c4dcffe8bb9.mp4",
                                     texid[8]);
                             video_renderer = pVideoRenderer[8];
                         }
