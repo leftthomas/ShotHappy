@@ -10,6 +10,7 @@ import com.left.shothappy.utils.AssetCopyer;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
 
 import java.io.IOException;
 
@@ -67,9 +68,9 @@ public class MyApplication extends Application {
         //Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(configuration);
         //微信 appid appsecret
-        PlatformConfig.setWeixin("wx80fa53e66bd0dd39", "7baeecf5dfed24a2e89df2f0df95eb66");
+        PlatformConfig.setWeixin("wx80fa53e66bd0dd39", "d0bf9d9cf8365b809101f9af67397282");
         //新浪微博 appkey appsecret
-        PlatformConfig.setSinaWeibo("2761194626", "c710eb199bef6b2b3b694e9b6ded6d88");
+        PlatformConfig.setSinaWeibo("2761194626", "c710eb199bef6b2b3b694e9b6ded6d88", "http://sns.whalecloud.com");
         // QQ和Qzone appid appkey
         PlatformConfig.setQQZone("1105313354", "ScEJ6KwGq3WRz3VZ");
         UMShareAPI.get(this);

@@ -17,6 +17,7 @@ import com.left.shothappy.bean.User;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,11 +71,9 @@ public class PicUtils {
     public static void share(SHARE_MEDIA num, final Activity activity, Bitmap photo) {
 
         UMImage image = new UMImage(activity, photo);
+        UMWeb web = new UMWeb(activity.getString(R.string.URL), activity.getString(R.string.app_name), activity.getString(R.string.share_activity_text), image);
         new ShareAction(activity).setPlatform(num)
-                .withTitle(activity.getString(R.string.app_name))
-                .withText(activity.getString(R.string.share_activity_text))
-                .withTargetUrl(activity.getString(R.string.URL))
-                .withMedia(image)
+                .withMedia(web)
                 .share();
     }
 
