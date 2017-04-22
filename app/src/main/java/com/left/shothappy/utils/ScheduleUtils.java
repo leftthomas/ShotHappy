@@ -116,7 +116,7 @@ public class ScheduleUtils {
                         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                         final String tex = sdf.format(ScheduleUtils.getTodayZero());
                         User newUser = new User();
-                        newUser.add("rewards", tex);
+                        newUser.addUnique("rewards", tex);
                         newUser.update(user.getObjectId(), new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
