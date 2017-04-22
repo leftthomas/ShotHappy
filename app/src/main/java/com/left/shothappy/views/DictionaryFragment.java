@@ -22,7 +22,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.left.shothappy.R;
 import com.left.shothappy.adapters.DictionaryAdapter;
 import com.left.shothappy.bean.Dict;
-import com.left.shothappy.bean.User;
 import com.left.shothappy.config.MyApplication;
 import com.left.shothappy.utils.IcibaTranslate;
 import com.left.shothappy.utils.ScheduleUtils;
@@ -35,8 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.bmob.v3.BmobUser;
 
 /**
  * Created by left on 16/3/30.
@@ -73,7 +70,6 @@ public class DictionaryFragment extends Fragment {
 
         }
     };
-    private User user;
     private String source;
     /**
      * 网络操作相关的子线程
@@ -108,7 +104,6 @@ public class DictionaryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dictionary, container, false);
         initData();
-        user = BmobUser.getCurrentUser(getContext(), User.class);
         adapter = new DictionaryAdapter(getContext(), mItemList);
         player = new AsyncPlayer("audio");
 

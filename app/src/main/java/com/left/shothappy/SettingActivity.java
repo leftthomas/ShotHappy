@@ -21,10 +21,9 @@ import com.left.shothappy.utils.PicUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.listener.GetListener;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
@@ -62,31 +61,18 @@ public class SettingActivity extends BaseActivity {
 
         username_email.setTypeface(MyApplication.typeFace);
 
-        user = BmobUser.getCurrentUser(this, User.class);
+        user = BmobUser.getCurrentUser(User.class);
         if (user != null) {
             //设置界面用户信息
             username_email.setText(user.getUsername() + "   " + user.getEmail());
-            BmobQuery bmobQuery = new BmobQuery();
-            bmobQuery.getObject(getApplicationContext(), user.getObjectId(), new GetListener<User>() {
-                @Override
-                public void onSuccess(User o) {
-
-                    //显示图片的配置
-                    DisplayImageOptions options = new DisplayImageOptions.Builder()
-                            .cacheInMemory(true)
-                            .cacheOnDisk(true)
-                            .bitmapConfig(Bitmap.Config.RGB_565)
-                            .build();
-                    //载入图片
-                    if (o.getHead() != null)
-                        ImageLoader.getInstance().displayImage(o.getHead().getFileUrl(getApplicationContext()), head_imageView, options);
-                }
-
-                @Override
-                public void onFailure(int i, String s) {
-
-                }
-            });
+            //显示图片的配置
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .build();
+            //载入图片
+            ImageLoader.getInstance().displayImage(user.getHead().getFileUrl(), head_imageView, options);
         } else {
             //缓存用户对象为空时， 打开登录界面
             Snackbar.make(view, getString(R.string.userinfo_overdue), Snackbar.LENGTH_SHORT).show();
@@ -107,7 +93,6 @@ public class SettingActivity extends BaseActivity {
         pronunciation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final User user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
                 if (user != null) {
                     final AlertDialog.Builder builder =
                             new AlertDialog.Builder(SettingActivity.this, R.style.AppCompatAlertDialogStyle);
@@ -127,16 +112,16 @@ public class SettingActivity extends BaseActivity {
                                 newUser.setPronunciation(false);
                             else
                                 newUser.setPronunciation(true);
-                            newUser.update(getApplicationContext(), user.getObjectId(), new UpdateListener() {
-                                @Override
-                                public void onSuccess() {
-                                    dialog.dismiss();
-                                }
+                            newUser.update(user.getObjectId(), new UpdateListener() {
 
                                 @Override
-                                public void onFailure(int code, String msg) {
-                                    dialog.dismiss();
-                                    Snackbar.make(view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                                public void done(BmobException e) {
+                                    if (e == null) {
+                                        dialog.dismiss();
+                                    } else {
+                                        dialog.dismiss();
+                                        Snackbar.make(view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
                         }
@@ -170,18 +155,18 @@ public class SettingActivity extends BaseActivity {
                         } else if (TextUtils.isEmpty(newpassword.getText())) {
                             Snackbar.make(view, getString(R.string.in_newpassword), Snackbar.LENGTH_SHORT).show();
                         } else {
-                            User.updateCurrentUserPassword(getApplicationContext(), oldpassword.getText().toString(), newpassword.getText().toString(), new UpdateListener() {
+                            BmobUser.updateCurrentUserPassword(oldpassword.getText().toString(), newpassword.getText().toString(), new UpdateListener() {
                                 @Override
-                                public void onSuccess() {
-                                    dialog.dismiss();
-                                    Snackbar.make(view, getString(R.string.success_changepassword), Snackbar.LENGTH_LONG).show();
+                                public void done(BmobException e) {
+                                    if (e == null) {
+                                        dialog.dismiss();
+                                        Snackbar.make(view, getString(R.string.success_changepassword), Snackbar.LENGTH_LONG).show();
+                                    } else {
+                                        dialog.dismiss();
+                                        Snackbar.make(view, getString(R.string.fail_changepassword), Snackbar.LENGTH_LONG).show();
+                                    }
                                 }
 
-                                @Override
-                                public void onFailure(int i, String s) {
-                                    dialog.dismiss();
-                                    Snackbar.make(view, getString(R.string.fail_changepassword), Snackbar.LENGTH_LONG).show();
-                                }
                             });
                         }
                     }
@@ -206,26 +191,23 @@ public class SettingActivity extends BaseActivity {
                         if (TextUtils.isEmpty(content.getText())) {
                             Snackbar.make(view, getString(R.string.in_feedback_content), Snackbar.LENGTH_SHORT).show();
                         } else {
-                            User user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
                             Feedback post = new Feedback();
                             post.setContent(content.getText().toString());
                             //添加一对一关联
                             post.setUser(user);
-                            post.save(getApplicationContext(), new SaveListener() {
+                            post.save(new SaveListener<String>() {
 
                                 @Override
-                                public void onSuccess() {
-                                    dialog.dismiss();
-                                    Snackbar.make(view, getString(R.string.success_feedback), Snackbar.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onFailure(int code, String msg) {
-                                    dialog.dismiss();
-                                    Snackbar.make(view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                                public void done(String objectId, BmobException e) {
+                                    if (e == null) {
+                                        dialog.dismiss();
+                                        Snackbar.make(view, getString(R.string.success_feedback), Snackbar.LENGTH_SHORT).show();
+                                    } else {
+                                        dialog.dismiss();
+                                        Snackbar.make(view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
-
                         }
                     }
                 });
@@ -245,8 +227,7 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //退出登录
-                User.logOut(getApplicationContext());   //清除缓存用户对象
-
+                BmobUser.logOut();   //清除缓存用户对象
                 Intent intent = new Intent();
                 intent.setAction("ExitApp");
                 sendBroadcast(intent);
@@ -273,34 +254,34 @@ public class SettingActivity extends BaseActivity {
                          * 上传服务器代码
                          */
                         final BmobFile bmobFile = new BmobFile(PicUtils.saveBitmap2file(head, user));
-                        bmobFile.uploadblock(getApplicationContext(), new UploadFileListener() {
+                        bmobFile.uploadblock(new UploadFileListener() {
 
                             @Override
-                            public void onSuccess() {
-                                //记得更新对应user的头像
-                                User newUser = new User();
-                                newUser.setHead(bmobFile);
-                                newUser.update(getApplicationContext(), user.getObjectId(), new UpdateListener() {
-                                    @Override
-                                    public void onSuccess() {
-                                        //用ImageView显示出来
-                                        head_imageView.setImageBitmap(head);
-                                    }
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    //记得更新对应user的头像
+                                    User newUser = new User();
+                                    newUser.setHead(bmobFile);
+                                    newUser.update(user.getObjectId(), new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
+                                            if (e == null) {
+                                                //用ImageView显示出来
+                                                head_imageView.setImageBitmap(head);
+                                            } else {
+                                                Snackbar.make(view, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Snackbar.make(view, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
+                                }
 
-                                    @Override
-                                    public void onFailure(int code, String msg) {
-                                        Snackbar.make(view, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
                             }
 
                             @Override
                             public void onProgress(Integer value) {
-                            }
-
-                            @Override
-                            public void onFailure(int code, String msg) {
-                                Snackbar.make(view, getString(R.string.error_head_replace), Snackbar.LENGTH_SHORT).show();
+                                // 返回的上传进度（百分比）
                             }
                         });
                     }

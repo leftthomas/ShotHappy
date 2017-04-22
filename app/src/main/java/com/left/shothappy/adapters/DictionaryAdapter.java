@@ -39,34 +39,6 @@ public class DictionaryAdapter extends BaseAdapter {
 
     private String source;
     private List<Ps_pron> prons;
-    private AsyncPlayer player;
-    /**
-     * 接收到网络请求回复的数据之后通知UI更新
-     */
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle data = msg.getData();
-            String val = data.getString("status");
-            if (val.equals("true")) {
-                // 播放声音
-                String path;
-                User user = BmobUser.getCurrentUser(context, User.class);
-                //判断是美音还是英音
-                if (user.isPronunciation()) {
-                    path = prons.get(0).getPron();     //这里给一个歌曲的网络地址就行了
-                } else {
-                    path = prons.get(1).getPron();
-                }
-                Uri uri = Uri.parse(path);
-                player.play(context, uri, false, AudioManager.STREAM_MUSIC);
-            } else {
-                Toast.makeText(context, val, Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    };
     /**
      * 网络操作相关的子线程
      * 调用语音sdk与英文释义部分的网络请求
@@ -87,6 +59,34 @@ public class DictionaryAdapter extends BaseAdapter {
             }
             msg.setData(data);
             handler.sendMessage(msg);
+        }
+    };
+    private AsyncPlayer player;
+    /**
+     * 接收到网络请求回复的数据之后通知UI更新
+     */
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String val = data.getString("status");
+            if (val.equals("true")) {
+                // 播放声音
+                String path;
+                User user = BmobUser.getCurrentUser(User.class);
+                //判断是美音还是英音
+                if (user.isPronunciation()) {
+                    path = prons.get(0).getPron();     //这里给一个歌曲的网络地址就行了
+                } else {
+                    path = prons.get(1).getPron();
+                }
+                Uri uri = Uri.parse(path);
+                player.play(context, uri, false, AudioManager.STREAM_MUSIC);
+            } else {
+                Toast.makeText(context, val, Toast.LENGTH_SHORT).show();
+            }
+
         }
     };
 

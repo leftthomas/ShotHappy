@@ -27,6 +27,7 @@ import java.util.Map;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -46,7 +47,7 @@ public class ScheduleUtils {
      */
     private static void updateSchedule(final Activity activity, String key) {
 
-        final User user = BmobUser.getCurrentUser(activity, User.class);
+        final User user = BmobUser.getCurrentUser(User.class);
 
         //如果今天还没有Schedule
         if (schedules == null || schedules.size() == 0) {
@@ -58,29 +59,19 @@ public class ScheduleUtils {
             schedule.setWords(word);
             //添加一对一关联
             schedule.setUser(user);
-            schedule.save(activity, new SaveListener() {
-
+            schedule.save(new SaveListener<String>() {
                 @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onFailure(int code, String msg) {
-
+                public void done(String objectId, BmobException e) {
                 }
             });
+
         } else {
             //只有在key之前未添加过的情况下才会被添加
             Schedule p = new Schedule();
             p.addUnique("words", key);
-            p.update(activity, schedules.get(0).getObjectId(), new UpdateListener() {
+            p.update(schedules.get(0).getObjectId(), new UpdateListener() {
                 @Override
-                public void onSuccess() {
-                }
-
-                @Override
-                public void onFailure(int code, String msg) {
+                public void done(BmobException e) {
                 }
             });
         }
@@ -114,35 +105,34 @@ public class ScheduleUtils {
 
         query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
         query.order("createdAt");
-        query.findObjects(activity, new FindListener<Schedule>() {
+        query.findObjects(new FindListener<Schedule>() {
             @Override
-            public void onSuccess(List<Schedule> list) {
-                if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
-                } else if(list.get(0).getWords().size() == 10){
-                    //奖励一张卡片
-                    // 添加String类型的数组,奖励卡片的名字以时间命名
-                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    final String tex=sdf.format(ScheduleUtils.getTodayZero());
-                    user.add("rewards",tex);
-                    user.update(activity, new UpdateListener() {
-                        @Override
-                        public void onSuccess() {
-                            //及时设置下全局的rewards，待会要传给ndk层
-                            String[] sts = new String[((MyApplication) activity.getApplication()).getRewards().length + 1];
-                            for (int i = 0; i < ((MyApplication) activity.getApplication()).getRewards().length; i++) {
-                                sts[i] = ((MyApplication) activity.getApplication()).getRewards()[i];
+            public void done(List<Schedule> list, BmobException e) {
+                if (e == null) {
+                    if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                    } else if (list.get(0).getWords().size() == 10) {
+                        //奖励一张卡片
+                        // 添加String类型的数组,奖励卡片的名字以时间命名
+                        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        final String tex = sdf.format(ScheduleUtils.getTodayZero());
+                        User newUser = new User();
+                        newUser.add("rewards", tex);
+                        newUser.update(user.getObjectId(), new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    //及时设置下全局的rewards，待会要传给ndk层
+                                    String[] sts = new String[((MyApplication) activity.getApplication()).getRewards().length + 1];
+                                    for (int i = 0; i < ((MyApplication) activity.getApplication()).getRewards().length; i++) {
+                                        sts[i] = ((MyApplication) activity.getApplication()).getRewards()[i];
+                                    }
+                                    sts[sts.length - 1] = tex;
+                                    ((MyApplication) activity.getApplication()).setRewards(sts);
+                                }
                             }
-                            sts[sts.length - 1] = tex;
-                            ((MyApplication) activity.getApplication()).setRewards(sts);
-                        }
-                        @Override
-                        public void onFailure(int code, String msg) {
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-            @Override
-            public void onError(int i, String s) {
             }
         });
     }
@@ -218,7 +208,7 @@ public class ScheduleUtils {
     public static void UpdateSchedule(final Activity activity, final String key) {
 
         //先检查云端数据库里是否有当前用户今日的Schedule
-        User user = BmobUser.getCurrentUser(activity, User.class);
+        User user = BmobUser.getCurrentUser(User.class);
         BmobQuery<Schedule> query = new BmobQuery<>();
         List<BmobQuery<Schedule>> and = new ArrayList<>();
         //大于00：00：00
@@ -248,19 +238,19 @@ public class ScheduleUtils {
 
         query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
         query.order("createdAt");
-        query.findObjects(activity, new FindListener<Schedule>() {
+        query.findObjects(new FindListener<Schedule>() {
             @Override
-            public void onSuccess(List<Schedule> object) {
-                schedules = object;
-                //一定要成功了之后再做
-                updateSchedule(activity, key);
-            }
-
-            @Override
-            public void onError(int code, String msg) {
-                schedules = null;
+            public void done(List<Schedule> object, BmobException e) {
+                if (e == null) {
+                    schedules = object;
+                    //一定要成功了之后再做
+                    updateSchedule(activity, key);
+                } else {
+                    schedules = null;
+                }
             }
         });
+
     }
 
 
@@ -365,13 +355,12 @@ public class ScheduleUtils {
      * 通过给定日期获取此日之后的数据(包含当天)
      * 获取每日学习量曲线绘制所需的最近七日数据量
      *
-     * @param activity
      * @return
      */
-    public static void getDailyData(final Activity activity, final BarChart chart, final int color) {
+    public static void getDailyData(final BarChart chart, final int color) {
 
         final List<DayCoordinate> weeks = getNearWeekTime();
-        final User user = BmobUser.getCurrentUser(activity, User.class);
+        final User user = BmobUser.getCurrentUser(User.class);
         BmobQuery<Schedule> query = new BmobQuery<>();
         //大于00：00：00
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -384,56 +373,50 @@ public class ScheduleUtils {
         query.addWhereGreaterThanOrEqualTo("createdAt", new BmobDate(beforedate));
         query.addWhereEqualTo("user", user);    // 查询当前用户的所有Schedule
         query.order("createdAt");
-        query.findObjects(activity, new FindListener<Schedule>() {
+        query.findObjects(new FindListener<Schedule>() {
             @Override
-            public void onSuccess(List<Schedule> object) {
-                try {
-                    //记得一定要做数据填充检查
-                    List<Schedule> sc = formatNearSchedules(object, weeks, user);
-                    //设置bar数据
-                    BarData barData = RateoflearningActivity.getBarData(weeks, sc);
-                    //设置bar样式
-                    RateoflearningActivity.setupBarChart(chart, barData, color);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+            public void done(List<Schedule> object, BmobException e) {
+                if (e == null) {
+                    try {
+                        //记得一定要做数据填充检查
+                        List<Schedule> sc = formatNearSchedules(object, weeks, user);
+                        //设置bar数据
+                        BarData barData = RateoflearningActivity.getBarData(weeks, sc);
+                        //设置bar样式
+                        RateoflearningActivity.setupBarChart(chart, barData, color);
+                    } catch (ParseException e2) {
+                        e2.printStackTrace();
+                    }
                 }
             }
-
-            @Override
-            public void onError(int code, String msg) {
-            }
         });
-
     }
 
 
     /**
      * 通过给定日期获取此日之前的数据(包含当天)
      *
-     * @param activity
      * @return 获取进步曲线绘制所需的最近七日数据量
      * （日期，累计学习单词量）
      */
-    public static void getImprovementData(Activity activity, final LineChart chart, final int color) {
+    public static void getImprovementData(final LineChart chart, final int color) {
 
         final List<DayCoordinate> weeks = getNearWeekTime();
-        User user = BmobUser.getCurrentUser(activity, User.class);
+        User user = BmobUser.getCurrentUser(User.class);
         BmobQuery<Schedule> query = new BmobQuery<>();
         // 查询当前用户的所有Schedule
         query.addWhereEqualTo("user", user);
         query.order("createdAt");
-        query.findObjects(activity, new FindListener<Schedule>() {
+        query.findObjects(new FindListener<Schedule>() {
             @Override
-            public void onSuccess(List<Schedule> object) {
-                List<Map<String, Integer>> maps = formatSchedules(object, weeks);
-                //设置line数据
-                LineData lineData = RateoflearningActivity.getLineData(weeks, maps);
-                //设置line样式
-                RateoflearningActivity.setupLineChart(chart, lineData, color);
-            }
-
-            @Override
-            public void onError(int code, String msg) {
+            public void done(List<Schedule> object, BmobException e) {
+                if (e == null) {
+                    List<Map<String, Integer>> maps = formatSchedules(object, weeks);
+                    //设置line数据
+                    LineData lineData = RateoflearningActivity.getLineData(weeks, maps);
+                    //设置line样式
+                    RateoflearningActivity.setupLineChart(chart, lineData, color);
+                }
             }
         });
     }

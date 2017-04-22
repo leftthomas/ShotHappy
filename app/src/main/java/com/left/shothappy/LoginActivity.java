@@ -63,7 +63,7 @@ public class LoginActivity extends BaseActivity {
         mLoginButton.setTypeface(MyApplication.typeFace);
 
         //利用本地缓存用户登录
-        User user = BmobUser.getCurrentUser(this, User.class);
+        User user = BmobUser.getCurrentUser(User.class);
         if (user != null) {
             //直接进入主页
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -132,9 +132,7 @@ public class LoginActivity extends BaseActivity {
             //关闭键盘
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
-
-
-            User.loginByAccount(getApplicationContext(), account, password, new LogInListener<User>() {
+            BmobUser.loginByAccount(account, password, new LogInListener<User>() {
                 @Override
                 public void done(User user, BmobException e) {
                     if (user != null) {

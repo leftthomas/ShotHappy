@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.config.MyApplication;
 
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
 public class RegisterActivity extends BaseActivity {
@@ -123,26 +124,24 @@ public class RegisterActivity extends BaseActivity {
             user.setPassword(password);
             user.setEmail(email);
             user.setPronunciation(true);//默认发音设为美音
-            user.signUp(getApplicationContext(), new SaveListener() {
+            user.signUp(new SaveListener<User>() {
                 @Override
-                public void onSuccess() {
-                    showProgress(false);
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-                }
-
-                @Override
-                public void onFailure(int code, String msg) {
-                    showProgress(false);
-                    if (msg.contains("email")) {
-                        Snackbar.make(mRegisterFormView, getString(R.string.already_email), Snackbar.LENGTH_SHORT).show();
-                    } else if (msg.contains("username")) {
-                        Snackbar.make(mRegisterFormView, getString(R.string.already_username), Snackbar.LENGTH_SHORT).show();
-                    } else
-                        Snackbar.make(mRegisterFormView, msg, Snackbar.LENGTH_SHORT).show();
+                public void done(User s, BmobException e) {
+                    if (e == null) {
+                        showProgress(false);
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    } else {
+                        showProgress(false);
+                        if (e.getMessage().contains("email")) {
+                            Snackbar.make(mRegisterFormView, getString(R.string.already_email), Snackbar.LENGTH_SHORT).show();
+                        } else if (e.getMessage().contains("username")) {
+                            Snackbar.make(mRegisterFormView, getString(R.string.already_username), Snackbar.LENGTH_SHORT).show();
+                        } else
+                            Snackbar.make(mRegisterFormView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
-
         }
     }
 

@@ -13,10 +13,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.left.shothappy.bean.User;
 import com.left.shothappy.config.MyApplication;
 
-import cn.bmob.v3.listener.ResetPasswordByEmailListener;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 
 public class ForgetPasswordActivity extends BaseActivity {
 
@@ -76,19 +77,17 @@ public class ForgetPasswordActivity extends BaseActivity {
             //关闭键盘
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
-
             //通过邮箱重置密码
-            User.resetPasswordByEmail(getApplicationContext(), email, new ResetPasswordByEmailListener() {
+            BmobUser.resetPasswordByEmail(email, new UpdateListener() {
                 @Override
-                public void onSuccess() {
-                    showProgress(false);
-                    Snackbar.make(mFormView, "重置密码请求成功，请到" + email + "邮箱进行密码重置操作", Snackbar.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onFailure(int code, String e) {
-                    showProgress(false);
-                    Snackbar.make(mFormView, "重置密码失败:" + e, Snackbar.LENGTH_LONG).show();
+                public void done(BmobException e) {
+                    if (e == null) {
+                        showProgress(false);
+                        Snackbar.make(mFormView, "重置密码请求成功，请到" + email + "邮箱进行密码重置操作", Snackbar.LENGTH_LONG).show();
+                    } else {
+                        showProgress(false);
+                        Snackbar.make(mFormView, "重置密码失败:" + e, Snackbar.LENGTH_LONG).show();
+                    }
                 }
             });
         }

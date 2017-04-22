@@ -312,9 +312,9 @@ public class RateoflearningActivity extends BaseActivity {
             }
         });
         //绘制BarChart
-        ScheduleUtils.getDailyData(this, mBarChart, mBarColors);
+        ScheduleUtils.getDailyData(mBarChart, mBarColors);
         //绘制LineChart
-        ScheduleUtils.getImprovementData(this, mLineChart, mLineColors);
+        ScheduleUtils.getImprovementData(mLineChart, mLineColors);
     }
 
 

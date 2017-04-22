@@ -32,8 +32,8 @@ import java.util.Map;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.GetListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -56,32 +56,21 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        user = BmobUser.getCurrentUser(this, User.class);
-
-        BmobQuery<User> query = new BmobQuery<>();
-        query.getObject(this, user.getObjectId(), new GetListener<User>() {
-            @Override
-            public void onSuccess(User object) {
-                //及时设置下全局的rewards，传给ndk层
-                if (object.getRewards() != null)
-                    ((MyApplication) getApplication()).setRewards(object.getRewards());
-            }
-            @Override
-            public void onFailure(int code, String arg0) {
-
-            }
-        });
+        user = BmobUser.getCurrentUser(User.class);
+        //及时设置下全局的rewards，传给ndk层
+        if (user.getRewards() != null)
+            ((MyApplication) getApplication()).setRewards(user.getRewards());
 
         rewards_map=new HashMap<>();
-        rewards_map.put("2016-05-07", "friend.png");
-        rewards_map.put("2016-05-08", "mouse.png");
-        rewards_map.put("2016-05-09", "dumb.png");
-        rewards_map.put("2016-05-10", "crayon.jpg");
-        rewards_map.put("2016-05-11", "detective.jpg");
-        rewards_map.put("2016-05-12", "dragonball.jpg");
-        rewards_map.put("2016-05-13","ninja.jpg");
-        rewards_map.put("2016-05-14","robot.jpg");
-        rewards_map.put("2016-05-15","sheep.jpg");
+        rewards_map.put("2017-04-22", "friend.png");
+        rewards_map.put("2017-04-23", "mouse.png");
+        rewards_map.put("2017-04-24", "dumb.png");
+        rewards_map.put("2017-04-25", "crayon.jpg");
+        rewards_map.put("2017-04-26", "detective.jpg");
+        rewards_map.put("2017-04-27", "dragonball.jpg");
+        rewards_map.put("2017-04-28", "ninja.jpg");
+        rewards_map.put("2017-04-29", "robot.jpg");
+        rewards_map.put("2017-04-30", "sheep.jpg");
 
         to_ar = (Button) findViewById(R.id.to_ar);
         to_thesaurus = (Button) findViewById(R.id.to_thesaurus);
@@ -128,35 +117,35 @@ public class MainActivity extends BaseActivity {
 
                 query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
                 query.order("createdAt");
-                query.findObjects(getApplicationContext(), new FindListener<Schedule>() {
-                    @Override
-                    public void onSuccess(List<Schedule> list) {
 
-                        if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
-                            Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
-                        } else {
-                            try {
-                                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                                final String tex=sdf.format(ScheduleUtils.getTodayZero());
-                                InputStream in=getAssets().open("videos/"+rewards_map.get(tex));
-                                Bitmap bmp= BitmapFactory.decodeStream(in);
-                                reward_card.setImageBitmap(bmp);
-                                card_panel.setVisibility(View.VISIBLE);
-                                new Handler().postDelayed(new Runnable(){
-                                    public void run() {
-                                        card_panel.setVisibility(View.INVISIBLE);}
-                                }, 3000);
-                            } catch (Exception e) {
+                query.findObjects(new FindListener<Schedule>() {
+                    @Override
+                    public void done(List<Schedule> list, BmobException e) {
+                        if (e == null) {
+
+                            if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                                Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                    final String tex = sdf.format(ScheduleUtils.getTodayZero());
+                                    InputStream in = getAssets().open("videos/" + rewards_map.get(tex));
+                                    Bitmap bmp = BitmapFactory.decodeStream(in);
+                                    reward_card.setImageBitmap(bmp);
+                                    card_panel.setVisibility(View.VISIBLE);
+                                    new Handler().postDelayed(new Runnable() {
+                                        public void run() {
+                                            card_panel.setVisibility(View.INVISIBLE);
+                                        }
+                                    }, 3000);
+                                } catch (Exception e2) {
+                                }
                             }
+                        } else {
+                            Snackbar.make(main_view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
                         }
                     }
-
-                    @Override
-                    public void onError(int i, String s) {
-                        Snackbar.make(main_view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
-                    }
                 });
-
             }
         });
 
@@ -215,22 +204,20 @@ public class MainActivity extends BaseActivity {
 
                 query.addWhereEqualTo("user", user);    // 查询当前用户当日Schedule
                 query.order("createdAt");
-                query.findObjects(getApplicationContext(), new FindListener<Schedule>() {
+                query.findObjects(new FindListener<Schedule>() {
                     @Override
-                    public void onSuccess(List<Schedule> list) {
-
-                        if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
-                            Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
+                    public void done(List<Schedule> list, BmobException e) {
+                        if (e == null) {
+                            if (list == null || list.size() == 0 || list.get(0).getWords() == null || list.get(0).getWords().size() < 10) {
+                                Snackbar.make(main_view, getString(R.string.today_tip), Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                Intent intent = new Intent(getApplicationContext(), TestActivity.class);
+                                intent.putStringArrayListExtra("words", new ArrayList<>(list.get(0).getWords()));
+                                startActivity(intent);
+                            }
                         } else {
-                            Intent intent = new Intent(getApplicationContext(), TestActivity.class);
-                            intent.putStringArrayListExtra("words", new ArrayList<>(list.get(0).getWords()));
-                            startActivity(intent);
+                            Snackbar.make(main_view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-                        Snackbar.make(main_view, getString(R.string.error_network), Snackbar.LENGTH_SHORT).show();
                     }
                 });
             }
