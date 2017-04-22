@@ -17,7 +17,9 @@ import android.widget.EditText;
 import com.left.shothappy.bean.User;
 import com.left.shothappy.config.MyApplication;
 
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
 
 public class RegisterActivity extends BaseActivity {
@@ -68,8 +70,8 @@ public class RegisterActivity extends BaseActivity {
 
         // Store values at the time of the register attempt.
         String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String username = mUsernameView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String username = mUsernameView.getText().toString();
         String repassword = mRePasswordView.getText().toString();
 
         boolean cancel = false;
@@ -128,6 +130,12 @@ public class RegisterActivity extends BaseActivity {
                 @Override
                 public void done(User s, BmobException e) {
                     if (e == null) {
+                        //记得一定要登录一下，不然当前用户拿不到，是空值
+                        BmobUser.loginByAccount(username, password, new LogInListener<User>() {
+                            @Override
+                            public void done(User user, BmobException e) {
+                            }
+                        });
                         showProgress(false);
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
