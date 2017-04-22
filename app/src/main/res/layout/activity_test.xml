@@ -91,6 +91,6 @@
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/game"></ImageView>
+            android:src="@drawable/game" />
     </RelativeLayout>
 </FrameLayout>
